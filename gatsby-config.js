@@ -17,8 +17,8 @@ const apolloDocsOptions = {
   ...themeOptions,
   root: __dirname,
   contentDir: './content/',
-  description: 'Tezos Developer Portal',
-  siteName: 'Tezos Developer Portal',
+  description: 'Tezos Developer Portal Preview',
+  siteName: 'Tezos Developer Portal Preview',
   sidebarCategories: getSidebarConfig(),
 }
 

@@ -1,5 +1,6 @@
 const path = require('path');
 const here = `${path.parse(__dirname).base}${path.sep}`;
 module.exports = [
-    `${here}intro-introduction`
+    `${here}01-introduction`,
+    `${here}02-history`,
 ];
