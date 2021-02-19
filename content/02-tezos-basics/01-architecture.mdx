@@ -22,7 +22,7 @@ Above, you can see a graphical representation of Tezos' architecture and the rel
 
 ### Node
 
-A Tezos node is the local component of the system. It manages the context, which is the local knowledge of the Tezos blockchain state, and the connection to the gossip network and other nodes. 
+A Tezos node is the local component of the system. It manages the context, which is the local knowledge of the Tezos blockchain state, and the connection to the gossip network and other nodes.
 
 The gossip network is how Tezos nodes communicate to exchange blocks and operations with each other. The admin client, as well as the local endorser, baker, accuser, and client connect to the Tezos network through the node. The admin client can monitor peer-to-peer (P2P) connections.
 
@@ -36,13 +36,13 @@ The node also gathers metadata about peers and multiple chains that may exist so
 
 ### Client
 
-The Tezos client is the main interface to the node. The client can read the context and inspect the state (get) and it can instruct the node to perform work such as broadcasting an operation to the network.  
+The Tezos client is the main interface to the node. The client can read the context and inspect the state (get) and it can instruct the node to perform work such as broadcasting an operation to the network.
 
 ### Baker
 
-In Tezos, validators are referred to as bakers. As the name suggests, the baker is responsible for baking (producing) new blocks. Bakers are connected to implicit accounts (more on implicit (tz1…) vs. originated (KT1…) accounts later) and compute baking rights on a per account basis based on a baker’s total stake (i.e. tokens participating in consensus). The baker is unique in that it needs direct access to the node data directory for performance reasons. 
+In Tezos, validators are referred to as bakers. As the name suggests, the baker is responsible for baking (producing) new blocks. Bakers are connected to implicit accounts (more on implicit (tz1…) vs. originated (KT1…) accounts later) and compute baking rights on a per account basis based on a baker’s total stake (i.e. tokens participating in consensus). The baker is unique in that it needs direct access to the node data directory for performance reasons.
 
-When the baker is selected to bake a block, it draws transactions from the mempool, which is the pool of operations that are known about (via gossip) but have not yet been included in a block. 
+When the baker is selected to bake a block, it draws transactions from the mempool, which is the pool of operations that are known about (via gossip) but have not yet been included in a block.
 
 ### Endorser
 
@@ -59,7 +59,7 @@ Such irregularities trigger double-baking and double-endorsing operations that c
 
 ## The peer-to-peer layer
 
-The node instantiates the P2P layer which is parameterised by the type of messages exchanged over the network (to support different P2P protocol versions and extensions) and the type of metadata for each peer. The metadata is used to compute a score for each peer that reflects the level of trust in the nodes. Policies can control communication between the node and peers based on the different scores (levels of trust) in those peers. 
+The node instantiates the P2P layer which is parameterised by the type of messages exchanged over the network (to support different P2P protocol versions and extensions) and the type of metadata for each peer. The metadata is used to compute a score for each peer that reflects the level of trust in the nodes. Policies can control communication between the node and peers based on the different scores (levels of trust) in those peers.
 
 The P2P layer consists of a connections pool, the operations on those connections, and a set of workers. The worker pattern is used extensively and followed by the set of workers.
 
@@ -68,8 +68,8 @@ The P2P layer consists of a connections pool, the operations on those connection
 Tezos itself is implemented in [OCaml](https://ocaml.org/). OCaml is a functional programming language used in mission-critical industries that require formal proofs of properties of programs. [Michelson](https://tezos.gitlab.io/mainnet/whitedoc/michelson.html) is a domain-specific language used to write smart contracts on Tezos. It is stack-based, strongly typed, and designed to facilitate formal verification so developers can more easily prove properties of their smart contracts.
 
 There are several other Tezos smart contracts languages. [SmartPy](https://smartpy.io/) is an intuitive and effective smart contracts language and development platform that will allow Python developers to write smart contracts on Tezos. [LIGO](https://ligolang.org/) is a statically typed high-level language that compiles down to Michelson. The syntaxes that are currently supported are PascaLIGO (pascal-like syntax) and CameLIGO (caml-like syntax). 
-ReasonLIGO(reason-like syntax) will be supported soon. 
-[Morley/Lorentz](https://hackage.haskell.org/package/morley) is an library to write Michelson contracts in Haskell.
+ReasonLIGO (reason-like syntax) will be supported soon. 
+[Morley/Lorentz](https://hackage.haskell.org/package/morley) is a library to write Michelson contracts in Haskell.
 [Fi](https://fi-code.com/) is another high-level language that compiles to Michelson and is similar to Javascript and Solidity. Additionally, developers can write Tezos smart contracts in [ReasonML](https://medium.com/tocqueville-group/announcing-granary-a-tezos-development-environment-manager-by-stove-labs-b4a649e0598f).
 
 <HighlightBox type="tip">
@@ -77,9 +77,6 @@ ReasonLIGO(reason-like syntax) will be supported soon.
 [Watch](https://www.youtube.com/watch?v=zl5Ice0z9oU&feature=youtu.be) Arthur Breitman talk about Tezos.
 
 </HighlightBox>
-
-## Helpful Resources
-
 
 ## LINKS FOR FURTHER RESOURCES
 
@@ -99,3 +96,4 @@ ReasonLIGO(reason-like syntax) will be supported soon.
     <li><a href="https://medium.com/tqtezos/why-tezos-is-the-best-platform-for-tokenized-assets-89a960cfa828">“Why Tezos is the Best Platform for Tokenized Assets”</a> by Charlie Wiser</li>
     <li><a href="https://smartpy.io/">SmartPy.io</a></li>
     <li><a href="https://ligolang.org/">LIGO</a></li>
+</ul>

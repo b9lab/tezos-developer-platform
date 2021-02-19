@@ -6,14 +6,12 @@ slug: /tezos-basics/testnet
 
 import HighlightBox from "../../src/components/HighlightBox"
 
-# Testnet
-
 It is now time to participate in a Tezos network.
 
 There are currently three Tezos networks:
 
 - [Mainnet](https://tzstats.com/), has been live and open since 30 June 2018,
-- [Delphinet](https://delphi.tzstats.com/), a test network that runs the same protocol as the mainnet,
+- [Delphinet](https://delphi.tzstats.com/), a test network that runs the same protocol as the mainnet, and
 - [Edonet](https://edo.tzstats.com/), a cutting-edge development network that runs most recent proposed protocol.
 
 The **Mainnet** is the main Tezos blockchain, where Tezos tokens (tez) have real value - so play with it only when you are confident in what you are doing. 
@@ -34,7 +32,7 @@ Docker offers so-called "software containers" to execute applications. "Containe
 
 <HighlightBox type="tip">
 
-If you use Windows on your host, we strongly recommend you to use a VM to first establish a workspace based on Ubuntu Linux. 
+If you use Windows on your host, we strongly recommend you use a VM to first establish a workspace based on Ubuntu Linux. 
 
 </HighlightBox>
 
@@ -149,7 +147,7 @@ Let us get some Edonet tez to work with! The easiest way to get some _Edonet_ te
 
 <HighlightBox type="info">
 
-Yes, the faucet website created a private key for you and you had to download it. This means that someone, somewhere, could have a copy of your private key. That would not be safe **if we were using tez on the mainnet**. But, we are using the Edonet, so we will let it slide this time.
+Yes, the faucet website created a private key for you and you had to download it. This means that someone, somewhere, could have a copy of your private key. That would not be safe **if we were using tez on the mainnet**. But we are using the Edonet, so we will let it slide this time.
 
 </HighlightBox>
 
@@ -394,7 +392,7 @@ This sequence of operations was run:
 
 New contract KT1V3UiHJ7fsaYYEDUsxABsHciHBEm5HVPHr originated.
 The operation has only been included 0 blocks ago.
-We recommend to wait more.
+We recommend waiting more.
 Use command
   tezos-client wait for ooQgdA5UGXVS7baUcjjjQqLwf2bXxP77At1JirEpVTYHePcumXy to be included --confirmations 30 --branch BM7p5GAC3MFR9rJZGQEJEvdMhNuvTME6hTPjzugFZsrhcJW8mNw
 and/or an external block explorer.
@@ -433,8 +431,8 @@ $ ./edonet.sh client transfer 0 from myFirstKey to repeater --arg "1"
 In the output, you will see `Updated storage: 1`.
 
 <ul>
-  	<li><a href="https://tezos.gitlab.io/mainnet/whitedoc/michelson.html">Michelson documentation</a></li>
-    <li><a href="https://gitlab.com/camlcase-dev/michelson-tutorial/tree/master">Michelson Tutorial Series</a> by camlCase</li>
-    <li><a href="https://learn.tqgroup.io/files/language.html#faq">Michelson presentation</a> by Benjamin Canou</li>
+  <li><a href="https://tezos.gitlab.io/mainnet/whitedoc/michelson.html">Michelson documentation</a></li>
+   <li><a href="https://gitlab.com/camlcase-dev/michelson-tutorial/tree/master">Michelson Tutorial Series</a> by camlCase</li>
+  <li><a href="https://learn.tqgroup.io/files/language.html#faq">Michelson presentation</a> by Benjamin Canou</li>
   <li><a href="https://www.michelson-lang.com/">Original Michelson language homepage</a> (note some changes have been made to Michelson since then)</li>
 </ul>
