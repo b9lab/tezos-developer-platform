@@ -8,4 +8,4 @@ import "./src/css/layout.css";
 import "./src/css/temp-styles.css";
 
 //import "./src/css/prism-ghcolors.css";
-//require(`katex/dist/katex.min.css`);
+require(`katex/dist/katex.min.css`);
