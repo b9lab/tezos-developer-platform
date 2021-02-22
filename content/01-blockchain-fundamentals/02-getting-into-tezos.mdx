@@ -6,6 +6,12 @@ slug: /blockchain-fundamentals/getting
 
 import HighlightBox from "../../src/components/HighlightBox"
 
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
+
 Tezos implemented several ideas tackling challenges of other general-purpose built blockchains. Let's take a closer look at Tezos's specific characteristics in regard to:
 
 * the deployment pattern,
@@ -106,18 +112,37 @@ Both the governance mechanism and self-amendment are built in at the protocol le
 
 ### The Tezos amendment process
 
+
+<ExpansionPanel title="The amendment process">
+&nbsp;
+
+<ExpansionPanelList>
+
 The **Tezos amendment process** consists of **four** different stages:
 
-* **Proposal period**: Bakers can submit and upvote up to 20 proposals per period (including duplicates). The proposal is submitted with the *proposal operation*, which includes the parameters source (i.e. the baker submitting), proposal period when it was submitted, and proposal's hash. Bakers then vote on the proposals in an approval voting mechanism, i.e. one can vote for a number of candidates/options as each possibility is an individual, independent choice, and then the option with the most approval votes wins - Voting on proposals is often referred to as "upvoting" for this reason. After its eight baking cycles, the most-upvoted proposal moves to the next stage unless no proposals were submitted or there is a tie;
-* **Exploration vote period or testing_vote period**: Bakers have to decide on whether the proposal should be tested. This vote is also cast on-chain with the *ballot operation*, which requires a source (i.e. the baker), the voting period when it was submitted, the proposal it is addressing, and the specified ballot (yay, nay, or abstain). The bakers' votes are weighted proportionally to their staking balance's number of rolls at the start of this period. After eight cycles, the votes are counted. The proposal proceeds, if the quorum and the 80% supermajority of affirmative votes is met (80% of the total of all yes and no votes are affirmative, or `YES/(YES+NO)`). If this is not the case, another proposal period begins.
-* **Testing period**: A testnet fork is ran next to the Tezos main chain for 48 hours to allow the network to clearly differentiate between the main chain and the test fork. With the fork correct migration testing is possible in the given context (i.e. valid state transactions can be conducted without disruption), and it can be ensured that a proposal can become an upgrade to the protocol because the effects of migration are better assessable than in a testnet context, and test operations can be conducted with real accounts and using existing infrastructure (e.g. hardware wallets, remote signers, etc.). Using a testnet fork also means that bakers need to validate on two chains.
-* **Promotion vote period**: The network has to decide on the upgrade. Basis for the network's decision is the results of the **testing period** as well as the off-chain discussions of the proposal. Bakers' votes are weighed proportionally to the number of rolls in the baker's staking balance from the start of this period. Bakers can only cast one vote during the period, e.g. each baker can send one ballot operation. If the proposal is accepted with an 80% supermajority of non-abstentions and the quorum is met, the upgrade is included in the Mainnet. If one of these requirements is not fulfilled it is back to square one, the proposal period.
+<ExpansionPanelListItem number="1">
+**Proposal period**: Bakers can submit and upvote up to 20 proposals per period (including duplicates). The proposal is submitted with the *proposal operation*, which includes the parameters source (i.e. the baker submitting), proposal period when it was submitted, and proposal's hash. Bakers then vote on the proposals in an approval voting mechanism, i.e. one can vote for a number of candidates/options as each possibility is an individual, independent choice, and then the option with the most approval votes wins - Voting on proposals is often referred to as "upvoting" for this reason. After its eight baking cycles, the most-upvoted proposal moves to the next stage unless no proposals were submitted or there is a tie;
+</ExpansionPanelListItem>
+
+<ExpansionPanelListItem number="2">
+**Exploration vote period or testing_vote period**: Bakers have to decide on whether the proposal should be tested. This vote is also cast on-chain with the *ballot operation*, which requires a source (i.e. the baker), the voting period when it was submitted, the proposal it is addressing, and the specified ballot (yay, nay, or abstain). The bakers' votes are weighted proportionally to their staking balance's number of rolls at the start of this period. After eight cycles, the votes are counted. The proposal proceeds, if the quorum and the 80% supermajority of affirmative votes is met (80% of the total of all yes and no votes are affirmative, or `YES/(YES+NO)`). If this is not the case, another proposal period begins.
+</ExpansionPanelListItem>
+
+<ExpansionPanelListItem number="3">
+**Testing period**: A testnet fork is ran next to the Tezos main chain for 48 hours to allow the network to clearly differentiate between the main chain and the test fork. With the fork correct migration testing is possible in the given context (i.e. valid state transactions can be conducted without disruption), and it can be ensured that a proposal can become an upgrade to the protocol because the effects of migration are better assessable than in a testnet context, and test operations can be conducted with real accounts and using existing infrastructure (e.g. hardware wallets, remote signers, etc.). Using a testnet fork also means that bakers need to validate on two chains.
+</ExpansionPanelListItem>
+
+<ExpansionPanelListItem number="4">
+**Promotion vote period**: The network has to decide on the upgrade. Basis for the network's decision is the results of the **testing period** as well as the off-chain discussions of the proposal. Bakers' votes are weighed proportionally to the number of rolls in the baker's staking balance from the start of this period. Bakers can only cast one vote during the period, e.g. each baker can send one ballot operation. If the proposal is accepted with an 80% supermajority of non-abstentions and the quorum is met, the upgrade is included in the Mainnet. If one of these requirements is not fulfilled it is back to square one, the proposal period.
+</ExpansionPanelListItem>
+</ExpansionPanelList>
+</ExpansionPanel>
 
 ![visualisation amendment process](images/process-stages.png)
 
 All the above mentioned periods lasts for eight baking cycles - eight baking cycles are almost 33 blocks/23 days. For a full cycle to be conducted one can expect a three month duration period. When a period is successful, the amendment process is finalised. In case it is not, the proposal period begins again, the process restarts so to say.
 
-<HighlightBox type="tip">
+<ExpansionPanel title="The quorum">
 
 A **quorum** is _the minimum number of participants/members/voters of a deliberative body required to be in session and cast a ballot_. A quorum ensures that the body's work is representative of the majority of members. A quorum is not equal to the participation, which is the ratio indicating the number of received votes. It just indicates a body is procedurally ready to vote and decide.
 In the exploration vote period and promotion vote period the quorum becomes very important as it is a requirement for an affirmative vote and proceeding with the proposal.
@@ -131,7 +156,7 @@ The first **Tezos' quorum** was 80% of all rolls (at the genesis block, i.e. Q<s
 
 For more on the quorum take a look at <code>[src/proto_alpha/lib_protocol/src/amendment.ml](https://gitlab.com/tezos/tezos/blob/c92f370930c5f1bf5224358f70d8cb3af6329cf5/src/proto_alpha/lib_protocol/src/amendment.ml)</code>.
 
-</HighlightBox>
+</ExpansionPanel>
 
 ### Operations for Voting
 

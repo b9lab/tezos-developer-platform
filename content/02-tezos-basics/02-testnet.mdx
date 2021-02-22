@@ -1,10 +1,17 @@
 ---
 title: Testnet
-description: 
+description: Let's participate in a Tezos network
 slug: /tezos-basics/testnet
 ---
 
 import HighlightBox from "../../src/components/HighlightBox"
+
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
+
 
 It is now time to participate in a Tezos network.
 
@@ -35,6 +42,14 @@ Docker offers so-called "software containers" to execute applications. "Containe
 If you use Windows on your host, we strongly recommend you use a VM to first establish a workspace based on Ubuntu Linux. 
 
 </HighlightBox>
+
+`youtube: https://youtu.be/RacKewhRAD4`
+
+`youtube: https://youtu.be/I235LTD1iMM`
+
+`youtube: https://youtu.be/voPd69JH_so`
+
+`youtube: https://youtu.be/yEJBH1UPMfE`
 
 ## First steps
 
@@ -86,7 +101,7 @@ which will stop the network, update the script, and start the network again. In 
 $ export TEZOS_ALPHANET_DO_NOT_PULL=yes
 ```
 
-<HighlightBox type="tip">
+<HighlightBox type="warning">
 
 When the script is being updated, you may again need the command `chmod +x alphanet.sh` to make it executable.
 
@@ -114,7 +129,161 @@ You can find the reference for the client commands in the [client manual](https:
 
 ## First private key
 
-Before you can send anything on this network, you will need a public-private key pair. So let us do something basic and create a new key pair, which our local node will know as `myFirstKey`:
+Before you can send anything on this network, you will need a public-private key pair. Let's take a closer look at the cryptographic concept of public and private keys.
+
+Public/private keys always come in pairs and offer various capabilities. Those capabilities are based on cryptographic mathematics. As their name suggest, the public key is meant to be distributed to whoever is relevant, while the private key is to be jealously guarded, akin to having your house address public, but keeping the key to your house private.
+
+#### Encrypt and decrypt
+
+Alice wants to send a message to Bob, and for Bob's eyes only:
+
+* Bob gives Alice his public key
+* Alice uses Bob's public key to encrypt the message
+* Alice sends Bob the encrypted message
+* Bob decrypts the message with his private key
+
+![](images/keys-001.png)
+
+#### Sign and verify
+
+Alice wants to make sure that Bob's public announcement is indeed from Bob:
+
+* Bob gives Alice his public key
+* Bob signs his announcement with his private key
+* Bob sends Alice his announcement and its signature
+* Alice verifies the signature with Bob's public key
+
+![](images/keys-002.png)
+
+### Key management, PKI
+
+If you look again at the Alice and Bob examples, you will notice that there is a vulnerability in "Bob gives Alice his public key". A malicious Charlie could intercept Bob's public key and pass on his own public key to Alice.
+
+Key management and public key infrastructure (PKI) is an important aspect of cryptography that helps mitigate this risk.
+
+<ExpansionPanel title="RSA">
+
+RSA(Rives, Shamir, Adleman) is a public-key cryptosystem that was first published in 1977. The premise is that if you have a public key ```$$(pubKey,n)$$``` and a private key ```$$priKey$$``` then you can do the following operations on very large numbers:
+
+* encrypt a message:
+
+`$$message ^ {pubKey} \equiv encMessage \mod n$$`
+
+* decrypt the encrypted message:
+
+`$$encMessage ^ {priKey} \equiv message \mod n$$`
+
+Of course, you need to have `$n$` large enough so as not to destroy the `$message$`'s information. Notice also that to encrypt, you need to know both `$pubKey$` and `$n$`, that is the pair that needs to be public knowledge. The `$priKey$`, as ever, is to be protected.
+
+If you want to express that in terms of a theorem, you would say that:
+
+> there exists a triplet `$(priKey, pubKey, n)$` such that for any `$message$`, we get `$(message ^ {pubKey}) ^ {priKey} \equiv message \mod n$`, with the additional hurdle that calculating `$priKey$` out of `$(pubKey, n)$` is computationally expensive and in practice impossible.
+
+Let us work out in detail how you create such a triplet.
+
+**How**
+
+How can we calculate such a triplet of `$(pubKey, n)$` and `$priKey$`? Of course, the difficulty and the art was in finding the following solution, and proving it satisfies the theorem above. Let us dive right in.
+
+* First we choose two prime numbers `$p$` and `$q$`. Then we calculate `n` as their product: `$n = p \cdot q$`.
+* Second, we calculate [Euler's totient function](https://en.wikipedia.org/wiki/Euler%27s_totient_function) `$\phi(n)$`. Unfortunately, calculating `$\phi$` in general terms is an NP problem. Fortunately, and this is no accident, if and only if `p` and `q` are prime numbers, then, it turns out that `$$\phi(n) = (p - 1) \cdot (q - 1)$$` .
+* Now we can use a random `$pubKey$`, that satisfies the following 2 conditions:
+    * it is [coprime](https://en.wikipedia.org/wiki/Coprime_integers) with `$\phi(n)$`
+    * it is smaller than `$\phi(n)$`.
+* From there, calculating the `$priKey$` means calculating a `$priKey$` that satisfies the following equation:
+
+`$$a \cdot \phi(n) + priKey \cdot pubKey = 1$$`
+
+where we can use the [extended euclidean algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm) to get `$priKey$`. You will notice that in this algorithm the part on the right: `$= 1$` is actually `$= gcd(phi(n), pubKey)$`. [gcd](https://en.wikipedia.org/wiki/Greatest_common_divisor) is the greatest common divisor.
+
+Now we can delete `$p$`, `$q$` and `$\phi(n)$`. And delete them we must, as they could otherwise be used to crack the private key.
+
+**Example**
+
+Let us have a look at an example. 
+
+* We pick `$p = 2399$` and `$q = 26371$`, which are prime numbers large enough for our demonstration. From them, we deduce that `$n = 63264029$` and `$\phi(n) = 63235260$`.
+* Now, we have to pick a `$pubKey < \phi(n)$` and not a divisor of it. Let us pick `$pubKey = 54833$`.
+* With the help of the [Python implementation](https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm) of the extended euclidean algorithm, we pass `xgcd(63235260, 54833)`. It returns us a triplet. We only care about the last element of it, i.e. `$priKey = 6589577$`.
+
+```python
+$ python
+Python 2.7.15 (default, Dec 13 2018, 23:06:29) 
+[GCC 4.2.1 Compatible Apple LLVM 10.0.0 (clang-1000.11.45.5)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> def xgcd(a, b):
+...     """return (g, x, y) such that a*x + b*y = g = gcd(a, b)"""
+...     x0, x1, y0, y1 = 0, 1, 1, 0
+...     while a != 0:
+...         q, b, a = b // a, a, b % a
+...         y0, y1 = y1, y0 - q * y1
+...         x0, x1 = x1, x0 - q * x1
+...     return b, x0, y0
+... 
+>>> xgcd(63235260, 54833)
+(1, -5714, 6589577)
+```
+
+Now we forget about `$p$`, `$q$` and `$\phi(n)$`. Time to put this effort to good use. Let us encrypt the `$message = 9874587$`. Yes, any digital message is essentially a large number. Notice that we took a message that is smaller than `$n$`. That is by design, otherwise we would lose information. We calculate:
+
+`$$9874587 ^ {54833} \equiv 36898107 \mod 63264029$$`
+
+Our encrypted message is thus `$36898107$`. 
+
+You also happen to know the `$priKey$`, so let us decrypt this right away. We calculate the message back:
+`$$36898107 ^ {6589577} \equiv 9874587 \mod 63264029$$`
+
+Yes, our message is, and was, `$9874587$`.
+
+**Why it works**
+
+Let us first introduce Fermat's little theorem. It states that if `$p$` is a prime number then for any number `$a$`, we have `$$a ^ p \equiv a \mod p$$`. If `$a$` is not a multiple of `$p$`, then it can be rewritten as `$$a ^ {p - 1} \equiv 1 \mod p$$`. Our proof will use that knowledge later on.
+
+Let us rework what we have:
+
+`$a \cdot \phi(n) + priKey \cdot pubKey = 1$` means that:
+
+`$$priKey \cdot pubKey \equiv 1 \mod \phi(n)$$`
+
+So `$priKey \cdot pubKey - 1$` is a multiple of `$\phi(n)$`.
+
+But you will recall that `$\phi(n)$` is itself a product of `$p - 1$` and `$q - 1$`. It follows that `$priKey \cdot pubKey - 1$` is a multiple of `$p - 1$` and is also a mutiple of `$q - 1$`. For our purposes, and to express these multiples, we will introduce `$h$` and `$k$` such that:
+
+`$$priKey \cdot pubKey - 1 = h \cdot (p - 1) = k \cdot (q - 1)$$`
+
+With this, let us hop on what we want to prove, encryption followed by decryption works. Let us do just that:
+
+`$$(message ^ {pubKey}) ^ {priKey}$$`
+
+Which, we remember from our algebra classes can be rewritten as:
+
+`$$message ^ {pubKey \cdot priKey}$$`
+
+Which, again, can be rewritten as:
+
+`$$message \cdot message ^ {pubKey \cdot priKey - 1}$$`
+
+Oh we now recognise this thing we had a few lines above. Let us replace and rewrite as:
+
+`$$message \cdot message ^ {h \cdot (p - 1)}$$`
+
+And algebra class helping out, can be rewritten as:
+
+`$$message \cdot (message ^ {p - 1}) ^ {h}$$`
+
+It looks awfully like something we saw in Fermat's little theorem. Let us first suppose that `$message$` is a multiple of `$p$`, i.e. that `$message \equiv 0 \mod p$`. In that case we can say that `$$message ^ {p \cdot q} \equiv message \mod p$$`. 
+
+In other cases, thanks to Fermat's, we have `$message \cdot (message ^ {p -1 }) ^ {h} \equiv message \cdot 1 ^ {h} \equiv message \mod p$`
+
+Now, we can do the same steps but this time with `$k$` and `$q$` in mind: `$message \cdot (message ^ {q -1 }) ^ {k} \equiv message \cdot 1 ^ {k} \equiv message \mod q$`
+
+Let us remember that `$p$` and `$q$` are prime. So for a number to be a multiple of both, it has to be a multiple of their product `$p \cdot q = n$`.
+
+So by mixing these 2 paths, we end up with, `$$(message ^ {pubKey}) ^ {priKey} \equiv message \mod {p \cdot q} \equiv message \mod n$$`. This is what we set out to demonstrate about why RSA works.
+
+</ExpansionPanel>
+
+Now that we dived into the basics relating to public key cryptosystems, let's do something basic and **create a new key pair**, which our local node will know as `myFirstKey`:
 
 ```sh
 $ ./edonet.sh client gen keys "myFirstKey"
@@ -422,9 +591,82 @@ $ ./edonet.sh client transfer 0 from myFirstKey to repeater --arg "1"
 ```
 In the output, you will see `Updated storage: 1`.
 
+<HighlightBox type="reading">
+
 <ul>
   <li><a href="https://tezos.gitlab.io/mainnet/whitedoc/michelson.html">Michelson documentation</a></li>
    <li><a href="https://gitlab.com/camlcase-dev/michelson-tutorial/tree/master">Michelson Tutorial Series</a> by camlCase</li>
   <li><a href="https://learn.tqgroup.io/files/language.html#faq">Michelson presentation</a> by Benjamin Canou</li>
   <li><a href="https://www.michelson-lang.com/">Original Michelson language homepage</a> (note some changes have been made to Michelson since then)</li>
 </ul>
+
+</HighlightBox>
+
+## JSON/RPC interface
+
+So far we have used the edonet script to execute **tezos-client** commands. This client communicates with the **tezos-node**.
+
+Communication works with the help of the **JSON/RPC interface**. The **tezos-node** responses are **JSON** based. Notice it is not the **JSON-RPC** protocol, the communication is done over **HTTP** protocol.
+
+Let's first list what the RPC offers:
+
+```
+$ ./edonet.sh client rpc list
+```
+
+This should list you the `GET/POST` queries you can do. 
+
+Analogous to the previous section we want to get the balance first.
+
+First, we need to see all the addresses in our wallet:
+
+```
+$ ./edonet.sh client list known addresses
+```
+
+Look for `myFirstKey` from the last section and use its address to get the balance, replace the `MYFIRSTKEY_ADDRESS` string in the following command with it:
+
+```
+$ ./edonet.sh client rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
+```
+
+Now you should see the balance. But where is the JSON we are talking about? Let us add a flag and use the command again:
+
+```
+$ ./edonet.sh client -l rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
+```
+
+This time you should see the HTTP requests and the JSON responses the client does. 
+
+<HighlightBox type="tip">
+
+You can find the reference for the JSON/RPC interface at the [Tezos Developer Resources documentation](https://tezos.gitlab.io/mainnet/api/rpc.html).
+
+</HighlightBox>
+
+We can use the flag `-l` for all commands from previous section. So, if you run the command:
+
+```
+$ ./edonet.sh client transfer 1 from faucetWallet to myFirstKey --burn-cap 0.5
+```
+
+from last section, you will see all the queries and responses traveling in the background. 
+
+We can also use `curl` for a request 
+if you start the network and with an exposed RPC port:
+
+```
+./edonet.sh start --rpc-port 8732
+```
+
+Let us request the balance again:
+
+```
+curl -s localhost:8732/chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
+```
+
+<HighlightBox type="tip">
+
+We could continue endlessly listing how different requests and their responses look. For the interested reader, we recommend checking out the [full description](https://tezos.gitlab.io/007/rpc.html).
+
+</HighlightBox>
