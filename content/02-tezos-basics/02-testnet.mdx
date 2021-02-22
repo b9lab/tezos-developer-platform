@@ -192,7 +192,7 @@ How can we calculate such a triplet of `$(pubKey, n)$` and `$priKey$`? Of course
 
 `$$a \cdot \phi(n) + priKey \cdot pubKey = 1$$`
 
-where we can use the [extended euclidean algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm) to get `$priKey$`. You will notice that in this algorithm the part on the right: `$= 1$` is actually `$= gcd(phi(n), pubKey)$`. [gcd](https://en.wikipedia.org/wiki/Greatest_common_divisor) is the greatest common divisor.
+where we can use the [extended Euclidean algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm) to get `$priKey$`. You will notice that in this algorithm the part on the right: `$= 1$` is actually `$= gcd(phi(n), pubKey)$`. [gcd](https://en.wikipedia.org/wiki/Greatest_common_divisor) is the greatest common divisor.
 
 Now we can delete `$p$`, `$q$` and `$\phi(n)$`. And delete them we must, as they could otherwise be used to crack the private key.
 
@@ -202,7 +202,7 @@ Let us have a look at an example.
 
 * We pick `$p = 2399$` and `$q = 26371$`, which are prime numbers large enough for our demonstration. From them, we deduce that `$n = 63264029$` and `$\phi(n) = 63235260$`.
 * Now, we have to pick a `$pubKey < \phi(n)$` and not a divisor of it. Let us pick `$pubKey = 54833$`.
-* With the help of the [Python implementation](https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm) of the extended euclidean algorithm, we pass `xgcd(63235260, 54833)`. It returns us a triplet. We only care about the last element of it, i.e. `$priKey = 6589577$`.
+* With the help of the [Python implementation](https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm) of the extended Euclidean algorithm, we pass `xgcd(63235260, 54833)`. It returns us a triplet. We only care about the last element of it, i.e. `$priKey = 6589577$`.
 
 ```python
 $ python
@@ -245,7 +245,7 @@ Let us rework what we have:
 
 So `$priKey \cdot pubKey - 1$` is a multiple of `$\phi(n)$`.
 
-But you will recall that `$\phi(n)$` is itself a product of `$p - 1$` and `$q - 1$`. It follows that `$priKey \cdot pubKey - 1$` is a multiple of `$p - 1$` and is also a mutiple of `$q - 1$`. For our purposes, and to express these multiples, we will introduce `$h$` and `$k$` such that:
+But you will recall that `$\phi(n)$` is itself a product of `$p - 1$` and `$q - 1$`. It follows that `$priKey \cdot pubKey - 1$` is a multiple of `$p - 1$` and is also a multiple of `$q - 1$`. For our purposes, and to express these multiples, we will introduce `$h$` and `$k$` such that:
 
 `$$priKey \cdot pubKey - 1 = h \cdot (p - 1) = k \cdot (q - 1)$$`
 
@@ -377,7 +377,7 @@ This sequence of operations was run:
 
 <HighlightBox type="tip">
 
-If you want to deploy a contract with this account, make sure your node is sync'ed up. You can check if the node is sync'ed up with `./edonet.sh client bootstrapped`.
+If you want to deploy a contract with this account, make sure your node is sync'd up. You can check if the node is sync'd up with `./edonet.sh client bootstrapped`.
 
 </HighlightBox>
 
@@ -602,7 +602,7 @@ In the output, you will see `Updated storage: 1`.
 
 ## JSON/RPC interface
 
-So far we have used the edonet script to execute **tezos-client** commands. This client communicates with the **tezos-node**.
+So far we have used the Edonet script to execute **tezos-client** commands. This client communicates with the **tezos-node**.
 
 Communication works with the help of the **JSON/RPC interface**. The **tezos-node** responses are **JSON** based. Notice it is not the **JSON-RPC** protocol, the communication is done over **HTTP** protocol.
 
