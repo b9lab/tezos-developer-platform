@@ -55,6 +55,21 @@ let remarkPluginConfig = [
       // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
       strict: `ignore`
     }
+  },
+  {
+    resolve: "gatsby-remark-images",
+    options: {
+      maxWidth: 736, // page max container width
+      linkImagesToOriginal: false,
+      showCaptions: true,
+      quality: 7
+    }
+  },
+  {
+    resolve: "gatsby-remark-images-medium-zoom",
+    options: {
+      excludedSelector: "no-zoom"
+    }
   }
 ]
 
@@ -64,7 +79,7 @@ module.exports = {
     siteUrl: themeOptions.siteUrl,
   },
   plugins: [
-  	{
+    {
       resolve: 'gatsby-theme-apollo-docs',
       options: apolloDocsOptions
     },
@@ -81,6 +96,14 @@ module.exports = {
         remarkPlugins: [
           [remarkTypescript, {wrapperComponent: 'MultiCodeBlock'}]
         ]
+      }
+    },
+    {
+      resolve: `gatsby-plugin-sharp`,
+      options: {
+        useMozJpeg: false,
+        stripMetadata: true
+        /*srcSetBreakpoints: [ 200, 340, 520, 736, 1024, 1280 ]*/
       }
     },
   ]

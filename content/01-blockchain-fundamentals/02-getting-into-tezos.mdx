@@ -121,10 +121,12 @@ Both the governance mechanism and self-amendment are built in at the protocol le
 The **Tezos amendment process** consists of **four** different stages:
 
 <ExpansionPanelListItem number="1">
+
 **Proposal period**: Bakers can submit and upvote up to 20 proposals per period (including duplicates). The proposal is submitted with the *proposal operation*, which includes the parameters source (i.e. the baker submitting), proposal period when it was submitted, and proposal's hash. Bakers then vote on the proposals in an approval voting mechanism, i.e. one can vote for a number of candidates/options as each possibility is an individual, independent choice, and then the option with the most approval votes wins - Voting on proposals is often referred to as "upvoting" for this reason. After its eight baking cycles, the most-upvoted proposal moves to the next stage unless no proposals were submitted or there is a tie;
 </ExpansionPanelListItem>
 
 <ExpansionPanelListItem number="2">
+
 **Exploration vote period or testing_vote period**: Bakers have to decide on whether the proposal should be tested. This vote is also cast on-chain with the *ballot operation*, which requires a source (i.e. the baker), the voting period when it was submitted, the proposal it is addressing, and the specified ballot (yay, nay, or abstain). The bakers' votes are weighted proportionally to their staking balance's number of rolls at the start of this period. After eight cycles, the votes are counted. The proposal proceeds, if the quorum and the 80% supermajority of affirmative votes is met (80% of the total of all yes and no votes are affirmative, or `YES/(YES+NO)`). If this is not the case, another proposal period begins.
 </ExpansionPanelListItem>
 
