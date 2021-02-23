@@ -325,18 +325,14 @@ Michelson is designed as a readable compilation target to make the **compiler's 
 
 Here it becomes evident that Michelson follows a different theoretical assumption: Instead of building on bytecode like with the EVM, which requires confidence in the program and compiler toolchain, using a human-readable bytecode allows to more easily check and verify properties of programs and their compiled outputs.
 
---> Convert to expandable box at later point of time -->
-
-<HighlightBox type="info">
-
-Why is Michelson higher-level bytecode compared to the EVM's bytecode?
+<ExpansionPanel title="Why is Michelson higher-level bytecode compared to the EVM's bytecode?">
 
 Michelson has two main properties that make it a more accessible and understandable bytecode:
 
 * One of the design choices with Tezos is to allow for a language which makes the output easier to understand. Michelson does not present you with a long row of numbers, but instead offers expressions. A program written in Michelson consists of a series of instructions run in sequence.
 * Michelson includes elements like maps, lists or sets. This makes it fundamentally different from the EVM.
 
-</HighlightBox>
+</ExpansionPanel>
 
 The development and characteristics of Michelson follow the idea to create a simple core language, which can be amended with features as they are needed. This is different from attempting to create a more overarching language in the beginning, which then breaks backwards compatibility. The goals are to provide a platform:
 
