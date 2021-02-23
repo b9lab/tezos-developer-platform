@@ -129,10 +129,12 @@ The **Tezos amendment process** consists of **four** different stages:
 </ExpansionPanelListItem>
 
 <ExpansionPanelListItem number="3">
+
 **Testing period**: A testnet fork is ran next to the Tezos main chain for 48 hours to allow the network to clearly differentiate between the main chain and the test fork. With the fork correct migration testing is possible in the given context (i.e. valid state transactions can be conducted without disruption), and it can be ensured that a proposal can become an upgrade to the protocol because the effects of migration are better assessable than in a testnet context, and test operations can be conducted with real accounts and using existing infrastructure (e.g. hardware wallets, remote signers, etc.). Using a testnet fork also means that bakers need to validate on two chains.
 </ExpansionPanelListItem>
 
 <ExpansionPanelListItem number="4">
+
 **Promotion vote period**: The network has to decide on the upgrade. Basis for the network's decision is the results of the **testing period** as well as the off-chain discussions of the proposal. Bakers' votes are weighed proportionally to the number of rolls in the baker's staking balance from the start of this period. Bakers can only cast one vote during the period, e.g. each baker can send one ballot operation. If the proposal is accepted with an 80% supermajority of non-abstentions and the quorum is met, the upgrade is included in the Mainnet. If one of these requirements is not fulfilled it is back to square one, the proposal period.
 </ExpansionPanelListItem>
 </ExpansionPanelList>
