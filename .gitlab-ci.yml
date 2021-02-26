@@ -48,9 +48,8 @@ deploy-aws-s3-staging:
     - pip install awscli
 
   script:
-    - ls -al build/
     # do not use sync here
-    - aws s3 cp build/ s3://${BUCKET_NAME_STAGING}/ --recursive --acl public-read
+    - aws s3 cp public/ s3://${BUCKET_NAME_STAGING}/ --recursive --acl public-read
     #- aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID_STAGING} --paths "/*"
 
 deploy-aws-s3-production:
@@ -72,5 +71,5 @@ deploy-aws-s3-production:
     - pip install awscli
 
   script:
-    - aws s3 cp build/ s3://${BUCKET_NAME_PRODUCTION}/ --recursive --acl public-read
+    - aws s3 cp public/ s3://${BUCKET_NAME_PRODUCTION}/ --recursive --acl public-read
     - aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID_PRODUCTION} --paths "/*"
