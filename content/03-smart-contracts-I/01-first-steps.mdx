@@ -1,38 +1,44 @@
 ---
 title: First Steps with SmartPy
-description: First look into SmartPy
+description: A first glance
 slug: /smartpy/intro
 ---
 
-# SmartPy - First Steps
+import HighlightBox from "../../src/components/HighlightBox"
 
-In what way is **SmartPy** convenient? 
-The use of a popular programming language such as Python to write smart contracts is an immense advantage for first-time smart contract programming. 
-Most smart contracts are written in protocol or smart contract-specific languages. With SmartPy you can dive into smart contract writing without the necessity to learn a smart contract-specific language before getting your hands on any smart contract development. 
-So, it makes life much easier.
+In what way is **SmartPy** convenient?
 
-**SmartPy** offers different tools: 
+Using a popular programming language, such as Python, to write smart contracts is an immense advantage for first-time smart contract programming. 
+Most smart contracts are written in protocol- or smart contract-specific languages.
 
-* Analytics: elements of the UI in SmartPy.io to analyse smart contracts and their properties;
-* SmartML: a virtual machine written in OCaml;
-* Compiler: used to translate contracts from SmartML to Michelson;
-* Python library: which facilitates the use of SmartML definitions.
+With **SmartPy** you can dive into smart contract writing without the necessity to learn a smart contract-specific language before getting your hands on any smart contract development. So, it makes life much easier.
 
-We will address them throughout this section.
+**SmartPy** offers different **tools**: 
 
-We will mainly deal with the Python library of **SmartPy**. 
+* **Analytics**: Elements of the UI in SmartPy.io to analyse smart contracts and their properties;
+* **SmartML**: A virtual machine written in OCaml;
+* **Compiler**: Used to translate contracts from SmartML to Michelson;
+* **Python library**: Facilitates the use of SmartML definitions.
 
-The **SmartPy** library is used to access **SmartML** definitions. This means that we can get a piece **SmartML** from a piece **SmartPy**. **SmartPy** offers a compiler to translate **SmartML** to **Michelson**.
+<HighlightBox type="info">
+
+We will address the different tools throughout this section.
+
+</HighlightBox>
+
+We will mainly deal with the Python library of SmartPy. 
+
+The **SmartPy library**  is used to access **SmartML** definitions; We can get a **SmartML** piece from a **SmartPy** piece. SmartPy offers a **compiler** to translate **SmartML** to **Michelson**.
 
 ![](images/smartml.png)
 
 ## SmartPy Editor
 
-Momentarily, we can work with an online [editor](https://smartpy.io/ide) that gives us an integrated development environment.
+Momentarily, we can work with an [online editor](https://smartpy.io/ide) that gives us an **integrated development environment**.
 
 ![](images/editor1.png)
 
-Let us begin with a simple program to gather some experience with this editor:
+Let's begin with a simple program to gather some experience with this editor:
 
 ```python
 import smartpy as sp
@@ -43,7 +49,7 @@ def test():
     scenario.p("First Output")
 ```
 
-We use a decorator to add a test. This type of tests can be conducted with the online editor.
+We use a **decorator to add a test**. This type of tests can be conducted with the online editor.
 
 ![](images/editor2.png)
 
@@ -68,7 +74,7 @@ scenario.h4(..)
 scenario.p("Some text")
 ```
 
-We can create so many test outputs as we want:
+We can create as many test outputs as we want:
 
 ```python
 import smartpy as sp
@@ -84,15 +90,15 @@ def test():
     scenario.p("Second Output")
 ```
 
-You can switch between those tests with the **Tests** in the menu bar.
+You can switch between the tests using the **Tests** option in the menu bar.
 
 ![](images/editor_tests.png)
 
-## Repeater Contract
+## Repeater contract
 
-Let us again start with a **repeater** contract.
+Let's again start with a **repeater contract**.
 
-A **repeater** contract waits for an input and then gives it back as an output without editing. Remember, each contract takes as input one pair of a parameter and storage structure, and then returns as output one pair consisting of an operation list and another storage structure.
+A **repeater contract** waits for an input, and then gives it back as an output without editing. Remember, each contract takes as input one pair of a parameter and storage structure, and then returns as output one pair consisting of an operation list and another storage structure.
 
 So, we will save the input parameter simply in the storage:
 
@@ -129,8 +135,7 @@ As you can see, with
 import smartpy as sp
 ```
 
-
-we can import **SmartPy** like a common Python module.
+we can import SmartPy like a common Python module.
 
 ```python
 class repeater(sp.Contract):
@@ -139,7 +144,7 @@ class repeater(sp.Contract):
         self.init(storage=0)
 ```
 
-Please do not let you get confused at this point. We consciously choose the name `storage` for the number that we save. Later on you can see that we can produce considerably more complicated data structures. **SmartPy** itself offers us `self.data`, which corresponds to the storage in Michelson. Our `class repeater` inherits the class `sp.Contract`.
+Please don't let you get confused at this point. We consciously choose the name `storage` for the number that we save. Later on you can see that we can produce considerably more complicated data structures. SmartPy itself offers us `self.data`, which corresponds to the storage in Michelson. Our `class repeater` inherits the class `sp.Contract`.
 
 ```python
     # Define Entry Point
@@ -148,7 +153,9 @@ Please do not let you get confused at this point. We consciously choose the name
         self.data.storage= params
 ```
 
-Here you can notice that we save the input directly in `self.data.storage`. We also define a so called [entry point](https://blog.nomadic-labs.com/michelson-updates-in-005.html). Previous `self.init` will iterate on the defined entry points to build the smart contract. Afterwards, we program the test and the output:
+Here you can notice that we save the input directly in `self.data.storage`. We also define a so-called [entry point](https://blog.nomadic-labs.com/michelson-updates-in-005.html). Previous `self.init` will iterate on the defined entry points to build the smart contract.
+
+Afterwards, we program the test and the output:
 
 ```python
 @sp.add_test(name = "First_test")
@@ -160,24 +167,30 @@ def test():
     scenario+= firstContract.repeat(2)
 ```
 
-This part almost looks like a normal Python program. This is the strength of **SmartPy**; we can use Python for [metaprogramming](https://en.wikipedia.org/wiki/Metaprogramming). 
+This part almost looks like a normal Python program. This is the strength of SmartPy: We can use Python for [metaprogramming](https://en.wikipedia.org/wiki/Metaprogramming).
 
 ![](images/editor3.png)
 
-We utilise `register(firstContract, show = True)` to produce the first output. For this reason, we have access among other to the Michelson code. Have a look at the Michelson code and the test transaction:
+We use `register(firstContract, show = True)` to produce the first output. For this reason, we have access among other to the Michelson code.
+
+Have a look at the Michelson code and the test transaction:
 
 ![](images/editor_tx.png)
 
-There you see our repeater contract which we already code and test in Michelson. Michelson does not have variable names, hence the compiler comments with the help of our source code.
+There you see our repeater contract, which we already code and test in Michelson. Michelson does not have variable names, hence the compiler comments with the help of our source code.
 
 <HighlightBox type="tip">
-    <p>Before you continue, try to change the repeater contract so that a string is given as input.</p>
-    <p>Take a look at the Michelson code: What changed? Examine the <b>TYPES</b> tab of the output.</p>
+
+Before you continue, try to change the repeater contract so that a string is given as input.
+Take a look at the Michelson code: What changed? Examine the **TYPES** tab of the output.
+
 </HighlightBox>
 
-## Multiple Parameters
+## Multiple parameters
 
-How do we manage multiple inputs? Let us extend our repeater, and code an adder:
+How do we **manage multiple inputs**?
+
+Let's extend our repeater, and code an adder:
 
 ```python
 import smartpy as sp
@@ -204,7 +217,7 @@ def test():
     scenario+= adderContract.add(first=2, second=3)
 ```
 
-You see that you can give multiple inputs like:
+You see that you can give multiple inputs:
 
 ```python
 adderContract.add(first=2, second=3)
@@ -222,3 +235,5 @@ self.data.storage= params.first + params.second
 <li><a href="https://medium.com/@SmartPy_io/a-first-encounter-with-smartpy-70e28bfeed79">SmartPy.io: A First Encounter with SmartPy</a></li>
 </ul>
 </HighlightBox>
+
+Now that we took our first steps with SmartPy, let's continue with a look at typing and conditions in the SmartPy library.
