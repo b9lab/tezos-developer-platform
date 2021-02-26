@@ -18,13 +18,13 @@ For this, a public blockchain like Tezos is well-fitted. The openness of a publi
 
 Each project will be represented by an individual Tezos smart contract. The smart contract has to fulfil **three functions**:
 
-* **sendFund**: Every user with a Tezos address can use this function to participate in the crowdfund. For reasons of simplicity, each address can only make **one payment**.
-* **payOff**: The project initiator can transfer the collected funds to a different address. This can only be done if the **funding target is met**. For reasons of simplicity, the owner can call this function only after the deadline has passed.
+* **sendFund**: Every user with a Tezos address can use this function to participate in the crowdfund. For reasons of simplicity, each address can only make **one payment**;
+* **payOff**: The project initiator can transfer the collected funds to a different address. This can only be done if the **funding target is met**. For reasons of simplicity, the owner can call this function only after the deadline has passed; and
 * **refund**: In case the set funding goal is not met in a specified time frame, each participant can request a refund.
 
 Moreover, the **storage** has to contain the following **information**:
 
-* **minAmount**: This is the minimum limit to be achieved for a crowdfund to be considered successful.
+* **minAmount**: This is the minimum limit to be achieved for a crowdfund to be considered successful; and
 * **maxTime**: This value represents the deadline by which the **minAmount** has to be met.
 
 Surely, you already have some ideas for the smart contract, and maybe you also started seeing possible difficulties and stumbling blocks.
@@ -146,5 +146,5 @@ Thus, the smart contract allows:
 
 * A user with a Tezos address to send funds - Remember, a payment can only be made once,
 * To transfer the collected funds to a different address of the initiator once the funding target is met,
-* Crowdfunding participants to request a refund, if the funding target isn't met,
-* The storage to contain the **minAmount** and **maxTime**.
+* The crowdfunding participants to request a refund, if the funding target isn't met, and
+* For the storage to contain the **minAmount** and **maxTime**.
