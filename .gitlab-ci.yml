@@ -22,6 +22,7 @@ build-code:
 
   script:
   - npm install
+  - npm run build || true
   - npm run build
 
   artifacts:
