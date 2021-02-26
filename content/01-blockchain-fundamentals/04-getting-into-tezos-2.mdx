@@ -1,7 +1,7 @@
 ---
-title: Getting into Tezos
-description: The main ideas behind the Tezos protocol
-slug: /blockchain-fundamentals/getting
+title: Getting into Tezos II
+description: The main ideas behind the Tezos protocol - Implementing change without hard forks
+slug: /blockchain-fundamentals/getting-2
 ---
 
 import HighlightBox from "../../src/components/HighlightBox"
@@ -12,75 +12,6 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-Tezos implemented several ideas tackling challenges of other general-purpose built blockchains. Let's take a closer look at Tezos's specific characteristics in regard to:
-
-* the deployment pattern,
-* the Tezos governance process and updateability of the protocol,
-* the Tezos consensus mechanism, Liquid Proof-of-Stake, and
-* smart contract development and deployment.
-
-## Tackling the management problems of public chains
-
-Blockchains can be categorised along two main deployment patterns: Public and private/managed blockchains. The deployment pattern has major implications on the functioning of a network.
-
-![Public and Managed Network Comparison](images/comparison-public-vs-rivate.png)
-
-The main way to differentiate between blockchains is to consider their **form of access**, which refers to:
-
-* whether there is a distinction between users or not, and
-* whether the access to the blockchain is open/public or controlled/private.
-
-### The original: Public blockchain networks
-
-The most obvious way to operate a blockchain protocol is in the form of a **public** network. This is what blockchain technology was originally invented for and arguably remains its most powerful form of implementation.
-
-A public blockchain, compared to a private or managed one, is characterised by **open access**. Every participant has access to data and can validate as well as add blocks in public blockchains. Anyone, without needing the permission of another authority, can write and read data.
-
-Because network participants are not vetted and can add to the ledger without needing approval, public blockchains incorporate ways to arbitrate discrepancies and include defence mechanisms against attacks. Thus, guarding against malicious participants is not required, i.e. there is no barrier to entry, and no access control system needs to be in place. The beauty of the public network lies among others in its **self-defence** attribute. In addition, public blockchains benefit from **demand-side economies of scale**, also called **network effects**.
-
-Most public blockchain networks have a few specific attributes:
-
-* **Accessibility**: All you need to connect is the client software and an internet connection. No AML, KYC, identity checks, or subscription payment is required.
-* **No hierarchy**: All nodes are equal, meaning no individual node has more authority than another.
-* **Crypto-economic incentives**: The lack of a central authority means there is no absolute defence against malicious behaviour. Instead, the network usually incentivises benevolent behaviour and dis-incentivises behaviour that endangers the network functioning to de facto implement prohibitive expenses to attack the network and others.
-* **Full decentralisation**: Most public networks are completely decentralised because they are non-hierarchical and fully accessible. The playing field for market participants is therefore relatively level, so traditional business models may not work as well.
-
-### Managed blockchains: Bringing back access control
-
-**Managed networks**, just like public networks, rely on blockchain data structures. But unlike public blockchain networks they do not *necessarily* need to mitigate the Byzantine General's Problem because they operate in a predictable environment with elements of authority, hierarchy and accountability. Participants are vetted through an access-control layer that governs network access. Thus, a private network does not have to rely on anonymous participants to validate transactions. Therefore, many mechanisms vital in public blockchains are not necessary for private blockchains.
-
-**Private blockchains** can be:
-
-* **designed for a limited number of vetted and approved participants**,
-* **designed for optimised performance**, and
-* **governed by a well-defined agreement between the participants**.
-
-### Public vs managed: It's all about suitability
-
-Public networks are based on game theory and economic incentives, which means that every action is probabilistic. We have no guarantee that our transactions will be picked up and even the integrity of the network is merely very likely, not 100% guaranteed. This is often unacceptable, for example, for traditional financial institutions. Still, one of the biggest expenses financial and other institutions face is the operation and maintenance of infrastructure as well as the cost resulting from leaks, hacks, errors, and data incompatibility.
-
-Unlike public networks, where interaction is governed by the protocol and crypto-economic incentives, in managed networks the blockchain protocol is a technical enforcement of pre-existing relationships and legally enforceable agreements.
-
---> Maybe add at a later point of time" table  Publicvsprivate.png -->
-
-Private blockchains are seen by many as contradictory to the existential notion of blockchain technology. Blockchains were introduced as a means to replace trusted third parties and create (procedural) trust-based relations between pseudonymous participants. Private blockchains are also criticised in regard to their degree of transparency, often said to be "only a database" or a traditional centralised system with some degree of cryptographic auditability, but not a "full" or "real" blockchain.
-
-Different deployment patterns have their own benefits and drawbacks. They are also more or less suited to different intended network functions.
-
-### Tezos: Amending a public deployment pattern
-
-The Tezos network is based on a public deployment pattern. As such, it profits from all benefits public, general-purpose built blockchains bring. This reflects in the network access design. Tezos is a public blockchain and thus, access is not restricted. This can drive adoption of a blockchain protocol because access barriers aren't established.
-
-At the same time, Tezos addresses some major challenges of public chains.
-
-First, the protocol is designed. in its latest version, to allow for privacy. As public chains are transparent and accessible, it is often argued that managed blockchains are the only option to establish the degree of **privacy and confidentiality** financial markets require. Tezos has a solution, which doesn't require a managed design: Sapling. This will be introduced by the Edo upgrade.
-
-In addition, Tezos avoids the difficulty **hard forks** bring to public chains by allowing protocol upgrades. These are also helpful to allow the blockchain to include changes.
-
-Besides the **governance process** allowing for upgrades on-chain, the Tezos consensus mechanism assists in making the protocol more resilient against attack vectors and security risks other chains relying on PoW and PoS mechanisms are faced with. Among other, Tezos' consensus mechanism secures the network against malicious nodes.
-
-Let's take a closer look at how change is managed on Tezos!
-
 ## Implementing change, avoiding hard forks
 
 A blockchain can be understood as a ledger. This ledger is immutable and transparent to the network participants. The way in which the network is conceptualised influences its implementation, the benefits it brings, and challenges it faces.
@@ -89,16 +20,14 @@ Because data is validated and stored decentralised, unless both the protocol and
 
 Tezos addresses this public blockchain dilemma by providing an **on-chain governance mechanism**, which reduces the coordination costs for upgrades immensely. Public blockchains often conduct their "governance process" off-chain. This entails coordinating communication across different platforms to make an upgrade more probable of being accepted by all network participants. The coordination required leads to high coordination costs. Additionally, on-chain governance helps avoid hard forks caused by some stakeholders objecting an upgrade and continuing on an older protocol version. Hard forks are especially painful when it comes to holding a stake in tokens - A hard fork leads to two competing states of the "true state", which makes all related to assets with financial value very complicated.
 
-<HighlightBox type="info">
-
---> Include as expandable box later -->
+<ExpansionPanel title="Types of governance in blockchain">
 
 Blockchain governance processes can be differentiated into two types:
 
 * **On-chain governance**: Decisions are made on-chain, as in the case of Tezos, Cardano, and Polkadot.
 * **Off-chain governance**: Stakeholders (i.e. token holders, protocol developers, etc.) debate in forums (i.e. Reddit, conferences), as in the case of Ethereum and Bitcoin.
 
-</HighlightBox>
+</ExpansionPanel>
 
 Tezos was designed to solve this “fork-based governance” model of early blockchain implementations. As the value of a blockchain is largely determined by its network effects, the Tezos governance mechanism is meant to disincentivise forking so that network effects are better retained over time.
 
@@ -108,10 +37,7 @@ In addition to an on-chain governance mechanism, Tezos also has the ability to *
 
 Both the governance mechanism and self-amendment are built in at the protocol level. Restrictions about what can and cannot be changed at the protocol level may be implemented via the governance mechanism. For example, if stakeholders wanted to cap the total supply of tez, they could do so or set a requirement stating that 90% of all stakeholders must approve such a proposal for it to be implemented. This is to ensure that more sensitive or controversial changes to the protocol require stronger consensus or must meet predefined rules before being enacted. This is a form of constitutionalism at the protocol level and can govern how future rules can be adopted.
 
---> Include stages in a "process box" -->
-
 ### The Tezos amendment process
-
 
 <ExpansionPanel title="The amendment process">
 &nbsp;
@@ -249,7 +175,13 @@ In case you want to check out more details on Tezos operations, [this source](ht
 
 --> We could also include client commands; https://tezos.gitlab.io/master/whitedoc/voting.html -->
 
-### The first use case of the amendment process: Athens A & B
+
+<
+<ExpansionPanel title="The first use case of the amendment process: Athens A & B">
+&nbsp;
+
+<ExpansionPanelList>
+
 
 Athens is the name given to the first use of the Tezos amendment process. Two proposals were submitted, [Athens A and B](https://medium.com/tqtezos/reflecting-on-athens-the-first-self-amendment-of-tezos-4791ab3b1de1). The proposals wanted to include two backwards-incompatible network upgrades targeting the gas limit and roll sizes. One proposal was just advocating for an increase in the gas limit (**Athens B**), the other aimed at increasing the gas limit and reducing the roll size (**Athens A**). Substantially speaking, both proposals were almost identical.
 
@@ -267,13 +199,27 @@ As the Tezos amendment process is designed to foster self-governance, stakeholde
 
 ![image voting procedure](images/voting-procedure.png)
 
+<ExpansionPanelListItem number="1">
+
 During the **proposal period**, 170 bakers (amounting to 25,855 rolls) participated. The Tezos Foundation decided to explicitly not vote but let the community engage and decide on which of the two proposals would move on in the process. As this vote does not require the 80% quorum, the vote could be conducted with a 49% participation. In the end, Athens A had a bigger majority than Athens B; Athens A was approved with 71% (i.e. 102 bakers) and Athens B with 29% (i.e. 68 bakers). Thus, Athens A advanced to the exploration vote period, and Athens B was disregarded.
+</ExpansionPanelListItem>
+
+<ExpansionPanelListItem number="2">
 
 For the **exploration vote period**, participation increased from 170 bakers to 194 (e.g. 46,390 rolls instead of 25,855). This 194 bakers represented approximately 87% of the stake supply. Therefore the 80% quorum needed was fulfilled for the vote to be eligible (the participation was at 86.98%). As the quorum was no issue, only the 80% supermajority was the last hurdle left. In this period, bakers can choose to vote with "yay", "nay", or "pass". The Tezos Foundation opted to vote with "pass" to contribute to the quorum, but at the same time doesn't tip the balances and continue remaining neutral - Remember that the supermajority refers to 80% of all "yay" and "nay" votes, the "pass" votes are disregarded. 178 bakers voted in favour (i.e. 57.86%), 3 bakers against (i.e. 0.02%), and 13 bakers passed (i.e. 42.12%). Athens A moved along to the testing period with a majority of 99.88%.
+</ExpansionPanelListItem>
+
+<ExpansionPanelListItem number="3">
 
 Athens A was tested using a test chain. Baker participation was not as high as in the main chain, and block times were slower than on the Mainnet. This was not unexpected as running the test on a forked chain instead of a testnet requires bakers to engage in both chains, the test chain and main chain, as well as more storage space of each bakers disk space.
+</ExpansionPanelListItem>
+
+<ExpansionPanelListItem number="4">
 
 The last stage, the **promotion period**, began with an adjusted quorum of 81.39% due to high participation and turnout in the exploration period, which serves as reference point for the new-calculated quorum. 216 bakers (e.g. 47,031 rolls or approximately 84.3% of the stake) voted on whether Athens A should become an upgrade for the Tezos protocol. Of 216, 201 bakers voted in favour (i.e. 64.96%), three against (i.e. 0.07%), and 12 passed (i.e. 34.97%). With an 84.35% participation and a supermajority of 99.89%, Athens A was activated on May 30th.
+</ExpansionPanelListItem>
+</ExpansionPanelList>
+</ExpansionPanel>
 
 ## Improved PoS consensus
 
@@ -329,18 +275,14 @@ Michelson is designed as a readable compilation target to make the **compiler's 
 
 Here it becomes evident that Michelson follows a different theoretical assumption: Instead of building on bytecode like with the EVM, which requires confidence in the program and compiler toolchain, using a human-readable bytecode allows to more easily check and verify properties of programs and their compiled outputs.
 
---> Convert to expandable box at later point of time -->
-
-<HighlightBox type="info">
-
-Why is Michelson higher-level bytecode compared to the EVM's bytecode?
+<ExpansionPanel title="Why is Michelson higher-level bytecode compared to the EVM's bytecode?">
 
 Michelson has two main properties that make it a more accessible and understandable bytecode:
 
 * One of the design choices with Tezos is to allow for a language which makes the output easier to understand. Michelson does not present you with a long row of numbers, but instead offers expressions. A program written in Michelson consists of a series of instructions run in sequence.
 * Michelson includes elements like maps, lists or sets. This makes it fundamentally different from the EVM.
 
-</HighlightBox>
+</ExpansionPanel>
 
 The development and characteristics of Michelson follow the idea to create a simple core language, which can be amended with features as they are needed. This is different from attempting to create a more overarching language in the beginning, which then breaks backwards compatibility. The goals are to provide a platform:
 
