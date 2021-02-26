@@ -1,12 +1,12 @@
 ---
 title: SmartPy library
-description: SmartPy library
+description: Dive deeper into the language
 slug: /smartpy/language
 ---
 
-# SmartPy - Language
+import HighlightBox from "../../src/components/HighlightBox"
 
-Now, let us write a different smart contract, which sums all natural numbers from 0 to a given number: 
+Now, let's write a different smart contract, which sums all natural numbers from 0 to a given number: 
 
 ```python
 import smartpy as sp
@@ -42,7 +42,7 @@ So, we now have:
             self.data.storage+= i
 ```
 
-You see that SmartPy has `sp.for` to iterate a [list](https://smartpy.io/reference.html#_lists), and `sp.range` to produce such a list of integers, like range does in Python.
+You see that SmartPy has `sp.for` to iterate a [list](https://smartpy.io/reference.html#_lists), and `sp.range` to produce such a list of integers, like `range` does in Python.
 
 Why don't we just write the following?
 
@@ -84,7 +84,7 @@ def test():
 
 That is, we could write a function, which is not dependent neither of the input or the storage. Keep in mind that either way it has write access to the storage.
 
-How does the Michelson code of such a contract look?
+How does the Michelson code of such a contract look like?
 
 ```michelson
 parameter unit;
@@ -113,7 +113,7 @@ code
   };
   ```
 
-Can you see how the loop is [unrolled](https://en.wikipedia.org/wiki/Loop_unrolling) and Python appends the addition inline?
+Can you see how the loop is [unrolled](https://en.wikipedia.org/wiki/Loop_unrolling) and Python appends the addition in-line?
 
 In the Python code, you can see:
 
@@ -123,9 +123,9 @@ def sum(self, params):
             self.data.storage+= i
 ```
 
-This will be translated to 5 times `ADD in the Michelson code.
+This will be translated to 5 times `ADD` in the Michelson code.
 
-Remember that computation is costly on blockchains as each calculation costs gas and with it de facto money. A code with a minimalistic approach in regard to the contract code is therefore cheaper. It is advisable to do the least possible number of calculations on the blockchain, metaprogramming can help with that.
+Remember that **computation is costly** on blockchains as each calculation costs gas and with it de facto money. A code with a **minimalistic approach**, in regard to the contract code, is therefore cheaper. It is advisable to do the least possible number of calculations on the blockchain, metaprogramming can help with that.
 
 If we instead use SmartPy and write:
 
@@ -202,9 +202,10 @@ Here, we have less `ADD` instructions, which are nested in the `LOOP` instructio
 This means that the loop as such is maintained in Michelson. In doing so, we can see and decide which calculations we want to perform on the blockchain.
 
 ## Typing
+
 We know that Python uses [duck typing](https://en.wikipedia.org/wiki/Duck_typing) and Michelson is [strong typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing). How does this fit together?
 
-Let us take another look at our **repeater** contract:
+Let's take another look at our **repeater contract**:
 
 ```python
 # Import SmartPy
@@ -231,7 +232,7 @@ def test():
     scenario+= firstContract.repeat(2)
 ```
 
-When we take a more detailed look in the **SmartPy** editor at the tab **Types**, we see:
+When we take a more detailed look in the SmartPy editor under the tab **Types**, we see:
 
 ```
 Storage:
@@ -242,9 +243,9 @@ Entry points:
 | repeat sp.TIntOrNat
 ```
 
-Our storage has the type `TIntOrNat`. This is due to the fact that **Michelson** has the types `int` and `nat`, and our script does not allow **SmartPy** to simply recognize which one we need or respectively which one we want to use. When observing the **Michelson** code, we can see that our storage in the end thus has the type **int** - eventually a decision has to be made.
+Our storage has the type `TIntOrNat`. This is due to the fact that **Michelson** has the types `int` and `nat`, and our script doesn't allow SmartPy to simply recognize which one we need or respectively which one we want to use. When observing the Michelson code, we can see that our storage in the end has the type **int** - eventually a decision has to be made.
 
-In case we initialise the storage differently: 
+In case we initialise the storage differently:
 
 ```python
         # Define storage with initial integer 0
@@ -273,7 +274,7 @@ and check which type we now have.
 
 ## Conditions
 
-Often we want a smart contract to only accept a transaction under certain conditions. The most important tool in **SmartPy** for this is `sp.verify(condition)`. Should the condition not be met, the entire transaction becomes invalid and our script stops running:
+Often we want a smart contract to **only accept a transaction under certain conditions**. The most important tool in SmartPy for this is `sp.verify(condition)`. Should the condition not be met, the entire transaction becomes invalid and our script stops running:
 
 ```python
 # Import SmartPy
@@ -331,7 +332,7 @@ and because of our test with `-1`you can see the corresponding message in the ed
 
 ![](images/editormessage.png)
 
-We also have `sp.if`. So, when we do not want our script to stop, we can write:
+We also have `sp.if`. So, when we don't want our script to stop, we can write:
 
 ```python
 # Import SmartPy
@@ -361,7 +362,9 @@ def test():
     scenario+= firstContract.repeat(-1)
 ```
 
-We have used `sp.for` already. In addition, **SmartPy** offers `sp.while`.
+We have used `sp.for` already.
+
+In addition, SmartPy offers `sp.while`.
 
 ```
     # Define Entry Point
@@ -374,5 +377,7 @@ We have used `sp.for` already. In addition, **SmartPy** offers `sp.while`.
 ```
 
 <HighlightBox type="tip">
-<p>Take a look at this <a href="https://smartpy.io/dev/reference.html">SmartPy reference</a>. It contains a very useful overview.</p>
+
+Take a look at this <a href="https://smartpy.io/dev/reference.html">SmartPy reference</a>. It contains a very useful overview.
+
 </HighlightBox>
