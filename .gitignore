@@ -3,4 +3,3 @@ node_modules/
 public
 dist
 .DS_Store
-.gitlab-ci.yml
