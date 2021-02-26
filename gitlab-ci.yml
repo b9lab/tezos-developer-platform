@@ -1,0 +1,76 @@
+image: node:8
+
+stages:
+  - build
+  - deploy
+
+variables:
+  AWS_DEFAULT_REGION: eu-west-1
+  BUCKET_NAME_STAGING: preview-uqq8yju5was05rgy.b9lab.com
+  BUCKET_NAME_PRODUCTION: xxx
+  DISTRIBUTION_ID_PRODUCTION: XXX
+
+build-code:
+  stage: build
+  only:
+    refs:
+      - master
+      - development
+      - schedules
+  tags:
+    - main-runner
+
+  script:
+  - npm install
+  - npm run build
+
+  artifacts:
+    paths:
+      - public/
+ 
+
+deploy-aws-s3-staging:
+  stage: deploy
+  only:
+    refs:
+      - master
+      - development
+      - schedules
+  tags:
+    - main-runner
+  
+  image: python:latest
+  
+  dependencies:
+    - build-code
+
+  before_script:
+    - pip install awscli
+
+  script:
+    - ls -al build/
+    # do not use sync here
+    - aws s3 cp build/ s3://${BUCKET_NAME_STAGING}/ --recursive --acl public-read
+    #- aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID_STAGING} --paths "/*"
+
+deploy-aws-s3-production:
+  stage: deploy
+  only:
+    refs:
+      - master
+      - schedules
+  tags:
+    - main-runner
+  when: manual
+  
+  image: python:latest
+  
+  dependencies:
+    - build-code
+
+  before_script:
+    - pip install awscli
+
+  script:
+    - aws s3 cp build/ s3://${BUCKET_NAME_PRODUCTION}/ --recursive --acl public-read
+    - aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID_PRODUCTION} --paths "/*"
