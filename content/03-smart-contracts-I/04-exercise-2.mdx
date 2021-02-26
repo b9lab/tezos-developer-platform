@@ -16,7 +16,7 @@ For this, a public blockchain like Tezos is well-fitted. The openness of a publi
 
 ## The crowdfunding smart contract
 
-Each project will be represented by an individual Tezos smart contract. The smart contract has to fulfill **three functions**:
+Each project will be represented by an individual Tezos smart contract. The smart contract has to fulfil **three functions**:
 
 * **sendFund**: Every user with a Tezos address can use this function to participate in the crowdfund. For reasons of simplicity, each address can only make **one payment**.
 * **payOff**: The project initiator can transfer the collected funds to a different address. This can only be done if the **funding target is met**. For reasons of simplicity, the owner can call this function only after the deadline has passed.
@@ -146,5 +146,5 @@ Thus, the smart contract allows:
 
 * A user with a Tezos address to send funds - Remember, a payment can only be made once,
 * To transfer the collected funds to a different address of the initiator once the funding target is met,
-* Crowdfunding participants to request a refunde, if the funding target isn't met,
+* Crowdfunding participants to request a refund, if the funding target isn't met,
 * The storage to contain the **minAmount** and **maxTime**.
