@@ -135,7 +135,7 @@ You can find the reference for the client commands in the [client manual](https:
 
 Before you can send anything on this network, you will need a public-private key pair. Let's take a closer look at the cryptographic concept of public and private keys.
 
-Public/private keys always come in pairs and offer various capabilities. Those capabilities are based on cryptographic mathematics. As their name suggest, the public key is meant to be distributed to whoever is relevant, while the private key is to be jealously guarded, akin to having your house address public, but keeping the key to your house private.
+Public-private keys always come in pairs and offer various capabilities. Those capabilities are based on cryptographic mathematics. As their name suggest, the public key is meant to be distributed to whoever is relevant, while the private key is to be jealously guarded, akin to having your house address public, but keeping the key to your house private.
 
 #### Encrypt and decrypt
 
@@ -287,7 +287,7 @@ So by mixing these 2 paths, we end up with, `$$(message ^ {pubKey}) ^ {priKey} \
 
 </ExpansionPanel>
 
-Now that we dived into the basics relating to public key cryptosystems, let's do something basic and **create a new key pair**, which our local node will know as `myFirstKey`:
+Now that we dived into the basics relating to public-key cryptosystems, let's do something basic and **create a new key pair**, which our local node will know as `myFirstKey`:
 
 ```sh
 $ ./edonet.sh client gen keys "myFirstKey"
