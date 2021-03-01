@@ -33,51 +33,52 @@ Let's take a **test-driven** development approach.
 
 So, we start with the test ensuring a functioning smart contracts fulfilling the requirements as specified before.
 
-```@addTest(name = "successful_Crowdfunding")
+```python
+@sp.add_test(name = "successful Crowdfunding")
 def successful():
-    
+
     # dummy addresses
     owner= sp.address("tz1xowner")
     user1= sp.address("tz1xuser1")
     user2= sp.address("tz1xuser2")
     user3= sp.address("tz1xuser3")
-    
+
     # minAmonut= 20
     # deadline= now + 3d
     contract = Crowdfunding(owner, 
     sp.tez(20), sp.timestamp(int(time.time())+259200))
-    
-    scenario = sp.testScenario()
+    scenario = sp.test_scenario()
     scenario+= contract
-    
+
     scenario+= contract.sendFund().run(sender=user1, 
     amount=sp.tez(10), now = sp.timestamp(int(time.time())+100))
-    
+
     scenario+= contract.sendFund().run(sender=user2, 
     amount=sp.tez(8), now = sp.timestamp(int(time.time())+200))
-    
+
     # will fail because user1 already sent
     scenario += contract.sendFund().run(sender=user1, 
     amount=sp.tez(12), now = sp.timestamp(int(time.time())+300), valid = False)
-    
+
     # will fail because 2 tez missing
     scenario += contract.payOff().run(sender=owner, 
     now = sp.timestamp(int(time.time())+300), valid = False)
-    
+
     scenario += contract.sendFund().run(sender=user3, 
     amount=sp.tez(15), now = sp.timestamp(int(time.time())+400))
-    
+
     # will fail because deadline not reached
     scenario += contract.payOff().run(sender=owner, 
     now = sp.timestamp(int(time.time())+500), valid = False)
-    
+
     scenario += contract.payOff().run(sender=owner, 
     now = sp.timestamp(int(time.time())+259200))
 ```
 
 Now that we have a test, next is the contract:
 
-```import time
+```python
+import time
 import smartpy as sp
 
 class Crowdfunding(sp.Contract):
