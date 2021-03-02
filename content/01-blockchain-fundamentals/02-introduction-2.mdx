@@ -18,7 +18,7 @@ The Bitcoin White Paper presented a solution to the "double-spending" problem fo
 
 <HighlightBox type="tip">
 
-[Satoshi Nakamoto: Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf) - It is a fairly straightforward paper, having a look at it is recommended.
+[Satoshi Nakamoto: *Bitcoin: A Peer-to-Peer Electronic Cash System*](https://bitcoin.org/bitcoin.pdf) - It is a fairly straightforward paper, having a look at it is recommended.
 
 </HighlightBox>
 
@@ -28,7 +28,7 @@ At a high level, Bitcoin solves the double-spending problem by replacing the tru
 
 ![](images/doublespendingproblem3.png)
 
-It is as though each transaction is observed by a *large crowd of witnesses* who reach consensus about proposed changes. The crowd prohibits events that should not occur, such as spending the same funds twice (i.e. double-spending).
+It is as though each transaction is observed by a **large crowd of witnesses** who reach consensus about proposed changes. The crowd prohibits events that should not occur, such as spending the same funds twice (i.e. double-spending).
 
 Bitcoin and its underlying technology convincingly demonstrate that a network of participants that don't necessarily trust each other can achieve consensus about the validity of a transaction, its history, and the resulting state of the ledger. This is interesting because simple ledgers of account balances and simple protocols for moving funds are far from the only use cases for shared data consensus.
 
@@ -48,15 +48,15 @@ The ideal cryptographic hash function has **five main properties**:
 
 Thus, a hash function:
 
-* converts an input, a.k.a. the message, into an output, a.k.a the hash;
-* does the conversion in a reasonable amount of time;
-* makes it practically impossible to re-generate the message out of the hash;
-* leads to even the smallest change in the message changing the hash beyond recognition;
-* makes it practically impossible to find 2 different messages with the same hash.
+* converts an input, a.k.a. the message, into an output, a.k.a the hash,
+* does the conversion in a reasonable amount of time,
+* makes it practically impossible to re-generate the message out of the hash,
+* leads to even the smallest change in the message changing the hash beyond recognition, and
+* makes it practically impossible to find two different messages with the same hash.
 
 <HighlightBox type="tip">
 
-You can see hashing in action to get the feel for it here: [http://onlinemd5.com/">http://onlinemd5.com/](http://onlinemd5.com/">http://onlinemd5.com/). As you type into the text box, the hash updates automatically. Even a minuscule change to the input creates a completely different hash. Try it out!
+You can see hashing in action to get the feel for it here: [http://onlinemd5.com/](http://onlinemd5.com/">http://onlinemd5.com/). As you type into the text box, the hash updates automatically. Even a minuscule change to the input creates a completely different hash. Try it out!
 
 </HighlightBox>
 
@@ -92,8 +92,8 @@ Blockchains function in similar ways. Blocks of transactions, logical unites wra
 
 There are some important constraints to keep in mind when talking about transaction ordering in distributed networks:
 
-* **Everyone** has a little bit of **authority**, i.e. there is **no central authority**.
-* **A blockchain is a distributed timestamp server without a central network time**.
+* **Everyone** has a little bit of **authority**, i.e. there is **no central authority**;
+* **A blockchain is a distributed timestamp server without a central network time**;
 * Because of **physics and network latency**, every node will learn about transaction proposals in a slightly different order and each node will arrive at a slightly different opinion about the ordering of transactions.
 
 Cryptographic hash functions are instrumental in that they empower all participants to ensure that they possess an undistorted history of everything. Since all nodes can verify the chain independently, they can proceed on the assumption that all other nodes will eventually come into agreement about the history of everything. This is known as **eventual consensus**.
@@ -128,7 +128,7 @@ PBFT was published in 1999 and arose in academic corners. It is a three-phase pr
 
 <HighlightBox type="info">
 
-You can access the paper by Miguel Castro and Barabara Liskov [here](http://pmg.csail.mit.edu/papers/osdi99.pdf). But there is also a very understandable [presentation](http://www.comp.nus.edu.sg/~rahul/allfiles/cs6234-16-pbft.pdf). 
+You can access the paper by Miguel Castro and Barabara Liskov on *Practical Byzantine Fault Tolerance* [here](http://pmg.csail.mit.edu/papers/osdi99.pdf). There is also a very understandable [presentation](http://www.comp.nus.edu.sg/~rahul/allfiles/cs6234-16-pbft.pdf). 
 
 </HighlightBox>
 
@@ -164,7 +164,7 @@ PoS networks do not only face the "nothing at stake" problem, but furthermore in
 
 <HighlightBox type="info">
 
-At the time of writing (February 2021), there are [over 400 participants in Tezos PoS](https://tzstats.com/bakers). MyTezosBaker, a popular curation site for Tezos validators (referred to as **bakers** in Tezos), currently lists more than 100 public delegation services from over 30 countries across 6 continents. Check out this site [here](https://mytezosbaker.com/).
+At the time of writing (February 2021), there are [over 400 participants in Tezos PoS](https://tzstats.com/bakers). MyTezosBaker, a popular curation site for Tezos validators (referred to as **bakers** in Tezos), currently lists more than 100 public delegation services from over 30 countries across 6 continents. Check out this [site](https://mytezosbaker.com/).
 
 </HighlightBox>
 
@@ -184,7 +184,7 @@ Many consider DPoS algorithms superior to PoW and PoS because of their fast bloc
 
 ## Trusted execution on-chain
 
-A contract is commonly known as a formalisation of a relationship and/or transaction. In common law a contract is understood as a “meeting of minds”. The term smart contract was first used in Nick Szabo’s 1994 article [“Formalizing and securing relationships on public networks”](http://ojphi.org/ojs/index.php/fm/article/view/548/469;%20accessed:%2004/25/17), which referred to the possibility of representing traditional contracts (from common law) in distributed protocols, especially in conjunction with digital transactions, as well as lowering transaction fees. Smart contracts combine rising technical possibilities with insights from business administration.
+A contract is commonly known as a formalisation of a relationship and/or transaction. In common law a contract is understood as a “meeting of minds”. The term smart contract was first used in Nick Szabo’s 1994 article *[Formalizing and securing relationships on public networks](https://firstmonday.org/ojs/index.php/fm/article/view/548/469)*, which referred to the possibility of representing traditional contracts (from common law) in distributed protocols, especially in conjunction with digital transactions, as well as lowering transaction fees. Smart contracts combine rising technical possibilities with insights from business administration.
 
 `youtube: https://youtu.be/pA65zPZCR5M`
 
