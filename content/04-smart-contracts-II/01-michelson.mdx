@@ -84,7 +84,11 @@ Here, we want to give a general overview. In the end, we want to write a pure Mi
 
 Notice, that types are lowercase in Michelson. A data constructor is capitalized(e.g. `True` or `False`) and instructions are uppercase. 
 
-[https://tezos.gitlab.io/master/whitedoc/michelson.html#core-data-types-and-notations](https://tezos.gitlab.io/master/whitedoc/michelson.html#core-data-types-and-notations)
+<HighlightBox type="tip">
+
+Do you want to take a closer look at core data types and notations, check this out: [https://tezos.gitlab.io/master/whitedoc/michelson.html#core-data-types-and-notations](https://tezos.gitlab.io/master/whitedoc/michelson.html#core-data-types-and-notations).
+
+</HighlightBox>
 
 ## Domain specific data types
 
@@ -141,7 +145,12 @@ Notice, that types are lowercase in Michelson. A data constructor is capitalized
 </tbody>
 </table>
 
-[https://tezos.gitlab.io/master/whitedoc/michelson.html#domain-specific-data-types](https://tezos.gitlab.io/master/whitedoc/michelson.html#domain-specific-data-types)
+<HighlightBox type="tip">
+
+For a closer look at domain-specific data types, go
+[here](https://tezos.gitlab.io/master/whitedoc/michelson.html#domain-specific-data-types).
+
+</HighlightBox>
 
 ## Stack Operations
 
@@ -193,7 +202,11 @@ Notice, that types are lowercase in Michelson. A data constructor is capitalized
 </tbody>
 </table>
 
-[https://tezos.gitlab.io/master/whitedoc/michelson.html#stack-operations](https://tezos.gitlab.io/master/whitedoc/michelson.html#stack-operations)
+<HighlightBox type="tip">
+
+For a more detailed account on stack operations, we recommend: [https://tezos.gitlab.io/master/whitedoc/michelson.html#stack-operations](https://tezos.gitlab.io/master/whitedoc/michelson.html#stack-operations).
+
+</HighlightBox>
 
 ## Comparison
 
@@ -234,7 +247,12 @@ The `COMPARE` instruction works for each comparable type. The result will be `0`
 </tbody>
 </table>
 
-[https://tezos.gitlab.io/master/whitedoc/michelson.html#generic-comparison](https://tezos.gitlab.io/master/whitedoc/michelson.html#generic-comparison)
+<HighlightBox type="tip">
+
+For more information on generic comparison:
+[https://tezos.gitlab.io/master/whitedoc/michelson.html#generic-comparison](https://tezos.gitlab.io/master/whitedoc/michelson.html#generic-comparison).
+
+</HighlightBox>
 
 In addition, there are [syntactic sugars](https://tezos.gitlab.io/mainnet/whitedoc/michelson.html#compare) for `COMPARE`.
 
@@ -267,12 +285,15 @@ In addition, there are [syntactic sugars](https://tezos.gitlab.io/mainnet/whited
 </tbody>
 </table>
 
-[https://tezos.gitlab.io/master/whitedoc/michelson.html#operations-on-strings](https://tezos.gitlab.io/master/whitedoc/michelson.html#generic-comparison)
+<HighlightBox type="">
 
+More on operations on strings? Check out: [https://tezos.gitlab.io/master/whitedoc/michelson.html#operations-on-strings](https://tezos.gitlab.io/master/whitedoc/michelson.html#generic-comparison).
+
+</HighlightBox>
 
 ### A smart contract to certify students
 
-Let us write a smart contract using this knowledge. We want to rewrite our certification smart contract with Michelson. 
+Let's write a smart contract using this knowledge. We want to rewrite our certification smart contract with Michelson. 
 
 Create a new file `certify.tz` in the same folder as `alphanet.sh` and paste:
 
@@ -290,7 +311,7 @@ code { DUP;
        PAIR };
 ```
 
-It is important that you understand the stack. Working with Michelson means to work with a stack. What do we do in this part of the code? Let us take a look at the stack:
+It is important that you understand the stack. Working with Michelson means to work with a stack. What do we do in this part of the code? Let's take a look at the stack:
 
 ```
 ./alphanet.sh client typecheck script container:certify.tz -details
@@ -327,7 +348,7 @@ This should give you the output:
          /* [ pair (list operation) (map @certified address bool) ] */ } }
 ```
 
-First let us understand the syntax of the output. We see:
+First, let's understand the syntax of the output. We see:
 
 ```
   code { /* [ pair (address @parameter) (map @storage address bool) ] */
@@ -392,7 +413,7 @@ NIL operation;
 PAIR };
 ```
 
-Let us run test smart contract:
+Let's run test smart contract:
 
 ```
 ./alphanet.sh client run script container:certify.tz on storage '{}' and input '"tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' --trace-stack
@@ -400,7 +421,7 @@ Let us run test smart contract:
 
 You can also deploy the contract and interact with it further. But as you can see, this contract will not check who is issuing a certificate.
 
-Let us change this:
+Let's change this:
 
 ```
 parameter address;
@@ -446,7 +467,7 @@ IF { PUSH string "Only certifier is allowed to certify" ; FAILWITH }
 
 at the beginning. `SENDER` will give us the address of the contract which is calling our contract. We can `COMPARE` it with the certifier in the storage. It will push a zero only if those addresses match. We check this with `NEQ` and if it is not zero, we will abort the transaction with `FAILWITH`. 
 
-Let us do a typecheck:
+Let's do a typecheck:
 
 ```
 ./alphanet.sh client typecheck script container:certify.tz -details
@@ -556,13 +577,13 @@ So if the result of `COMPARE` is equal to zero, we will use `UNIT` to push a pla
 You can also use `{}` as the second branch of `IF`, or put the rest of the code in the second branch as we will do later.
 </HighlightBox>
 
-Now let us test this contract:
+Now, let's test this contract:
 
 ```
 ./alphanet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN
 ```
 
-And let us test it with another `--source` which is not in the `storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"'`:
+And let's test it with another `--source` which is not in the `storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"'`:
 
 ```
 ./alphanet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a
@@ -599,7 +620,7 @@ code { DUP;
 
 Note that you can only have one `big_map` in a contract. This limitation of `big_map` will [probably be dropped in the future](https://blog.nomadic-labs.com/michelson-updates-in-005.html).
 
-Let us deploy this contract. Therefore, first check the address of your accounts/contracts with:
+Let's deploy this contract. Therefore, first check the address of your accounts/contracts with:
 
 ```
 $ ./alphanet.sh client list known addresses
@@ -765,12 +786,18 @@ Michelson will be a new language for most of you. The following list can help yo
   | address
 ```
 
-[https://tezos.gitlab.io/master/whitedoc/michelson.html#full-grammar](https://tezos.gitlab.io/master/whitedoc/michelson.html#full-grammar])
+<HighlightBox type="">
+
+For a closer look at the full grammar of Michelson, go here: [https://tezos.gitlab.io/master/whitedoc/michelson.html#full-grammar](https://tezos.gitlab.io/master/whitedoc/michelson.html#full-grammar]).
+
+</HighlightBox>
 
 <HighlightBox type="reading">
-* [Tezos Developer Documentation] (https://tezos.gitlab.io/alphanet/index.html)
+
+* [Tezos Developer Documentation](https://tezos.gitlab.io/alphanet/index.html)
 * [Michelson documentation](https://tezos.gitlab.io/alphanet/whitedoc/michelson.html)
 * [Michelson Tutorial Series](https://gitlab.com/morley-framework/michelson-tutorial) by camlCase
 * [Michelson presentation](https://youtu.be/4oG4Ead74xA) by Benjamin Canou
 * ["Introduction to Smart Contracts in Tezos"](https://learn.tqgroup.io/files/language.html#faq) by the Tocqueville Group (TQ)
+
 </HighlightBox>

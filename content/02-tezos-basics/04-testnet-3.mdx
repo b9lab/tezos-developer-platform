@@ -36,7 +36,7 @@ Look for `myFirstKey` from the last section and use its address to get the balan
 $ ./edonet.sh client rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
 ```
 
-Now you should see the balance. But where is the JSON we are talking about? Let us add a flag and use the command again:
+Now you should see the balance. But where is the JSON we are talking about? Let's add a flag and use the command again:
 
 ```
 $ ./edonet.sh client -l rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
@@ -65,7 +65,7 @@ if you start the network and with an exposed RPC port:
 ./edonet.sh start --rpc-port 8732
 ```
 
-Let us request the balance again:
+Let's request the balance again:
 
 ```
 curl -s localhost:8732/chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance

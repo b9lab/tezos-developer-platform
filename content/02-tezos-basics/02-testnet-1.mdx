@@ -183,11 +183,11 @@ If you want to express that in terms of a theorem, you would say that:
 
 > there exists a triplet `$(priKey, pubKey, n)$` such that for any `$message$`, we get `$(message ^ {pubKey}) ^ {priKey} \equiv message \mod n$`, with the additional hurdle that calculating `$priKey$` out of `$(pubKey, n)$` is computationally expensive and in practice impossible.
 
-Let us work out in detail how you create such a triplet.
+Let's work out in detail how you create such a triplet.
 
 **How**
 
-How can we calculate such a triplet of `$(pubKey, n)$` and `$priKey$`? Of course, the difficulty and the art was in finding the following solution, and proving it satisfies the theorem above. Let us dive right in.
+How can we calculate such a triplet of `$(pubKey, n)$` and `$priKey$`? Of course, the difficulty and the art was in finding the following solution, and proving it satisfies the theorem above. Let's dive right in!
 
 * First we choose two prime numbers `$p$` and `$q$`. Then we calculate `n` as their product: `$n = p \cdot q$`.
 * Second, we calculate [Euler's totient function](https://en.wikipedia.org/wiki/Euler%27s_totient_function) `$\phi(n)$`. Unfortunately, calculating `$\phi$` in general terms is an NP problem. Fortunately, and this is no accident, if and only if `p` and `q` are prime numbers, then, it turns out that `$$\phi(n) = (p - 1) \cdot (q - 1)$$` .
@@ -204,10 +204,10 @@ Now we can delete `$p$`, `$q$` and `$\phi(n)$`. And delete them we must, as they
 
 **Example**
 
-Let us have a look at an example. 
+Let's have a look at an example. 
 
 * We pick `$p = 2399$` and `$q = 26371$`, which are prime numbers large enough for our demonstration. From them, we deduce that `$n = 63264029$` and `$\phi(n) = 63235260$`.
-* Now, we have to pick a `$pubKey < \phi(n)$` and not a divisor of it. Let us pick `$pubKey = 54833$`.
+* Now, we have to pick a `$pubKey < \phi(n)$` and not a divisor of it. Let's pick `$pubKey = 54833$`.
 * With the help of the [Python implementation](https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm) of the extended Euclidean algorithm, we pass `xgcd(63235260, 54833)`. It returns us a triplet. We only care about the last element of it, i.e. `$priKey = 6589577$`.
 
 ```python
@@ -228,22 +228,22 @@ Type "help", "copyright", "credits" or "license" for more information.
 (1, -5714, 6589577)
 ```
 
-Now we forget about `$p$`, `$q$` and `$\phi(n)$`. Time to put this effort to good use. Let us encrypt the `$message = 9874587$`. Yes, any digital message is essentially a large number. Notice that we took a message that is smaller than `$n$`. That is by design, otherwise we would lose information. We calculate:
+Now we forget about `$p$`, `$q$` and `$\phi(n)$`. Time to put this effort to good use. Let's encrypt the `$message = 9874587$`. Yes, any digital message is essentially a large number. Notice that we took a message that is smaller than `$n$`. That is by design, otherwise we would lose information. We calculate:
 
 `$$9874587 ^ {54833} \equiv 36898107 \mod 63264029$$`
 
 Our encrypted message is thus `$36898107$`. 
 
-You also happen to know the `$priKey$`, so let us decrypt this right away. We calculate the message back:
+You also happen to know the `$priKey$`, so let's decrypt this right away. We calculate the message back:
 `$$36898107 ^ {6589577} \equiv 9874587 \mod 63264029$$`
 
 Yes, our message is, and was, `$9874587$`.
 
 **Why it works**
 
-Let us first introduce Fermat's little theorem. It states that if `$p$` is a prime number then for any number `$a$`, we have `$$a ^ p \equiv a \mod p$$`. If `$a$` is not a multiple of `$p$`, then it can be rewritten as `$$a ^ {p - 1} \equiv 1 \mod p$$`. Our proof will use that knowledge later on.
+Let's first introduce Fermat's little theorem. It states that if `$p$` is a prime number then for any number `$a$`, we have `$$a ^ p \equiv a \mod p$$`. If `$a$` is not a multiple of `$p$`, then it can be rewritten as `$$a ^ {p - 1} \equiv 1 \mod p$$`. Our proof will use that knowledge later on.
 
-Let us rework what we have:
+Let's rework what we have:
 
 `$a \cdot \phi(n) + priKey \cdot pubKey = 1$` means that:
 
@@ -255,7 +255,7 @@ But you will recall that `$\phi(n)$` is itself a product of `$p - 1$` and `$q - 
 
 `$$priKey \cdot pubKey - 1 = h \cdot (p - 1) = k \cdot (q - 1)$$`
 
-With this, let us hop on what we want to prove, encryption followed by decryption works. Let us do just that:
+With this, let's hop on what we want to prove, encryption followed by decryption works. Let's do just that:
 
 `$$(message ^ {pubKey}) ^ {priKey}$$`
 
@@ -267,7 +267,7 @@ Which, again, can be rewritten as:
 
 `$$message \cdot message ^ {pubKey \cdot priKey - 1}$$`
 
-Oh we now recognise this thing we had a few lines above. Let us replace and rewrite as:
+Oh we now recognise this thing we had a few lines above. Let's replace and rewrite as:
 
 `$$message \cdot message ^ {h \cdot (p - 1)}$$`
 
@@ -275,13 +275,13 @@ And algebra class helping out, can be rewritten as:
 
 `$$message \cdot (message ^ {p - 1}) ^ {h}$$`
 
-It looks awfully like something we saw in Fermat's little theorem. Let us first suppose that `$message$` is a multiple of `$p$`, i.e. that `$message \equiv 0 \mod p$`. In that case we can say that `$$message ^ {p \cdot q} \equiv message \mod p$$`. 
+It looks awfully like something we saw in Fermat's little theorem. Let's first suppose that `$message$` is a multiple of `$p$`, i.e. that `$message \equiv 0 \mod p$`. In that case we can say that `$$message ^ {p \cdot q} \equiv message \mod p$$`. 
 
 In other cases, thanks to Fermat's, we have `$message \cdot (message ^ {p -1 }) ^ {h} \equiv message \cdot 1 ^ {h} \equiv message \mod p$`
 
 Now, we can do the same steps but this time with `$k$` and `$q$` in mind: `$message \cdot (message ^ {q -1 }) ^ {k} \equiv message \cdot 1 ^ {k} \equiv message \mod q$`
 
-Let us remember that `$p$` and `$q$` are prime. So for a number to be a multiple of both, it has to be a multiple of their product `$p \cdot q = n$`.
+Let's remember that `$p$` and `$q$` are prime. So for a number to be a multiple of both, it has to be a multiple of their product `$p \cdot q = n$`.
 
 So by mixing these 2 paths, we end up with, `$$(message ^ {pubKey}) ^ {priKey} \equiv message \mod {p \cdot q} \equiv message \mod n$$`. This is what we set out to demonstrate about why RSA works.
 
@@ -292,7 +292,7 @@ Now that we dived into the basics relating to public-key cryptosystems, let's do
 ```sh
 $ ./edonet.sh client gen keys "myFirstKey"
 ```
-Now let us take a look at the balance of the test account we just created:
+Now, let's take a look at the balance of the test account we just created:
 
 ```sh
 $ ./edonet.sh client get balance for myFirstKey
@@ -308,7 +308,7 @@ Zero tez! There is no free lunch. Because we do not even have any tez, we cannot
 
 ## Adding Testnet Tez (XTZ)
 
-Let us get some Edonet tez to work with! The easiest way to get some _Edonet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also give you a brand new wallet (public-private key pair) on the Edonet, which you will have to copy into your node container.
+Let's get some Edonet tez to work with! The easiest way to get some _Edonet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also give you a brand new wallet (public-private key pair) on the Edonet, which you will have to copy into your node container.
 
 <HighlightBox type="info">
 
@@ -316,7 +316,7 @@ Yes, the faucet website created a private key for you and you had to download it
 
 </HighlightBox>
 
-Let us say the file you got is `tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json`. 
+Let's say the file you got is `tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json`. 
 
 How does the content of this file look?
 
@@ -387,7 +387,7 @@ If you want to deploy a contract with this account, make sure your node is sync'
 
 </HighlightBox>
 
-We said that there is a chance that this `faucetWallet` may be compromised, so it is within the realm of the reasonable to _protect_ our tez in a local-only wallet. Let us do that and transfer some tez from `faucetWallet` to our `myFirstKey` account:
+We said that there is a chance that this `faucetWallet` may be compromised, so it is within the realm of the reasonable to _protect_ our tez in a local-only wallet. Let's do that and transfer some tez from `faucetWallet` to our `myFirstKey` account:
 
 ```sh
 $ ./edonet.sh client transfer 1 from faucetWallet to myFirstKey --burn-cap 0.5

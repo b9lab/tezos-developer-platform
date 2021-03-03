@@ -254,17 +254,17 @@ print(my_tuple)   # output (1,2,3,4)
 
 Any object can be tested for truthness, and will return `True` unless:
 
-* It has a `__bool__()` method, which returns `False`
-* It has a `len()` method, which returns 0
-* It is a numeric type with a value of 0
+* It has a `__bool__()` method, which returns `False`;
+* It has a `len()` method, which returns 0;
+* It is a numeric type with a value of 0.
 
 **  - Boolean**
 
 Python supports three boolean operations, in the following priority order:
 
-* and
-* or
-* not
+* and,
+* or,
+* not.
 
 They are similar to `&&` operators in other languages: The second argument is only evaluated if necessary.
 
@@ -637,12 +637,12 @@ triangle1.set_color("red")                                            # (7)
 
 A few remarks:
 
-* (1) We use a list to store the points of the shape. If no points are passed to the constructor, an empty list is created
-* (2) Instead of accessing the members directly from outside, we offer a function `add_point` to add a new point to the list of points
-* (3) A triangle always has three points, therefore we do not want the constructor to take an arbitrary list of points. We could add a parameter for a list with exactly three Points. For simplicity, we just set three default points when creating a new triangle.
-* (4) From the Triangle's constructor, we call the constructor of the base class (`Shape`), to setup the points and color. We are using the Triangle's constructor to predefine values and setup objects in regards to the Triangle, then pass this with the other arguments to the base class. Instead of `super`, we could have used `Shape.__init__()`. **Note** when calling `super`, you do not pass `self`, but you need to do so when calling the `BaseClass()` function.
+* (1) We use a list to store the points of the shape. If no points are passed to the constructor, an empty list is created;
+* (2) Instead of accessing the members directly from outside, we offer a function `add_point` to add a new point to the list of points;
+* (3) A triangle always has three points, therefore we do not want the constructor to take an arbitrary list of points. We could add a parameter for a list with exactly three Points. For simplicity, we just set three default points when creating a new triangle;
+* (4) From the Triangle's constructor, we call the constructor of the base class (`Shape`), to setup the points and color. We are using the Triangle's constructor to predefine values and setup objects in regards to the Triangle, then pass this with the other arguments to the base class. Instead of `super`, we could have used `Shape.__init__()`. **Note** when calling `super`, you do not pass `self`, but you need to do so when calling the `BaseClass()` function;
 * (5+6) We do not want to allow adding points to a triangle, therefore we overwrite the function and print a message when somebody tries to use it. This is for demonstration only, in real life you probably want to throw an error
-* (7) The `set_color` function is not overridden, therefore it will call `Shape.set_color()`
+* (7) The `set_color` function is not overridden, therefore it will call `Shape.set_color()`.
 
 **  - Private variables**
 
@@ -922,7 +922,7 @@ There you see our repeater contract, which we already code and test in Michelson
 <HighlightBox type="tip">
 
 Before you continue, try to change the repeater contract so that a string is given as input.
-Take a look at the Michelson code: What changed? Examine the **TYPES** tab of the output.
+Take a look at the Michelson code: What changed? Examine the `TYPES` tab of the output.
 
 </HighlightBox>
 
@@ -969,11 +969,11 @@ and use access like:
 self.data.storage= params.first + params.second
 ```
 
+Now that we took our first steps with SmartPy, let's continue with a look at typing and conditions in the SmartPy library.
+
 <HighlightBox type="reading">
 <ul>
-<li><a href="https://medium.com/@SmartPy_io/introducing-smartpy-and-smartpy-io-d4013bee7d4e">SmartPy.io: Introducing SmartPy and SmartPy.io, an Intuitive and Effective Language and Development Platform for Tezos Smart Contracts</a></li>
-<li><a href="https://medium.com/@SmartPy_io/a-first-encounter-with-smartpy-70e28bfeed79">SmartPy.io: A First Encounter with SmartPy</a></li>
+<li><a href="https://medium.com/@SmartPy_io/introducing-smartpy-and-smartpy-io-d4013bee7d4e">Introducing SmartPy and SmartPy.io, an Intuitive and Effective Language and Development Platform for Tezos Smart Contracts</a> by SmartPy.io</li>
+<li><a href="https://medium.com/@SmartPy_io/a-first-encounter-with-smartpy-70e28bfeed79">A First Encounter with SmartPy</a> by SmartPy.io</li>
 </ul>
 </HighlightBox>
-
-Now that we took our first steps with SmartPy, let's continue with a look at typing and conditions in the SmartPy library.

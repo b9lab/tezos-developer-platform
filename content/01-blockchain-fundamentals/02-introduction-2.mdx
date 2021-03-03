@@ -36,7 +36,7 @@ Bitcoin and its underlying technology convincingly demonstrate that a network of
 
 Imagine one wants to *retain and monitor changes* to a file, for example, a logfile. Now, imagine one also wants to verify an unbroken history of all changes ever made to the file. How can one proceed? A well-understood solution uses **cryptographic** [**hash functions**](https://en.wikipedia.org/wiki/Cryptographic_hash_function).
 
-Let us briefly introduce the concept of cryptographic hash functions in case you are unfamiliar with them.
+Let's briefly introduce the concept of cryptographic hash functions in case you are unfamiliar with them.
 
 The ideal cryptographic hash function has **five main properties**:
 
@@ -70,7 +70,7 @@ A hash can be used to prove an input exactly matches the original, but the origi
 
 But what about subsequent changes to the file? Suppose we want to demonstrate that a series of changes is authentic, complete and in the correct order?
 
-Let us suppose that we will only append new entries to the end of the file. How can a hash function help us be certain that a series of entries is the unbroken chain of inputs?
+Let's suppose that we will only append new entries to the end of the file. How can a hash function help us be certain that a series of entries is the unbroken chain of inputs?
 
 We can make a rule that states that in addition to the new content, the previous hash will also be an input of the next hash.
 
@@ -120,7 +120,7 @@ Remember, individual transactions are sent to the network from individual nodes.
 
 Blockchains use a process called **consensus algorithm**. The process disambiguates the order of the transactions even though well-meaning nodes independently arrive at slightly different opinions about the matter. The process does so **without reliance on an authoritative time source**.
 
-Let us look at a selection of the most popular consensus algorithms.
+Let's look at a selection of the most popular consensus algorithms.
 
 **Practical Byzantine Fault Tolerance (PBFT)**
 

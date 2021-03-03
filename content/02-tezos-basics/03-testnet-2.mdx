@@ -107,7 +107,7 @@ Gas remaining: 1039996.720 units remaining
 
 So it starts with one element `[ pair (int @parameter) (int @storage) ]` in the stack and ends with one element `pair (list operation) (int @parameter)`. Each element in the stack is separated by `:`. Take your time to compare this output with the image.
 
-Satisfied with this exhaustive battery of tests, let us deploy this contract:
+Satisfied with this exhaustive battery of tests, let's deploy this contract:
 
 ```sh
 $ ./edonet.sh client originate contract repeater for myFirstKey transferring 0.1 from myFirstKey running container:repeater.tz --init 0 --burn-cap 0.295
