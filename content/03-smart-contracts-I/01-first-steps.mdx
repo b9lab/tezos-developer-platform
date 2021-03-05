@@ -137,7 +137,7 @@ Using the `bytes()` constructor, you can also an empty bytes sequence with a fix
 **Be aware!**
 When creating a byte sequence from a string literal, each character must be in the standard ASCII characterset (x &lt;= 127). Values above 127 must be entered using an espace sequence. When creating from ints, they accepts numbers &lt; 256.
 
-*Bytearrays* are exactly like the previous bytes, with one difference: They are mutable. They can also be created using the constructor from the same objects as the bytes sequence, eg:
+*Bytearrays* are exactly like the previous bytes, with one difference: They are mutable. They can also be created using the constructor from the same objects as the bytes sequence, e.g.:
 
 ```python
 my_byte_array = bytearray(b'This is a literal')
@@ -145,6 +145,7 @@ my_byte_array = bytearray(b'This is a literal')
 
 **Be aware!**
 <code class='hljs hl-inline'>bytes()</code> and <code class='hljs hl-inline'>bytearray()</code> do not accept a string, but only a binary string as parameter. This is also true for their methods.
+
 
 **  - Sequence**
 
@@ -213,12 +214,11 @@ my_frozenset = frozenset(range(10))
 my_set = {1,2,3,4,5,6}
 ```
 
-
 **Mutability**
 
 **Mutability** is the ability of an object to be changed after creation. In the previously introduced datatypes for Sets, we saw that a `set` is mutable, while a `frozenset` is not. Actually, most datatypes in Python are immutable, except for `dict`, `list`, `set` and `bytearray`. All basic types (including numbers) are immutable.
 
-![Mutability image](images/data-mutability.png)
+![Mutability and immutability](images/data-mutability.png)
 
 Do not mix up mutability with assignment. We can not change an int, but we can create and assign a *new object instance*:
 
@@ -227,7 +227,7 @@ x = 5
 x = 7
 ```
 
-could be read as
+could be read as:
 
 ```python
 x = int(5)
@@ -291,8 +291,8 @@ Available bitwise operators:
 
 Next to an assignment using `=`, Python also supports the shortcut operators `+=, -=, *=, /= and %=`, as well as shortcut assignments for all bitwise operators. Furthermore, you can use:
 
-* `**=` for an exponential calculation
-* `//=` for a floor division
+* `**=` for an exponential calculation, and
+* `//=` for a floor division.
 
 **  - Membership**
 
@@ -495,13 +495,12 @@ There are a few more features for functions in Python (annotations, anonymous fu
 
 It is also possible to return multiple values, by wrapping them in one object:
 
-* When using a class (see below), you can wrap the result in membervariables of the class and return the whole class
-* Return in a tuple `return (a,b,c)`, a list `return [a, b, c]` or a dict `return {'a': a, 'b': b}`
-
+* When using a class (see below), you can wrap the result in membervariables of the class and return the whole class;
+* Return in a tuple `return (a,b,c)`, a list `return [a, b, c]` or a dict `return {'a': a, 'b': b}`.
 
 **Classes**
 
-Classes! You have come a long way, now we can finally have some fun.
+Classes: You have come a long way, now we can finally have some fun!
 
 Classes define class objects, that means they are a blueprint for object instances (as in all other languages). They can have member variables and member functions. Python also supports inheritance. And if you want to go crazy, you can use [Metaclasses](https://docs.python.org/3/reference/datamodel.html#metaclasses) to create and change new classes in runtime. But let's start with the basics:
 
@@ -530,8 +529,9 @@ Member functions are added the same way as defining them on File level, by using
 **  - Constructor**
 
 In the second line, you can see the class constructor `def __init__(self, x=0, y=0):`. This has a few specialities:
-* The constructor name must be `__init__`
-* The first parameter must always be `self`
+
+* The constructor name must be `__init__`;
+* The first parameter must always be `self`;
 * You don't have to declare member variables before using them, but you must access them with `self.`, which points to the class instance.
 
 We use a default parameter value for x and y, to make it optional to set an initial position. It is convention to start a classname with an uppercase letter, to easliy distinguish them from instances or other variables in the code.
@@ -588,17 +588,18 @@ It is also possible to inherit multiple classes: `class DerivedClass(BaseClass, 
 
 A BaseClass can also be derived from another BaseClass (inheritance chain). When overwriting methods, the **method resolution order** becomes important to determine which function is called. The order with multiple inherited classes is:
 
-* First look in the DerivedClass for the method
-* If not found, recursively go through the BaseClass (and it's BaseClass)
-* If not found, start with the next inherited class (`BaseClass2`) and go through it recursively
+* First look in the DerivedClass for the method;
+* If not found, recursively go through the BaseClass (and it's BaseClass);
+* If not found, start with the next inherited class (`BaseClass2`) and go through it recursively.
 
 This allows for complex inheritance structures (like diamonds), where Python is able to optimize call paths. You can find more on this in the document on [Method Resolution Order](https://www.python.org/download/releases/2.3/mro/).
 
 **  - super() and other calls to parent**
 
 When inheriting a class in Python, you can access the functions of the base class through two ways:
-* `super().function_name` is used to call a function in all base classes, without knowing the class name.
-* When you know the class name (or want to access a specific function), you can also directy call it using `BaseClass.function_name()`
+
+* `super().function_name` is used to call a function in all base classes, without knowing the class name;
+* When you know the class name (or want to access a specific function), you can also directy call it using `BaseClass.function_name()`.
 
 Let's take a look at a quick sample. We will reuse our existing `Point` class (not listed again in the following code) and create a `Shape` class, from which we derive a `Triangle` class.
 
@@ -641,7 +642,7 @@ A few remarks:
 * (2) Instead of accessing the members directly from outside, we offer a function `add_point` to add a new point to the list of points;
 * (3) A triangle always has three points, therefore we do not want the constructor to take an arbitrary list of points. We could add a parameter for a list with exactly three Points. For simplicity, we just set three default points when creating a new triangle;
 * (4) From the Triangle's constructor, we call the constructor of the base class (`Shape`), to setup the points and color. We are using the Triangle's constructor to predefine values and setup objects in regards to the Triangle, then pass this with the other arguments to the base class. Instead of `super`, we could have used `Shape.__init__()`. **Note** when calling `super`, you do not pass `self`, but you need to do so when calling the `BaseClass()` function;
-* (5+6) We do not want to allow adding points to a triangle, therefore we overwrite the function and print a message when somebody tries to use it. This is for demonstration only, in real life you probably want to throw an error
+* (5+6) We do not want to allow adding points to a triangle, therefore we overwrite the function and print a message when somebody tries to use it. This is for demonstration only, in real life you probably want to throw an error;
 * (7) The `set_color` function is not overridden, therefore it will call `Shape.set_color()`.
 
 **  - Private variables**
@@ -736,7 +737,7 @@ We will mainly deal with the Python library of SmartPy.
 
 The **SmartPy library**  is used to access **SmartML** definitions; We can get a **SmartML** piece from a **SmartPy** piece. SmartPy offers a **compiler** to translate **SmartML** to **Michelson**.
 
-![](images/smartml.png)
+![SmartPy - Smart ML - Michelson](images/smartml.png)
 
 ## SmartPy Editor
 

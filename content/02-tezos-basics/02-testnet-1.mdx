@@ -37,11 +37,11 @@ Docker offers so-called "software containers" to execute applications. "Containe
 
 **Dockerfiles** are blueprints for creating **Docker Images**, which are used to start **containers**. You can find public images on [Docker Hub](https://hub.docker.com/). 
 
-<HighlightBox type="tip">
+<ExpansionPanel title="Setting up your VM">
 
 If you use Windows on your host, we strongly recommend you use a VM to first establish a workspace based on Ubuntu Linux. 
 
-</HighlightBox>
+Check out these step-by-steps:
 
 `youtube: https://youtu.be/RacKewhRAD4`
 
@@ -49,11 +49,13 @@ If you use Windows on your host, we strongly recommend you use a VM to first est
 
 `youtube: https://youtu.be/yEJBH1UPMfE`
 
+</ExpansionPanel>
+
 ## First steps
 
-We will begin our Tezos development on the Edonet. 
+We will begin our Tezos development on **Edonet**.
 
-<HighlightBox type="info">
+<HighlightBox type="tip">
 
 Make sure you have installed [Docker](https://www.docker.com/get-started)!
 
@@ -141,23 +143,23 @@ Public-private keys always come in pairs and offer various capabilities. Those c
 
 Alice wants to send a message to Bob, and for Bob's eyes only:
 
-* Bob gives Alice his public key
-* Alice uses Bob's public key to encrypt the message
-* Alice sends Bob the encrypted message
-* Bob decrypts the message with his private key
+* Bob gives Alice his public key;
+* Alice uses Bob's public key to encrypt the message;
+* Alice sends Bob the encrypted message;
+* Bob decrypts the message with his private key.
 
-![](images/keys-001.png)
+![Encrypt and decrypt with key pairs](images/keys-001.png)
 
 #### Sign and verify
 
 Alice wants to make sure that Bob's public announcement is indeed from Bob:
 
-* Bob gives Alice his public key
-* Bob signs his announcement with his private key
-* Bob sends Alice his announcement and its signature
-* Alice verifies the signature with Bob's public key
+* Bob gives Alice his public key;
+* Bob signs his announcement with his private key;
+* Bob sends Alice his announcement and its signature;
+* Alice verifies the signature with Bob's public key.
 
-![](images/keys-002.png)
+![Sign and verify with key pair](images/keys-002.png)
 
 ### Key management, PKI
 
@@ -192,13 +194,15 @@ How can we calculate such a triplet of `$(pubKey, n)$` and `$priKey$`? Of course
 * First we choose two prime numbers `$p$` and `$q$`. Then we calculate `n` as their product: `$n = p \cdot q$`.
 * Second, we calculate [Euler's totient function](https://en.wikipedia.org/wiki/Euler%27s_totient_function) `$\phi(n)$`. Unfortunately, calculating `$\phi$` in general terms is an NP problem. Fortunately, and this is no accident, if and only if `p` and `q` are prime numbers, then, it turns out that `$$\phi(n) = (p - 1) \cdot (q - 1)$$` .
 * Now we can use a random `$pubKey$`, that satisfies the following 2 conditions:
-    * it is [coprime](https://en.wikipedia.org/wiki/Coprime_integers) with `$\phi(n)$`
+    * it is [coprime](https://en.wikipedia.org/wiki/Coprime_integers) with `$\phi(n)$`;
     * it is smaller than `$\phi(n)$`.
 * From there, calculating the `$priKey$` means calculating a `$priKey$` that satisfies the following equation:
 
 `$$a \cdot \phi(n) + priKey \cdot pubKey = 1$$`
 
-where we can use the [extended Euclidean algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm) to get `$priKey$`. You will notice that in this algorithm the part on the right: `$= 1$` is actually `$= gcd(phi(n), pubKey)$`. [gcd](https://en.wikipedia.org/wiki/Greatest_common_divisor) is the greatest common divisor.
+where we can use the [extended Euclidean algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm) to get `$priKey$`.
+
+You will notice that in this algorithm the part on the right: `$= 1$` is actually `$= gcd(phi(n), pubKey)$`. [gcd](https://en.wikipedia.org/wiki/Greatest_common_divisor) is the greatest common divisor.
 
 Now we can delete `$p$`, `$q$` and `$\phi(n)$`. And delete them we must, as they could otherwise be used to crack the private key.
 
@@ -249,7 +253,7 @@ Let's rework what we have:
 
 `$$priKey \cdot pubKey \equiv 1 \mod \phi(n)$$`
 
-So `$priKey \cdot pubKey - 1$` is a multiple of `$\phi(n)$`.
+So, `$priKey \cdot pubKey - 1$` is a multiple of `$\phi(n)$`.
 
 But you will recall that `$\phi(n)$` is itself a product of `$p - 1$` and `$q - 1$`. It follows that `$priKey \cdot pubKey - 1$` is a multiple of `$p - 1$` and is also a multiple of `$q - 1$`. For our purposes, and to express these multiples, we will introduce `$h$` and `$k$` such that:
 

@@ -26,7 +26,7 @@ In the current financial system, double-spending is avoided by the involvement o
 
 At a high level, Bitcoin solves the double-spending problem by replacing the trusted central ledger-keepers with a decentralised and distributed network of ledger-keepers. Each member of the network has an exact replica of the ledger. In addition, no one can update the ledger without the consensus of all other ledger-keepers to approve the changes.
 
-![](images/doublespendingproblem3.png)
+![The double-spending problem](images/doublespendingproblem3.png)
 
 It is as though each transaction is observed by a **large crowd of witnesses** who reach consensus about proposed changes. The crowd prohibits events that should not occur, such as spending the same funds twice (i.e. double-spending).
 
@@ -84,7 +84,7 @@ This way, one can examine *candidate* changes, as well as confirm that the previ
 
 Any departure from the system, e.g. a hash does not compute as expected, proves a break in the history and is therefore invalid. 
 
-![](images/blockchainintro.png)
+![The chain of blocks](images/blockchainintro.png)
 
 Interestingly, since knowledge of the current hash of the latest valid version is an input to the next version's hash function, it is not possible to generate a new valid version without knowledge of the valid version that precedes it. This process forces changes to be **appended** to a previous valid version.
 
@@ -93,7 +93,7 @@ Blockchains function in similar ways. Blocks of transactions, logical unites wra
 There are some important constraints to keep in mind when talking about transaction ordering in distributed networks:
 
 * **Everyone** has a little bit of **authority**, i.e. there is **no central authority**;
-* **A blockchain is a distributed timestamp server without a central network time**;
+* A blockchain is a **distributed timestamp server without a central network time**;
 * Because of **physics and network latency**, every node will learn about transaction proposals in a slightly different order and each node will arrive at a slightly different opinion about the ordering of transactions.
 
 Cryptographic hash functions are instrumental in that they empower all participants to ensure that they possess an undistorted history of everything. Since all nodes can verify the chain independently, they can proceed on the assumption that all other nodes will eventually come into agreement about the history of everything. This is known as **eventual consensus**.
@@ -104,7 +104,7 @@ Although there is no obvious way to settle it, **transaction order must be resol
 
 Solving the double-spending problem with the help of hashes to ensure an immutable ledger was not the only problem technology innovators faced in distributed computing: the agreed transaction list has to be identified and consensus on the correct order of transactions has to be reached in a hierarchy-free, permission-less and failure-prone network.
 
-Let's take a closer look at consensus in blockchain.
+Let's take a closer look at consensus in blockchain!
 
 ### Consensus and decentralised networks
 
@@ -112,7 +112,7 @@ In a distributed network without authorities, we need a process to reach consens
 
 In the traditional description of the problem, generals, whose armies are spread around a target city, need to reach consensus on a time to attack. To achieve this, they can only rely on **unsecured communication channels**, whereby, for instance, a lack of acknowledgement can either be caused by a failure to deliver a message, by a dead general or by a failure to deliver the acknowledgment.
 
-![Byzantine General's Problem](images/generals.png)
+![The Byzantine General's Problem](images/generals.png)
 
 Similar to the generals who must decide when to attack, in a distributed ledger the agreed transaction list has to be identified and consensus on the correct order of transactions has to be reached.
 
@@ -168,13 +168,13 @@ At the time of writing (February 2021), there are [over 400 participants in Tezo
 
 </HighlightBox>
 
-**Delegates-Proof-of-Stake (DPoS)**
+**Delegated-Proof-of-Stake (DPoS)**
 
 An extension of proof-of-stake algorithms is called **Delegated-Proof-of-Stake (DPoS)**. The algorithm is called DPoS because like in PoS the value of a vote is determined by the stake. However, in DPoS systems, there is a fixed validator set.
 
 In this type of consensus mechanism, so-called **"witnesses"** are elected by the stakeholders of the network. Witnesses secure the network. Afterwards, several witnesses are chosen for the block creation so that they represent at least 50% of the stakeholders' votes.
 
-![DPoS](images/delegated-proof-of-stake.png)
+![Delegated-Proof-of-Stake](images/delegated-proof-of-stake.png)
 
 Witnesses are paid for their services: They are paid fees for creating and validating blocks. This economic incentive to become a witness also leads to competition potentially increasing with each new member because the number of witnesses is limited. In case a witness misbehaves, the network's community is able to withdraw their votes for a single witness, i.e. fire the witness. Witnesses that no longer hold enough votes lose their income basis.
 

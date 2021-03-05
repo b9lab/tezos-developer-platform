@@ -8,7 +8,7 @@ import HighlightBox from "../../src/components/HighlightBox"
 
 # Michelson
 
-We already talked about Michelson in the second module, and you have come in contact with it when you took a look at the compiled code. But we did not dive deeper, and just wrote a simple repeater contract.
+We already talked about Michelson, and you have come in contact with it when you took a look at the compiled code. But we did not dive deeper, and just wrote a simple repeater contract.
 
 Here, we want to give a general overview. In the end, we want to write a pure Michelson code to have a more complex example of the language.
 
@@ -287,7 +287,7 @@ In addition, there are [syntactic sugars](https://tezos.gitlab.io/mainnet/whited
 </tbody>
 </table>
 
-<HighlightBox type="">
+<HighlightBox type="info">
 
 More on operations on strings? Check out: [https://tezos.gitlab.io/master/whitedoc/michelson.html#operations-on-strings](https://tezos.gitlab.io/master/whitedoc/michelson.html#generic-comparison).
 
@@ -576,7 +576,9 @@ DROP
 So if the result of `COMPARE` is equal to zero, we will use `UNIT` to push a placeholder into the stack. Then we will `DROP` it. We do so because `IF` needs two arguments.
 
 <HighlightBox type="tip">
-You can also use `{}` as the second branch of `IF`, or put the rest of the code in the second branch as we will do later.
+
+You can also use `{}` as the second branch of `IF`, or put the rest of the code in the second branch, as we will do later.
+
 </HighlightBox>
 
 Now, let's test this contract:
@@ -790,7 +792,7 @@ Michelson will be a new language for most of you. The following list can help yo
 
 <HighlightBox type="tip">
 
-For a closer look at the full grammar of Michelson, go here: [https://tezos.gitlab.io/master/whitedoc/michelson.html#full-grammar](https://tezos.gitlab.io/master/whitedoc/michelson.html#full-grammar]).
+For a closer look at the full grammar of Michelson, go [here](https://tezos.gitlab.io/master/whitedoc/michelson.html#full-grammar]).
 
 </HighlightBox>
 

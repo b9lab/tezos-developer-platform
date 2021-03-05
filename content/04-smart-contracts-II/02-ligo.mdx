@@ -10,11 +10,10 @@ In this section, we want to give you a quick introduction into [OCaml](https://e
 
 You should take a look at OCaml nevertheless for multiple reasons:
 
-* The [reference implementation](https://gitlab.com/tezos/tezos/tree/master/src) of the Tezos components is written in OCaml.
-* It is easier to illustrate some concepts in OCaml, which are also present in Michelson or LIGO.
+* the [reference implementation](https://gitlab.com/tezos/tezos/tree/master/src) of the Tezos components is written in OCaml, and
+* it is easier to illustrate some concepts in OCaml, which are also present in Michelson or LIGO.
 
 In the next section, we will take a closer look at Michelson. This will help you understand how SmartPy and LIGO work. As many tools still have incomplete documentation, this knowledge will greatly help you to guess and understand the feature implementation of such.
-
 
 # OCaml
 
@@ -24,7 +23,7 @@ We don't want to look at objects and loops here, instead we will learn the synta
 
 To get started, please [install](https://ocaml.org/docs/install.html) OCaml on your machine.
 
-<div class="b9-warning">
+<HighlightBox type="warning">
 Please read the install instructions carefully. The recommended way to install OCaml is using opam, which is a package manager for OCaml. We also recommend using opam.
 **Windows users with WSL** are out of luck this time: opam will not run properly in WSL, because it does not support bubblewrap. There is a workaround (by disabling sandboxing), which is **not recommended**. You can install OCaml directly with apt instead, or use a full vm.
 </div>
@@ -103,9 +102,11 @@ Hello world!
 
 You can quit the OCaml session with `#quit;;`(here, the symbol `#` **needs to be written out**). You can also use <kbd>CTRL-D</kbd> to quit.
 
-<div class="b9-tip">
-We strongly recommend trying out the tool [utop](https://github.com/ocaml-community/utop). It is a very good toplevel for OCaml (REPL). Try it out, you will see the difference to `ocaml` immediately.
-</div>
+<HighlightBox type="tip">
+
+We strongly recommend trying out the tool [utop](https://github.com/ocaml-community/utop). It is a very good top-level for OCaml (REPL). Try it out, you will see the difference to `ocaml` immediately.
+
+</HighlightBox>
 
 ## Types
 
@@ -134,7 +135,7 @@ val x : int = 42
 ```
 
 We use the keyword `let` again. It can do more, but used like this, it is a global definition. *We bind the value 42 to the name x*. Here, we explicitly declare the type of `x`
-Integer support the operations `+`, `-`, `*`, `/` and `mod`.
+integer support the operations `+`, `-`, `*`, `/` and `mod`.
 
 ```
 # let y= -x*2/3 mod 3 + x;;
@@ -435,9 +436,8 @@ By the way, the expression:
 # let add = fun a b -> a + b;;
 ```
 ​
-and
+and:
 ​
-
 ```ocaml
 let add a b = a + b;;
 ```
@@ -599,7 +599,7 @@ let myTuple = ("hello",2);;
 ​
 When using Tuples and Lists, we cannot access arbitrary elements. Using `fst`, we can get the first element, and using `snd` you can get the second element.
 
-Let us define a function, which receives a tuple with two elements and interchanges them:
+Let's define a function, which receives a tuple with two elements and interchanges them:
 
 
 ```ocaml
@@ -611,7 +611,7 @@ val swap : 'a * 'b -> 'b * 'a = <fun>
 
 ### User defined types
 
-With the keyword `type` we can define own types. Let us take a look at a simple example:
+With the keyword `type` we can define own types. Let's take a look at a simple example:
 
 ```
 # type storage=int;;
@@ -634,7 +634,7 @@ val p : person = {name = "foo"; age = 20; address = "bar"}
 
 ### Variant types
 
-Ok, so OCaml is strongly typed, yet it allows you some flexibility. By flexibility, we mean that you could have a variable that is, for instance, either an `int` or a `string`. It is called a [variant type](https://en.wikipedia.org/wiki/Variant_type). To help you grasp the concept if it is new, let us use a contrived Java analogy.
+Ok, so OCaml is strongly typed, yet it allows you some flexibility. By flexibility, we mean that you could have a variable that is, for instance, either an `int` or a `string`. It is called a [variant type](https://en.wikipedia.org/wiki/Variant_type). To help you grasp the concept if it is new, let's use a contrived Java analogy.
 
 ```java
 public class EitherIntOrString {
@@ -762,10 +762,9 @@ As there are already some very good resources available online for free about OC
 
 And much more - including many samples - can be found on these pages:
 
-* [Developing Applications With OCaml](https://caml.inria.fr/pub/docs/oreilly-book/html/index.html) by Chailloux, Manoury, Pagano - O'Reilly
-* [OCaml Code Examples page](https://ocaml.org/learn/taste.html)
-* [OCaml for the Skeptical](https://www2.lib.uchicago.edu/keith/ocaml-class/) by Keith Waclena, pointing to many further resources
-
+* _[Developing Applications With OCaml](https://caml.inria.fr/pub/docs/oreilly-book/html/index.html)_ by Chailloux, Manoury, Pagano
+* _[OCaml Code Examples page](https://ocaml.org/learn/taste.html)_
+* _[OCaml for the Skeptical](https://www2.lib.uchicago.edu/keith/ocaml-class/)_ by Keith Waclena, pointing to many further resources.
 
 # LIGO
 
@@ -784,7 +783,7 @@ Although other syntaxes will be supported in the future, here we want to introdu
 ## CameLIGO
 
 Along the way we have gained experience with smart contracts and OCaml. This will make it easier for us to engage with CameLIGO.
-Before diving into details, let us again write our prominent **repeater** contract.
+Before diving into details, let's again write our prominent **repeater** contract.
 
 Create `repeater.mligo`:
 
@@ -800,7 +799,7 @@ It looks very similar to OCaml with the difference being that, momentarily, we h
 * even though we named our input storage instance `storageIn`, we do nothing with it, so it could have been left as `_`,
 * the value is a tuple `([], arg)`, whereas `[]` is of the type `operation list`.
 
-Let us do a very quick test with the [online editor](https://ide.ligolang.org/):
+Let's do a very quick test with the [online editor](https://ide.ligolang.org/):
 
 ![](images/repeateride.png)
 
@@ -872,7 +871,7 @@ This will create a namespace mapping addresses to balances in tez.
 ## The smart contract to certify students
 
 We want to start with an example that we already know from SmartPy and Michelson, the student certification contract.
-Let us begin by defining a student:
+Let's begin by defining a student:
 
 ```ocaml
 type student = {
@@ -921,9 +920,9 @@ We now can compile the code and get the Michelson output:
 { parameter string ; storage (pair (address %certifier) (list %students (pair (bool %certificate) (string %name)))) ; code { UNPAIR ; SENDER ; DIG 2 ; DUP ; DUG 3 ; CAR ; SWAP ; COMPARE ; EQ ; IF { SWAP ; DUP ; DUG 2 ; CDR ; SWAP ; PUSH bool True ; PAIR ; CONS ; SWAP ; CAR ; PAIR ; NIL operation ; PAIR } { DROP ; NIL operation ; PAIR } } }
 ```
 
-You can store this Michelson code and deploy it with the help of the `tezos-client`, as we have done before; e.g using `--init 'Pair {} "tz1W4W2yFAHz7iGyQvFys4K7Df9mZL6cSKCp"'`.
+You can store this Michelson code and deploy it with the help of the `tezos-client`, as we have done before; e.g. using `--init 'Pair {} "tz1W4W2yFAHz7iGyQvFys4K7Df9mZL6cSKCp"'`.
 
-Let us take a look at the example at [https://ligolang.org/](https://ligolang.org/):
+Let's take a look at the example at [https://ligolang.org/](https://ligolang.org/):
 
 ```ocaml
 type storage = int
@@ -953,13 +952,15 @@ You have been using multiple entry points already. When using LIGO, this [altern
 
 ## PascaLIGO
 
-[Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)) is a realatively beginner friendly language and has many keywords. For this reason, a pascal-like syntax should help with writing smart contracts that are easier to read and understand.
+[Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)) is a relatively beginner friendly language and has many keywords. For this reason, a pascal-like syntax should help with writing smart contracts that are easier to read and understand.
 
-<div class="b9-tip">
+<HighlightBox type="tip">
+
 LIGO offers a [VSCode extension](https://ligolang.org/docs/intro/editor-support).
-</div>
 
-Let us start with the repeater contract again:
+</HighlightBox>
+
+Let's start with the repeater contract again:
 
 ```pascal
 function main (const arg : int;  const storageIn : int) : (list(operation) * int) is
@@ -982,7 +983,7 @@ For definitions, [similar to pascal](https://ligolang.org/docs/language-basics/f
 - `block {skip}` when we don't want to calculate anything
 - `with ((nil : list(operation)), arg)` to return a the tuple together with the new input.
 
-We define variables with `const`(*imutable*) and `var`(*Mutable*), where `var` can only be used inside functions or blocks.
+We define variables with `const`(*immutable*) and `var`(*mutable*), where `var` can only be used inside functions or blocks.
 
 So, how would our certification contract for the students looks like?
 
@@ -1025,9 +1026,11 @@ type certStorage is record
 end
 ```
 
-<div class="b9-info">
+<HighlightBox type="info">
+
 Take a look at the [types section](https://ligolang.org/docs/next/language-basics/types/) in the LIGO documentation.
-</div>
+
+</HighlightBox>
 
 Afterwards, we define our entry point with the right input and output parameter types:
 
@@ -1042,9 +1045,11 @@ if sender =/= oldState.certifier then fail("Only certifier can call this functio
   else skip;
 ```
 
-<div class="b9-tip">
+<HighlightBox type="tip">
+
 Take a look at the [available operators](https://ligolang.org/docs/language-basics/types) in the LIGO documentation.
-</div>
+
+</HighlightBox>
 
 After that, we define a new student:
 
@@ -1077,9 +1082,11 @@ to finally store this new state:
 end with ((nil : list(operation)), newState)
 ```
 
-<div class="b9-reading">
+<HighlightBox type="reading">
+
 - [Taco shop smart-contract](https://ligolang.org/docs/tutorials/get-started/tezos-taco-shop-smart-contract/) tutorial by LIGO
 - LIGO [blog](https://ligolang.org/blog/) with updates.
 - LIGO [philosophy, design and roadmap](https://ligolang.org/docs/contributors/origin/)
 - [Beginner's Guide to Tezos Smart Contracts with LIGO](https://www.youtube.com/watch?v=Ozf250c52AI) by Matej Sima
-</div>
+
+</HighlightBox>
