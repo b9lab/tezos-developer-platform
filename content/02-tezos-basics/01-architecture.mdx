@@ -1,12 +1,10 @@
 ---
-title: Tezos Architecture
+title: Tezos Architecture Overview
 description: A quick overview
 slug: /tezos-basics/architecture
 ---
 
 import HighlightBox from "../../src/components/HighlightBox"
-
-## Tezos Architecture Overview
 
 To understand the architecture of the Tezos platform, one needs to comprehend the function of:
 
@@ -57,7 +55,7 @@ The accuser is a daemon that monitors all blocks received. It looks for two indi
 
 Such irregularities trigger double-baking and double-endorsing operations that cause the offender to lose a portion of its stake (i.e. a security deposit).
 
-## The peer-to-peer layer
+## The P2P layer
 
 The node instantiates the P2P layer which is parameterised by the type of messages exchanged over the network (to support different P2P protocol versions and extensions) and the type of metadata for each peer. The metadata is used to compute a score for each peer that reflects the level of trust in the nodes. Policies can control communication between the node and peers based on the different scores (levels of trust) in those peers.
 

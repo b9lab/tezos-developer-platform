@@ -4,7 +4,7 @@ description: LIGO
 slug: /ligo
 ---
 
-# Introduction
+import HighlightBox from "../../src/components/HighlightBox"
 
 In this section, we want to give you a quick introduction into [OCaml](https://en.wikipedia.org/wiki/OCaml). At the end of this section, you will find a list with further resources to continue learning, or strengthen your knowledge.
 
@@ -15,7 +15,7 @@ You should take a look at OCaml nevertheless for multiple reasons:
 
 In the next section, we will take a closer look at Michelson. This will help you understand how SmartPy and LIGO work. As many tools still have incomplete documentation, this knowledge will greatly help you to guess and understand the feature implementation of such.
 
-# OCaml
+## OCaml
 
 With OCaml, you can use [functional](https://en.wikipedia.org/wiki/Functional_programming), [imperative](https://en.wikipedia.org/wiki/Imperative_programming) or [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) programming.
 
@@ -279,7 +279,7 @@ val name : string = "Ibo Sy"
 
 Wow, what a short name. To concatenate string, we use the `^` operator.
 
-## Optional Values
+## Optional values
 
 There is a so-called `option` type in OCaml. It can either have the value `None` or `Some`, and comes in handy in certain cases to ensure the type security. 
 
@@ -533,7 +533,7 @@ This means, we must make sure the types are matching by adding an else statement
 `if` are expressions as well and can be nested.
 ​
 ​
-### Lists and Tuples
+### Lists and tuples
 ​
 `list` and `tuple` are immutable so all modifying actions on them return a new instance.
 ​
