@@ -114,7 +114,7 @@ We strongly recommend trying out the tool [utop](https://github.com/ocaml-commun
 
 </HighlightBox>
 
-## Types
+**Types**
 
 OCaml uses [static typing](https://en.wikipedia.org/wiki/Type_system#Static_type_checking) and type inference to decide on the types, so we don't have to care about it much. Still, sometimes we have to indicate the type we want to use explicitly. If we use the `ocaml` top-level, OCaml will tell us the detected type.
 
@@ -131,7 +131,7 @@ string      A string
 unit        Written as ()
 ```
 
-### Integers
+**  - Integers**
 
 Let's define a number `x`:
 
@@ -150,7 +150,7 @@ val y : int = 41
 
 Note that the interpreter shows us the right datatype, without us declaring it explicitly.
 
-## Float 
+**Float**
 
 ```
 # let x = 42.0;;
@@ -216,7 +216,7 @@ Last but not least, `float` also has a power operator:
 - : float = 256.
 ```
 
-## Booleans
+**Booleans**
 
 As mentioned before, booleans can assume the value `true` or `false`:
 
@@ -254,7 +254,7 @@ For `char` the ASCII order applies:
 
 For `string` the [lexicographical_order](https://en.wikipedia.org/wiki/Lexicographical_order) is used.
 
-## Char
+**Char**
 
 Characters are enclosed in single quotes:
 
@@ -268,7 +268,7 @@ val c3 : char = '"'
 # 
 ```
 
-## String
+**String**
 
 We already encountered a string in our first program. Here is another example:
 
@@ -285,7 +285,7 @@ val name : string = "Ibo Sy"
 
 Wow, what a short name. To concatenate string, we use the `^` operator.
 
-## Optional values
+**Optional values**
 
 There is a so-called `option` type in OCaml. It can either have the value `None` or `Some`, and comes in handy in certain cases to ensure the type security. 
 
@@ -309,7 +309,7 @@ val div : int -> int -> int option = <fun>
 - : int option = Some 2
 ```
 
-## Let
+**Let**
 
 Now we have learned enough data types to do something more interesting. 
 Let's talk about `let` again: So far, we used it in a way which is a [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar).
@@ -379,7 +379,7 @@ Warning 26: unused variable x.
 ​
 This is called *shadowing*; we bind `x` again, and only this last binding is visible.
 ​
-## Functions
+**Functions**
 ​
 We can define functions with `fun`:
 ​
@@ -501,7 +501,7 @@ Or as mentioned before, we can use `function`:
 val fib : int -> int = <fun>
 ```
 
-## If statement
+**If statement**
 ​
 We also used `if` and `else` before. The full syntax is:
 ​
@@ -539,7 +539,7 @@ This means, we must make sure the types are matching by adding an else statement
 `if` are expressions as well and can be nested.
 ​
 ​
-### Lists and tuples
+**  - Lists and tuples**
 ​
 `list` and `tuple` are immutable so all modifying actions on them return a new instance.
 ​
@@ -615,7 +615,7 @@ val swap : 'a * 'b -> 'b * 'a = <fun>
 - : int * int = (2, 1)
 ```
 
-### User defined types
+**  - User defined types**
 
 With the keyword `type` we can define own types. Let's take a look at a simple example:
 
@@ -624,7 +624,7 @@ With the keyword `type` we can define own types. Let's take a look at a simple e
 type storage = int
 ```
 
-### Record types
+**  - Record types**
 
 Records are what you may know as a `struct` by another name. Record type elements are accessed by name. For instance:
 
@@ -638,7 +638,7 @@ val p : person = {name = "foo"; age = 20; address = "bar"}
 - : string = "foo
 ```
 
-### Variant types
+**  - Variant types**
 
 Ok, so OCaml is strongly typed, yet it allows you some flexibility. By flexibility, we mean that you could have a variable that is, for instance, either an `int` or a `string`. It is called a [variant type](https://en.wikipedia.org/wiki/Variant_type). To help you grasp the concept if it is new, let's use a contrived Java analogy.
 
@@ -754,7 +754,7 @@ you can again see the notation `'a`. This is due to the above function being a [
 
 <HighlightBox type="reading">
 
-## Next steps
+**Next steps**
 
 Our quick introduction turned out to be a bit more extensive than announced - and there is so much more! So far, we have only looked at functional programming. But as mentioned, OCaml also supports imperative and object oriented programming.
 
