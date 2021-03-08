@@ -61,10 +61,10 @@ truffle unbox tezos-example
 
 When you invoke `truffle unbox tezos-example`, Truffle will create the following:
 
-- **folder contracts/**, where you save your contracts written in LIGO,
-- **folder test/**, where you place your tests written in JavaScript,
-- **folder migrations/**, where you define the ordered set of scripts that build, and update, your system, and
-- **file truffle.js truffle-config.js**, where Truffle is directed as to what to do.
+- folder **contracts/**, where you save your contracts written in LIGO,
+- folder **test/**, where you place your tests written in JavaScript,
+- folder **migrations/**, where you define the ordered set of scripts that build, and update, your system, and
+- file **truffle-config.js**, where Truffle is directed as to what to do.
 
 After you have built further, your will get a **build folder** with the compiled output of your contracts.
 
@@ -288,7 +288,7 @@ contract("SimpleStorage", () => {
 });
 ```
 
-We see that it calls `simpleStorageInstance.default(89)` to store the value `89`. As you can expect `default` entry point of the `simpleStorage`contract will be `main`, which we can call directly.
+We see that it calls `simpleStorageInstance.default(89)` to store the value `89`. As you can expect, the `default` entry point of the `simpleStorage`contract will be the function `main`, which we can call directly.
 
 So, change the regarding line into:
 
@@ -318,7 +318,7 @@ It is good practice for your tests to check that these migration files deployed 
 
 ## Structure of JavaScript tests
 
-You can have as many test files as needed. Each test file can have as many tests as needed. Test files are structured in the following way.
+You can have as many test files as needed. Each test file can have as many tests as needed.
 
 First, you need to import the contracts you are going to test, with for instance:
 
