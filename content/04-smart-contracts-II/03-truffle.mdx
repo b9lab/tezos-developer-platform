@@ -1,0 +1,611 @@
+---
+title: Truffle -  Write, Deploy and Test
+description: A tool to develop smart contracts
+slug: /truffle
+---
+
+import HighlightBox from "../../src/components/HighlightBox"
+
+As we have seen, preparing and deploying contracts can be slow and painful. We need a tool with a faster turnaround time. ConsenSys's [Truffle](https://www.trufflesuite.com/truffle) is such a tool. It was first introduced for the Ethereum protocol but it now supports different protocols. Truffle will compile your contracts and deploy them on the Tezos node of your choice.
+
+## Install
+
+Let's start by **installing Truffle** for Tezos. 
+
+```bash
+$ npm install -g truffle@tezos
+```
+
+This will [globally](https://docs.npmjs.com/downloading-and-installing-packages-globally) install Truffle for Tezos on your system. 
+
+## Verify
+
+Ensure that Truffle is **properly installed**:
+
+```bash
+$ truffle
+Truffle v5.5.0-tezos.4 - the most popular blockchain development framework
+
+Usage: truffle <command> [options]
+
+Commands:
+  build     Execute build pipeline (if configuration present)
+
+...
+
+$ truffle version
+
+Truffle v5.5.0-tezos.4 (core: 5.5.0-tezos.4)
+Solidity v0.5.16 (solc-js)
+Node v14.11.0
+Web3.js v1.2.1
+```
+
+<HighlightBox type="info">
+
+Notice, that your version may differ from the one above.
+
+</HighlightBox>
+
+## A ready-made project
+
+Tezos offers a sample project for Tezos: the [Tezos Truffle Box](https://github.com/truffle-box/tezos-example-box). Let's use it for a quick start!
+
+Create a folder for this sample and run in it:
+
+```bash
+truffle unbox tezos-example
+```
+
+## File structure
+
+When you invoke `truffle unbox tezos-example`, Truffle will create the following:
+
+- folder **contracts/**, where you save your contracts written in LIGO,
+- folder **test/**, where you place your tests written in JavaScript,
+- folder **migrations/**, where you define the ordered set of scripts that build, and update, your system, and
+- file **truffle-config.js**, where Truffle is directed as to what to do.
+
+After you have built further, your will get a **build folder** with the compiled output of your contracts.
+
+Have a look at the contracts in the `contracts` folder - They are written in PascalLIGO.
+
+In the `truffle-config.js`, you can see:
+
+```javascript
+const { alice } = require('./scripts/sandbox/accounts');
+
+module.exports = {
+  // see <http://truffleframework.com/docs/advanced/configuration>
+  // for more details on how to specify configuration options!
+  networks: {
+    development: {
+      host: "http://localhost",
+      port: 8732,
+      network_id: "*",
+      secretKey: alice.sk,
+      type: "tezos"
+    },
+    carthagenet: {
+      host: "https://carthagenet.smartpy.io",
+      port: 443,
+      network_id: "*",
+      type: "tezos"
+    },
+    mainnet: {
+      host: "https://mainnet.smartpy.io",
+      port: 443,
+      network_id: "*",
+      type: "tezos"
+    },
+    zeronet: {
+      host: "https://zeronet.smartpy.io",
+      port: 443,
+      network_id: "*",
+      type: "tezos"
+    }
+  }
+};
+```
+
+and in the `accounts.js` :
+
+```javascript
+module.exports = {
+    alice: {
+        pkh: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb",
+        sk: "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq",
+        pk: "edpkvGfYw3LyB1UcCahKQk4rF2tvbMUk8GFiTuMjL75uGXrpvKXhjn"
+    },
+    bob: {
+        pkh: "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6",
+        sk: "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt",
+        pk: "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"
+    }
+};
+```
+
+So, we can work with the [sandbox environment](https://github.com/truffle-box/tezos-example-box#sandbox-management). 
+
+Make sure that your local node is not listening at port 8732, and run:
+
+```bash
+$ npm run start-sandbox
+```
+
+in the sample folder. This will start a testing environment.
+
+Now, let's [migrate](https://www.trufflesuite.com/docs/tezos/truffle/getting-started/deploying-tezos-contracts) the sample contracts:
+
+```bash
+$ truffle migrate
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'development'
+> Network id:      NetXeb52sbbRG2V
+> Block gas limit: 10400000 (0x9eb100)
+
+
+1_initial_migration.js
+======================
+
+   Deploying 'Migrations'
+   ----------------------
+   > operation hash:      ooG1C6B7WB9i5xhvzmPdTUhyRf4ZPL4uBEhsA3um1KjQxeyujCC
+   > Blocks: 0            Seconds: 0
+   > contract address:    KT1C7YG3FpEn6eB8vHVwqhvRRhjknFDXjqYS
+   > block number:        3
+   > block timestamp:     2021-03-08T13:20:15Z
+   > account:             tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb
+   > balance:             999999.892835
+   > gas used:            2079
+   > storage used:        169 bytes
+   > fee spent:           0.665 mtz
+   > burn cost:           0.1065 tez
+   > value sent:          0 XTZ
+   > total cost:          0.107165 XTZ
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:            0.107165 XTZ
+
+
+2_deploy_simple_storage.js
+==========================
+
+   Deploying 'SimpleStorage'
+   -------------------------
+   > operation hash:      opG43Mm9jybeTThTT8k4fZpRJmgSLEr6p9U6AaSeqcXj8aiin4o
+   > Blocks: 0            Seconds: 0
+   > contract address:    KT1MzcNGVYbZiD5thUDoznZM87K15YNT8cJv
+   > block number:        5
+   > block timestamp:     2021-03-08T13:20:18Z
+   > account:             tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb
+   > balance:             999999.811727
+   > gas used:            1707
+   > storage used:        63 bytes
+   > fee spent:           0.508 mtz
+   > burn cost:           0.08 tez
+   > value sent:          0 XTZ
+   > total cost:          0.080508 XTZ
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:            0.080508 XTZ
+
+
+3_deploy_counter.js
+===================
+
+   Deploying 'Counter'
+   -------------------
+   > operation hash:      opSDbG1xyCEqKoSSkPAvaJ11mB1g1t1bsa4cVinN3GdX8mtaBN8
+   > Blocks: 0            Seconds: 0
+   > contract address:    KT1KnBEirCzX7cnno2kJPKXTbuPdpHRurz2Q
+   > block number:        7
+   > block timestamp:     2021-03-08T13:20:20Z
+   > account:             tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb
+   > balance:             999999.719062
+   > gas used:            1813
+   > storage used:        109 bytes
+   > fee spent:           0.565 mtz
+   > burn cost:           0.0915 tez
+   > value sent:          0 XTZ
+   > total cost:          0.092065 XTZ
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:            0.092065 XTZ
+
+
+Summary
+=======
+> Total deployments:   3
+> Final cost:          0.279738 XTZ
+
+```
+
+Let's run the tests:
+
+```bash
+truffle test
+Using network 'development'.
+
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+  Contract: Counter
+    ✓ ...should increment storage by 5. (1138ms)
+    ✓ ...should decrement storage by 2. (1217ms)
+
+  Contract: SimpleStorage
+    1) ...should store the integer 89.
+
+
+  2 passing (8s)
+  1 failing
+
+  1) Contract: SimpleStorage
+       ...should store the integer 89.:
+     TypeError: simpleStorageInstance.default is not a function
+      at Context.<anonymous> (test/simpleStorage.test.js:6:40)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:93:5)
+```
+
+Oh, we have a problem with the `SimpleStorage` test.
+
+This is the right time to have a look into the test:
+
+```javascript
+const SimpleStorage = artifacts.require("SimpleStorage");
+
+contract("SimpleStorage", () => {
+  it("...should store the integer 89.", async () => {
+    const simpleStorageInstance = await SimpleStorage.deployed();
+    await simpleStorageInstance.default(89);
+    const storedInt = await simpleStorageInstance.storage();
+
+    assert.equal(storedInt, 89, "The integer 89 was not stored.");
+  });
+});
+```
+
+We see that it calls `simpleStorageInstance.default(89)` to store the value `89`. As you can expect, the `default` entry point of the `simpleStorage`contract will be the function `main`, which we can call directly.
+
+So, change the regarding line into:
+
+```javascript
+    await simpleStorageInstance.main(89);
+```
+
+to fix the test.
+
+You can run the test for `simpleStorage` separately: 
+
+```bash
+$ truffle test test/simpleStorage.test.js 
+```
+
+The **unit-test facility** in Truffle is built on top of Mocha. So if you are fluent with it, things will look in order. If you are not, you can look up Mocha at any time.
+
+If you are not familiar with the concept of unit-tests, this [primer](https://searchsoftwarequality.techtarget.com/definition/unit-testing) is as good as any.
+
+<HighlightBox type="tip">
+
+Tests don't interfere with your instances deployed via Truffle migrate. Yes, tests use the same migrations/* files, but precisely to deploy new instances.
+
+It is good practice for your tests to check that these migration files deployed instances as expected. On the other hand, it is bad practice to use these instances for the rest of the tests. For that, the best practice is to deploy a new instance in a `beforeEach` block.
+
+</HighlightBox>
+
+## Structure of JavaScript tests
+
+You can have as many test files as needed. Each test file can have as many tests as needed.
+
+First, you need to import the contracts you are going to test, with for instance:
+
+```javascript
+const SimpleStorage = artifacts.require("SimpleStorage");
+```
+
+The **artifacts object** here is already injected by Truffle test and allows you to quickly instantiate the Truffle-contract factory of your contract. In this case, `const SimpleStorage` is the factory.
+
+Then, for the **testing proper**, a `contract()` method takes:
+
+- A **string** that helps you identify what you are testing; this string will be repeated for every test inside it;
+- A **callback function** that receives the list of accounts of the node client it connects to.
+
+<HighlightBox type="tip">
+
+You can still use `describe()` to run normal Mocha tests.
+
+</HighlightBox>
+
+### The console
+
+Let's see how we can interact with the contracts.
+
+Run:
+
+```bash
+$ truffle console
+truffle(development)> 
+```
+
+Here, we are in, wait for it, the Truffle console. It is a similar JavaScript environment and provides some auto-completion with the **TAB** key.
+
+We can basically do some testing in a more interactive way:
+
+```javascript
+truffle(development)> const simpleStorageInstance = await SimpleStorage.deployed()
+undefined
+```
+
+Also note how the Truffle console tells you `truffle(development)`. This development is in relation to how you launched the console. It is not in relation to the node you connected to.
+
+Let's have a look into `simpleStorageInstance`:
+
+```javascript
+truffle(development)> simpleStorageInstance
+TruffleContract {
+  constructor: [Function: TruffleContract] {
+    _constructorMethods: {
+      ...
+    },
+    _properties: {
+      contract_name: [Object],
+      contractName: [Object],
+      ...
+    },
+    _property_values: {},
+    _json: {
+      contractName: 'SimpleStorage',
+      abi: [],
+      metadata: undefined,
+      initialStorage: undefined,
+      michelson: '[ { "prim": "parameter", "args": [ { "prim": "int" } ] },\n' +
+        '  { "prim": "storage", "args": [ { "prim": "int" } ] },\n' +
+        '  { "prim": "code",\n' +
+        '    "args":\n' +
+        '      [ [ { "prim": "UNPAIR" }, { "prim": "SWAP" }, { "prim": "DROP" },\n' +
+        '          { "prim": "NIL", "args": [ { "prim": "operation" } ] },\n' +
+        '          { "prim": "PAIR" } ] ] } ]',
+        ...
+    },
+    ...,
+    interfaceAdapter: TezosAdapter { tezos: [TezosToolkit] },
+    currentProvider: HttpProvider {
+      host: 'http://localhost:8732',
+      httpAgent: [Agent],
+      timeout: 0,
+      headers: undefined,
+      connected: false,
+      send: [Function (anonymous)],
+      _alreadyWrapped: true
+    },
+    network_id: 'NetXeb52sbbRG2V',
+    ens: { enabled: false, registryAddress: null }
+  },
+  methods: {},
+  abi: [],
+  transactionHash: 'opG43Mm9jybeTThTT8k4fZpRJmgSLEr6p9U6AaSeqcXj8aiin4o',
+  contract: ContractAbstraction {
+    address: 'KT1MzcNGVYbZiD5thUDoznZM87K15YNT8cJv',
+    script: { code: [Array], storage: [Object] },
+    storageProvider: RpcContractProvider {
+      context: [Context],
+      estimator: [RPCEstimateProvider]
+    },
+    entrypoints: { entrypoints: {} },
+    methods: { main: [Function: method] },
+    schema: Schema {
+      root: [IntToken],
+      [Symbol(taquito-schema-type-symbol)]: true
+    },
+    parameterSchema: ParameterSchema { root: [IntToken] },
+    transactionHash: 'opG43Mm9jybeTThTT8k4fZpRJmgSLEr6p9U6AaSeqcXj8aiin4o'
+  },
+  address: 'KT1MzcNGVYbZiD5thUDoznZM87K15YNT8cJv',
+  main: [Function (anonymous)] { sendTransaction: [Function (anonymous)] },
+  storage: [Function (anonymous)],
+  send: [AsyncFunction (anonymous)],
+  sendTransaction: [Function (anonymous)] { sendTransaction: [Function (anonymous)] }
+}
+```
+
+There is a lot of information. You will find the Michelson code of the **repeater contract**, which does the same as the `SimpleStorage` contract in the Tezos Truffle Box. In addition, you can see the `methods` we can call.
+
+Let's first **fetch the storage**:
+
+```javascript
+truffle(development)> await simpleStorageInstance.storage()
+3
+```
+
+Now let's change this value:
+
+```javascript
+truffle(development)> await simpleStorageInstance.main(90)
+{
+  tx: 'opPoUD9HWv4JtayXBPH79S5BaT145aDCBhSevuXEmdZ4LZo9i5G',
+  receipt: TransactionOperation {
+    hash: 'opPoUD9HWv4JtayXBPH79S5BaT145aDCBhSevuXEmdZ4LZo9i5G',
+    raw: {
+      opbytes: 'f84f22910b212c27df75676cea4acd11bfa779e8b41370a73c8c1bf45e803f3e6c006b82198cb179e8306c1bedd08f12dc863f328886b1043aea14000001931bf0a2274922df215008beaa2c457385a6a4d800ff0000000003009a011cacd4767133167957201ce01ea940dd2db8654ad4228df04b9244cc51bdefbe114834c2ad0201f6684fe25e736dd3f3834650e01c2801ddc40b5ddf00316b0a',
+      opOb: [Object],
+      counter: 57
+    },
+    results: [ [Object] ],
+    context: Context {
+      _rpcClient: [RpcClient],
+      _signer: [InMemorySigner],
+      _proto: undefined,
+      _config: [Object],
+      tz: [RpcTzProvider],
+      estimate: [RPCEstimateProvider],
+      contract: [RpcContractProvider],
+      batch: [RPCBatchProvider],
+      wallet: [Wallet],
+      _forger: [RpcForger],
+      _injector: [RpcInjector],
+      operationFactory: [OperationFactory],
+      _walletProvider: [LegacyWalletProvider]
+    },
+    '_pollingConfig$': ReplaySubject {
+      _isScalar: false,
+      observers: [],
+      closed: false,
+      isStopped: false,
+      hasError: false,
+      thrownError: null,
+      scheduler: undefined,
+      _events: [Array],
+      _infiniteTimeWindow: true,
+      _bufferSize: 1,
+      _windowTime: Infinity,
+      next: [Function (anonymous)]
+    },
+    _currentHeadPromise: Promise { [Object] },
+    'currentHead$': Observable { _isScalar: false, _subscribe: [Function (anonymous)] },
+    'polling$': Observable { _isScalar: false, _subscribe: [Function (anonymous)] },
+    'confirmed$': Observable {
+      _isScalar: false,
+      source: [Observable],
+      operator: [Function: shareReplayOperation]
+    },
+    _foundAt: 60,
+    params: {
+      kind: 'transaction',
+      fee: 561,
+      gas_limit: 2666,
+      storage_limit: 0,
+      amount: '0',
+      destination: 'KT1MzcNGVYbZiD5thUDoznZM87K15YNT8cJv',
+      parameters: [Object]
+    },
+    source: 'tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb'
+  }
+}
+```
+
+and check the value again:
+
+```
+truffle(development)> await simpleStorageInstance.storage()
+90
+```
+
+### Test Certification
+
+We now have a test suit for our certification smart contract in LIGO:
+
+```Pascal
+type student is record
+    name : string ;
+    certificate : bool;
+end
+type certStorage is record
+  students : list(student);
+  certifier : address;
+end
+
+function main (const studentName : string; const oldState:certStorage) : (list(operation) * certStorage) is
+  begin
+  if sender =/= oldState.certifier then failwith("Only certifier can call this function");
+  else skip;
+  const newStudent : student = record 
+            name = studentName; 
+            certificate= True;
+            end;
+  const oldList:list(student) = oldState.students;
+  const newList:list(student) = cons(newStudent, oldList);
+  const newState : certStorage = record
+            students= newList;
+            certifier= oldState.certifier;
+            end;
+  end with ((nil : list(operation)), newState)
+  ```
+
+You can create a project with:
+
+```bash
+$ truffle init
+```
+
+and save the students contract as `students.ligo` in the `contracts` folder of the initiated project. You will also see the **migrations contract**, which keeps the record of the successful compilations.
+
+Now, try to **compile** the contract:
+
+```
+$ truffle compile
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/Migrations.ligo
+> Compiling ./contracts/students.ligo
+> Using entry point "main"
+> Artifacts written to /Users/muratoener/Desktop/Tezos/trufflestd/build/contracts
+> Compiled successfully using:
+   - ligo: next
+```
+
+We need a **script to deploy** the contract:
+
+```javascript
+const Students = artifacts.require("Students");
+
+module.exports = deployer => {
+  deployer.deploy(Students, {students : [], certifier: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb"});
+};
+```
+
+You can save this as `2_deploy_students.js` in the `migrations` folder.
+
+We use as certifier Alice's key from the `accounts.js`.
+
+Now we can write a **simple test**:
+
+```javascript
+const Students = artifacts.require("Students");
+
+contract("Students", () => {
+    it("...should certify Mike", async () => {
+        const StudentsInstance = await Students.deployed();
+        await StudentsInstance.main("Mike");
+        const storage = await StudentsInstance.storage();
+
+        assert.deepEqual(storage, {
+                students: [{
+                    certificate: true,
+                    name: "Mike"
+                }],
+                certifier: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb"
+            },
+            "The integer 89 was not stored.");
+    });
+});
+```
+
+<HighlightBox type="tip">
+
+Add another test with another key, and see if you can certify a student
+
+</HighlightBox>

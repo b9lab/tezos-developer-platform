@@ -1,0 +1,219 @@
+---
+title: Testnet - Smart Contracts
+description: Writing smart contracts on Tezos
+slug: /tezos-basics/testnet-2
+---
+
+import HighlightBox from "../../src/components/HighlightBox"
+
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
+
+After going through the first steps and generating the first private key, let's now turn to writing smart contracts on Tezos.
+
+## Michelson
+
+In Tezos, the machine code for smart contracts, the equivalent of assembly, is called [Michelson](https://tezos.gitlab.io/007/michelson.html) and warrants many sections in its own right. For now, we will be content knowing that, similarly to the JVM or the Ethereum VM, it is stack-based. Unlike the EVM, though, which treats any element on its stack differently depending on what the next opcode is, in Michelson, each opcode is strongly typed.
+
+<HighlightBox type="info">
+
+Later on, we will extensively address and work with Michelson. In this moment, our main focus is to introduce Michelson so that we can deploy a contract with the **tezos-client**.
+
+</HighlightBox>
+
+### Strongly typed
+
+Any assembler is commonly able to check that the stack has the right number of operands for each of its opcodes. Thanks to its strong typing, the Michelson assembler goes further and can type-check each low-level opcode before sending the compiled contract across the network. The "output(s)" of an opcode must match the "input(s)" of the next opcode. By comparison, this goes further than the JVM. If you are familiar with it, the JVM [erases](https://docs.oracle.com/javase/tutorial/java/generics/erasure.html) the generic types, so when your Java code contained a `List<T extends Animal>`, the compiled bytecode only mentions a `List`. By contrast, the Michelson bytecode still would have your `List<Animal>`, `List<SchroedingerCat>` or whichever inner type the compiler was able to collapse to.
+
+### Storage, not memory
+
+Moreover, unlike the JVM or the EVM, it does not use a heap, or a memory if you will. It does have access to what is called `storage`, which, in effect, represents the only data that is persisted within the system across transactions and time.
+
+So, a Michelson program takes in a 1-level-deep stack with a pair of a parameter and storage, and outputs a 1-level-deep stack with a pair of an operation list and modified storage. Since there is no memory, the stack is also where the program gets its input from: The input is the only element in the stack when calling the program; the parameter is the left part of that input tuple, and that parameter can be a tuple. Conversely, the output is the only element in the stack when the program exits.
+
+A Tezos node will directly execute a serialised Michelson program when asked to.
+
+## Our first contract
+
+Time to deploy our first Tezos contract! 
+
+Create a new file `repeater.tz` in the same folder as `edonet.sh` and paste:
+
+```michelson
+parameter int;
+storage int;
+code { CAR ;
+       NIL operation ;
+       PAIR };
+```
+into it. Then save it.
+
+This is a **repeater contract**, which will take an integer as a parameter and return it, in effect saving that number in the storage.
+
+Remember that in Tezos, each contract takes as input one pair of a parameter and storage structure, and then returns, as output, one pair consisting of an operation list and another storage structure. It is stack-based.
+
+Before any contract operation, the stack has been populated by the Tezos environment according to the transaction that spawned the contract. The stack has one level, populated with the input pair. Our code here has **3 instructions**:
+
+1. We pop this input pair from the top of the stack, we take the left-hand part of the input pair `CAR`, i.e. the input parameter, and push that back into the top of the stack. At this stage, the stack is still 1-level deep as the pair was consumed and replaced with the parameter;
+2. We push an empty operation list, `NIL operation`, to the top of the stack. At this stage, the stack is 2-level deep;
+3. We make a pair of both levels of the stack with the operation list on the left, `PAIR`. Each instruction is working on the stack, e.g. `PAIR` will take the parameter and operation list from the stack and push a pair. The stack is back to being 1-level deep.
+
+At this stage, the Tezos environment takes the output storage structure, here an `int`, puts it in storage and executes the operations, if there are any.
+
+![Stack changing with operations](images/stack.png)
+
+Before we deploy this contract, we can test it with any test parameter and storage:
+
+```sh
+$ ./edonet.sh client run script container:repeater.tz on storage 0 and input 1
+```
+It will give you as a result:
+
+```
+storage
+  1
+emitted operations
+  
+big_map diff
+```
+
+Notice the trick we did here? We did not pretend that it was deployed and that it had a certain storage. Instead we passed all the needed inputs - namely parameter and input storage - to the function that this contract represents. The contract _function_ does not need any context or other parameters to run.
+
+We can also check the stack:
+
+```
+$ ./edonet.sh client typecheck script container:repeater.tz -details
+Warning:
+  
+                 This is NOT the Tezos Mainnet.
+  
+           Do NOT use your fundraiser keys on this network.
+
+Well typed
+Gas remaining: 1039996.720 units remaining
+{ parameter int ;
+  storage int ;
+  code { /* [ pair (int @parameter) (int @storage) ] */
+         CAR
+         /* [ @parameter int ] */ ;
+         NIL operation
+         /* [ list operation : @parameter int ] */ ;
+         PAIR
+         /* [ pair (list operation) (int @parameter) ] */ } }
+```
+
+So it starts with one element `[ pair (int @parameter) (int @storage) ]` in the stack and ends with one element `pair (list operation) (int @parameter)`. Each element in the stack is separated by `:`. Take your time to compare this output with the image.
+
+Satisfied with this exhaustive battery of tests, let's deploy this contract:
+
+```sh
+$ ./edonet.sh client originate contract repeater for myFirstKey transferring 0.1 from myFirstKey running container:repeater.tz --init 0 --burn-cap 0.295
+Warning:
+  
+                 This is NOT the Tezos Mainnet.
+  
+           Do NOT use your fundraiser keys on this network.
+
+Node is bootstrapped.
+Estimated gas: 1561.562 units (will add 100 for safety)
+Estimated storage: 295 bytes added (will add 20 for safety)
+Operation successfully injected in the node.
+Operation hash is 'ooQgdA5UGXVS7baUcjjjQqLwf2bXxP77At1JirEpVTYHePcumXy'
+Waiting for the operation to be included...
+Operation found in block: BLYvNmjVZJhDMyuJDgtEstVR2fTFWV1tWFUD8tFQHryBLWctaHg (pass: 3, offset: 0)
+This sequence of operations was run:
+  Manager signed operations:
+    From: tz1hu7mhXfqCmzKqF9CEvnXiAe7pV6UW7Akr
+    Fee to the baker: ꜩ0.000359
+    Expected counter: 288484
+    Gas limit: 1000
+    Storage limit: 0 bytes
+    Balance updates:
+      tz1hu7mhXfqCmzKqF9CEvnXiAe7pV6UW7Akr ............. -ꜩ0.000359
+      fees(tz3Q67aMz7gSMiQRcW729sXSfuMtkyAHYfqc,103) ... +ꜩ0.000359
+    Revelation of manager public key:
+      Contract: tz1hu7mhXfqCmzKqF9CEvnXiAe7pV6UW7Akr
+      Key: edpku9L6fth99m4LvFMJRGtLjYP7UQ8WaK3o2EKsAN7XHex3JJQdFB
+      This revelation was successfully applied
+      Consumed gas: 1000
+  Manager signed operations:
+    From: tz1hu7mhXfqCmzKqF9CEvnXiAe7pV6UW7Akr
+    Fee to the baker: ꜩ0.00034
+    Expected counter: 288485
+    Gas limit: 1662
+    Storage limit: 315 bytes
+    Balance updates:
+      tz1hu7mhXfqCmzKqF9CEvnXiAe7pV6UW7Akr ............. -ꜩ0.00034
+      fees(tz3Q67aMz7gSMiQRcW729sXSfuMtkyAHYfqc,103) ... +ꜩ0.00034
+    Origination:
+      From: tz1hu7mhXfqCmzKqF9CEvnXiAe7pV6UW7Akr
+      Credit: ꜩ0.1
+      Script:
+        { parameter int ; storage int ; code { CAR ; NIL operation ; PAIR } }
+        Initial storage: 0
+        No delegate for this contract
+        This origination was successfully applied
+        Originated contracts:
+          KT1V3UiHJ7fsaYYEDUsxABsHciHBEm5HVPHr
+        Storage size: 38 bytes
+        Paid storage size diff: 38 bytes
+        Consumed gas: 1561.562
+        Balance updates:
+          tz1hu7mhXfqCmzKqF9CEvnXiAe7pV6UW7Akr ... -ꜩ0.0095
+          tz1hu7mhXfqCmzKqF9CEvnXiAe7pV6UW7Akr ... -ꜩ0.06425
+          tz1hu7mhXfqCmzKqF9CEvnXiAe7pV6UW7Akr ... -ꜩ0.1
+          KT1V3UiHJ7fsaYYEDUsxABsHciHBEm5HVPHr ... +ꜩ0.1
+
+New contract KT1V3UiHJ7fsaYYEDUsxABsHciHBEm5HVPHr originated.
+The operation has only been included 0 blocks ago.
+We recommend waiting more.
+Use command
+  tezos-client wait for ooQgdA5UGXVS7baUcjjjQqLwf2bXxP77At1JirEpVTYHePcumXy to be included --confirmations 30 --branch BM7p5GAC3MFR9rJZGQEJEvdMhNuvTME6hTPjzugFZsrhcJW8mNw
+and/or an external block explorer.
+Contract memorized as repeater.
+```
+
+<HighlightBox type="info">
+
+Tezos offers two kinds of accounts, [implicit and originated](https://github.com/tezoscommunity/faq/wiki/Tezos-Technical-FAQ#what-is-the-difference-between-implicit-and-originated-accounts).
+
+Only originated accounts can have Michelson code, though this may change in the future via a Tezos amendment.
+
+</HighlightBox>
+
+Now, with:
+
+```sh
+$ ./edonet.sh client list known contracts
+Warning:
+  
+                 This is NOT the Tezos Mainnet.
+  
+          Do NOT use your fundraiser keys on this network.
+
+repeater: KT1E7MZbQay94N4uFnxGGg6eBZxdnyLY8BjB
+faucetWallet: tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1
+myFirstKey: tz1W4W2yFAHz7iGyQvFys4K7Df9mZL6cSKCp
+```
+you can see the address of our contract. Your client gives aliases to some addresses for your convenience. You can add aliases or do it without too.
+
+Time to do our **first contract interaction**, here known as `transfer`:
+
+```sh
+$ ./edonet.sh client transfer 0 from myFirstKey to repeater --arg "1"
+```
+In the output, you will see `Updated storage: 1`.
+
+<HighlightBox type="reading">
+
+<ul>
+  <li><a href="https://tezos.gitlab.io/mainnet/whitedoc/michelson.html">Michelson documentation</a></li>
+   <li><a href="https://gitlab.com/camlcase-dev/michelson-tutorial/tree/master">Michelson Tutorial Series</a> by camlCase</li>
+  <li><a href="https://learn.tqgroup.io/files/language.html#faq">Michelson presentation</a> by Benjamin Canou</li>
+  <li><a href="https://www.michelson-lang.com/">Original Michelson language homepage</a> (note some changes have been made to Michelson since then)</li>
+</ul>
+
+</HighlightBox>
