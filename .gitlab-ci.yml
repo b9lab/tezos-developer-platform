@@ -7,6 +7,7 @@ stages:
 variables:
   AWS_DEFAULT_REGION: eu-west-1
   BUCKET_NAME_STAGING: preview-uqq8yju5was05rgy.b9lab.com
+  BUCKET_NAME_REVIEW: preview-uqq8yju5was05rgy-review.b9lab.com
   BUCKET_NAME_PRODUCTION: xxx
   DISTRIBUTION_ID_PRODUCTION: XXX
 
@@ -15,7 +16,7 @@ build-code:
   only:
     refs:
       - master
-      - development
+      - review
       - schedules
   tags:
     - main-runner
@@ -35,7 +36,6 @@ deploy-aws-s3-staging:
   only:
     refs:
       - master
-      - development
       - schedules
   tags:
     - main-runner
@@ -51,7 +51,27 @@ deploy-aws-s3-staging:
   script:
     # do not use sync here
     - aws s3 cp public/ s3://${BUCKET_NAME_STAGING}/ --recursive --acl public-read
-    #- aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID_STAGING} --paths "/*"
+
+deploy-aws-s3-review:
+  stage: deploy
+  only:
+    refs:
+      - review
+      - schedules
+  tags:
+    - main-runner
+  
+  image: python:latest
+  
+  dependencies:
+    - build-code
+
+  before_script:
+    - pip install awscli
+
+  script:
+    # do not use sync here
+    - aws s3 cp public/ s3://${BUCKET_NAME_REVIEW}/ --recursive --acl public-read
 
 deploy-aws-s3-production:
   stage: deploy
