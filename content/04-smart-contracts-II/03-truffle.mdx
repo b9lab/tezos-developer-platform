@@ -4,9 +4,9 @@ description: A tool to develop smart contracts
 slug: /truffle
 ---
 
-# Truffle
+import HighlightBox from "../../src/components/HighlightBox"
 
-As we have seen, preparing and deploying contracts can be slow and painful. We need a tool with a faster turn around time. ConsenSys's [Truffle](https://www.trufflesuite.com/truffle) is such a tool. It was first introduced for the Ethereum protocol but it supports now different protocols.
+As we have seen, preparing and deploying contracts can be slow and painful. We need a tool with a faster turnaround time. ConsenSys's [Truffle](https://www.trufflesuite.com/truffle) is such a tool. It was first introduced for the Ethereum protocol but it supports now different protocols.
 Truffle will compile your contracts and deploy them on the Tezos node of your choice.
 
 ## Install
@@ -59,7 +59,7 @@ truffle unbox tezos-example
 When you invoke `truffle unbox tezos-example`, Truffle will create the following:
 
 - folder contracts/, where you save your contracts written in LIGO
-- folder test/, where you place your tests written in Javascript
+- folder test/, where you place your tests written in JavaScript
 - folder migrations/, where you define the ordered set of scripts that build, and update, your system
 - file truffle.js truffle-config.js, where Truffle is directed as to what to do
 
@@ -124,7 +124,7 @@ module.exports = {
 
 so we can work with the [sandbox environment](https://github.com/truffle-box/tezos-example-box#sandbox-management). 
 
-Make sure that you local node is not listening at port 8732 and run:
+Make sure that your local node is not listening at port 8732 and run:
 
 ```bash
 $ npm run start-sandbox
@@ -283,7 +283,7 @@ contract("SimpleStorage", () => {
 });
 ```
 
-We see that it calls `simpleStorageInstance.default(89)` to store the value `89`. As you can expect `default` entrypoint of the `simpleStorage`contract will be `main`, which we can call directly. So change the regarding line into:
+We see that it calls `simpleStorageInstance.default(89)` to store the value `89`. As you can expect `default` entry point of the `simpleStorage`contract will be `main`, which we can call directly. So change the regarding line into:
 
 ```javascript
     await simpleStorageInstance.main(89);
@@ -299,13 +299,15 @@ The unit-test facility in Truffle is built on top of Mocha. So if you are fluent
 
 If you are not familiar with the concept of unit-tests, this [primer](https://searchsoftwarequality.techtarget.com/definition/unit-testing) is as good as any.
 
-<div class "b9-tip">
+<HighlightBox type="tip">
 Tests do not interfere with your instances deployed via truffle migrate. Yes, tests use the same migrations/* files, but precisely to deploy new instances.
 
 It is good practice for your tests to check that these migration files deployed instances as expected. On the other hand, it is bad practice to use these instances for the rest of the tests. For that, the best practice is to deploy a new instance in a `beforeEach` block.
-</div>
 
-# Structure of Javascript tests
+</HighlightBox>
+
+# Structure of JavaScript tests
+
 You can have as many test files as needed. Each test file can have as many tests as needed. Test files are structured in the following way.
 
 First, you need to import the contracts you are going to test, with for instance:
@@ -321,9 +323,11 @@ Then, for the testing proper, a `contract()` method takes:
 - a string that helps you identify what you are testing; this string will be repeated for every test inside it.
 - a callback function that receives the list of accounts of the node client it connects to.
 
-<div class="b9-tip">
+<HighlightBox type="tip">
+
 You can still use `describe()` to run normal Mocha tests.
-</div>
+
+</HighlightBox>
 
 ## The console
 
@@ -336,7 +340,7 @@ $ truffle console
 truffle(development)> 
 ```
 
-Here, we are in, wait for it, the Truffle console. It is a similar Javascript environment and provides some auto-completion with the **TAB** key. We can basically do some testing in a more interactive way:
+Here, we are in, wait for it, the Truffle console. It is a similar JavaScript environment and provides some auto-completion with the **TAB** key. We can basically do some testing in a more interactive way:
 
 ```javascript
 truffle(development)> const simpleStorageInstance = await SimpleStorage.deployed()
@@ -532,7 +536,7 @@ you can create a project with:
 $ truffle init
 ```
 
-and save the students contract as `students.ligo` in the `contracts` folder of the initiated project. You will also see the migrations contract which keeps the record of the successfull compilations.
+and save the students contract as `students.ligo` in the `contracts` folder of the initiated project. You will also see the migrations contract which keeps the record of the successful compilations.
 
 Now try to compile the contract:
 
@@ -584,6 +588,8 @@ contract("Students", () => {
 });
 ```
 
-<div class="b9-tip">
+<HighlightBox type="tip">
+
 Add another test with another key and see if you can certify a student
-</div>
+
+</HighlightBox>
