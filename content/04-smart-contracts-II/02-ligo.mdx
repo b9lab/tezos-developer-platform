@@ -6,6 +6,13 @@ slug: /ligo
 
 import HighlightBox from "../../src/components/HighlightBox"
 
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
+
+
 In this section, we want to give you a quick introduction into [OCaml](https://en.wikipedia.org/wiki/OCaml). At the end of this section, you will find a list with further resources to continue learning, or strengthen your knowledge.
 
 You should take a look at OCaml nevertheless for multiple reasons:
@@ -26,7 +33,7 @@ To get started, please [install](https://ocaml.org/docs/install.html) OCaml on y
 <HighlightBox type="warning">
 
 Please read the install instructions carefully. The recommended way to install OCaml is using opam, which is a package manager for OCaml. We also recommend using opam.
-**Windows users with WSL** are out of luck this time: opam will not run properly in WSL, because it does not support bubblewrap. There is a workaround (by disabling sandboxing), which is **not recommended**. You can install OCaml directly with apt instead, or use a full vm.
+**Windows users with WSL** are out of luck this time: opam will not run properly in WSL, because it does not support bubblewrap. There is a workaround (by disabling sandboxing), which is **not recommended**. You can install OCaml directly with apt instead, or use a full VM.
 
 </HighlightBox>
 
@@ -112,7 +119,7 @@ We strongly recommend trying out the tool [utop](https://github.com/ocaml-commun
 
 ## Types
 
-OCaml uses [static typing](https://en.wikipedia.org/wiki/Type_system#Static_type_checking) and type inference to decide on the types, so we don't have to care about it much. Still, sometimes we have to indicate the type we want to use explicitly. If we use the `ocaml` toplevel, OCaml will tell us the detected type.
+OCaml uses [static typing](https://en.wikipedia.org/wiki/Type_system#Static_type_checking) and type inference to decide on the types, so we don't have to care about it much. Still, sometimes we have to indicate the type we want to use explicitly. If we use the `ocaml` top-level, OCaml will tell us the detected type.
 
 Here is an overview of the basic types, taken from the [OCaml tutorials](https://ocaml.org/learn/tutorials/basics.html):
 
