@@ -6,12 +6,11 @@ slug: /truffle
 
 import HighlightBox from "../../src/components/HighlightBox"
 
-As we have seen, preparing and deploying contracts can be slow and painful. We need a tool with a faster turnaround time. ConsenSys's [Truffle](https://www.trufflesuite.com/truffle) is such a tool. It was first introduced for the Ethereum protocol but it supports now different protocols.
-Truffle will compile your contracts and deploy them on the Tezos node of your choice.
+As we have seen, preparing and deploying contracts can be slow and painful. We need a tool with a faster turnaround time. ConsenSys's [Truffle](https://www.trufflesuite.com/truffle) is such a tool. It was first introduced for the Ethereum protocol but it now supports different protocols. Truffle will compile your contracts and deploy them on the Tezos node of your choice.
 
 ## Install
 
-Let us start by installing Truffle for Tezos. 
+Let's start by **installing Truffle** for Tezos. 
 
 ```bash
 $ npm install -g truffle@tezos
@@ -21,7 +20,7 @@ This will [globally](https://docs.npmjs.com/downloading-and-installing-packages-
 
 ## Verify
 
-Ensure that it is properly installed:
+Ensure that Truffle is **properly installed**:
 
 ```bash
 $ truffle
@@ -42,13 +41,17 @@ Node v14.11.0
 Web3.js v1.2.1
 ```
 
+<HighlightBox type="info">
+
 Notice, that your version may differ from the one above.
+
+</HighlightBox>
 
 ## A ready-made project
 
-Tezos offers a sample project for Tezos: [Tezos Truffle Box](https://github.com/truffle-box/tezos-example-box)
+Tezos offers a sample project for Tezos: the [Tezos Truffle Box](https://github.com/truffle-box/tezos-example-box). Let's use it for a quick start!
 
-Let us use it for a quick start. Create a folder for this sample and run in it:
+Create a folder for this sample and run in it:
 
 ```bash
 truffle unbox tezos-example
@@ -58,16 +61,16 @@ truffle unbox tezos-example
 
 When you invoke `truffle unbox tezos-example`, Truffle will create the following:
 
-- folder contracts/, where you save your contracts written in LIGO
-- folder test/, where you place your tests written in JavaScript
-- folder migrations/, where you define the ordered set of scripts that build, and update, your system
-- file truffle.js truffle-config.js, where Truffle is directed as to what to do
+- **folder contracts/**, where you save your contracts written in LIGO,
+- **folder test/**, where you place your tests written in JavaScript,
+- **folder migrations/**, where you define the ordered set of scripts that build, and update, your system, and
+- **file truffle.js truffle-config.js**, where Truffle is directed as to what to do.
 
-After you have built further, your will get a build folder with the compiled output of your contracts.
+After you have built further, your will get a **build folder** with the compiled output of your contracts.
 
-Have a look at the contracts in the `contracts` folder, they are written in PascalLIGO.
+Have a look at the contracts in the `contracts` folder - They are written in PascalLIGO.
 
-In the `truffle-config.js` you can see:
+In the `truffle-config.js`, you can see:
 
 ```javascript
 const { alice } = require('./scripts/sandbox/accounts');
@@ -122,9 +125,9 @@ module.exports = {
 };
 ```
 
-so we can work with the [sandbox environment](https://github.com/truffle-box/tezos-example-box#sandbox-management). 
+So, we can work with the [sandbox environment](https://github.com/truffle-box/tezos-example-box#sandbox-management). 
 
-Make sure that your local node is not listening at port 8732 and run:
+Make sure that your local node is not listening at port 8732, and run:
 
 ```bash
 $ npm run start-sandbox
@@ -132,7 +135,7 @@ $ npm run start-sandbox
 
 in the sample folder. This will start a testing environment.
 
-Now let us [migrate](https://www.trufflesuite.com/docs/tezos/truffle/getting-started/deploying-tezos-contracts) the sample contracts:
+Now, let's [migrate](https://www.trufflesuite.com/docs/tezos/truffle/getting-started/deploying-tezos-contracts) the sample contracts:
 
 ```bash
 $ truffle migrate
@@ -235,7 +238,7 @@ Summary
 
 ```
 
-Let us run the tests:
+Let's run the tests:
 
 ```bash
 truffle test
@@ -267,7 +270,9 @@ Compiling your contracts...
       at processTicksAndRejections (internal/process/task_queues.js:93:5)
 ```
 
-Oh we have a problem with the `SimpleStorage` test. This is the right time to have a look into the test:
+Oh, we have a problem with the `SimpleStorage` test.
+
+This is the right time to have a look into the test:
 
 ```javascript
 const SimpleStorage = artifacts.require("SimpleStorage");
@@ -283,30 +288,35 @@ contract("SimpleStorage", () => {
 });
 ```
 
-We see that it calls `simpleStorageInstance.default(89)` to store the value `89`. As you can expect `default` entry point of the `simpleStorage`contract will be `main`, which we can call directly. So change the regarding line into:
+We see that it calls `simpleStorageInstance.default(89)` to store the value `89`. As you can expect `default` entry point of the `simpleStorage`contract will be `main`, which we can call directly.
+
+So, change the regarding line into:
 
 ```javascript
     await simpleStorageInstance.main(89);
 ```
 
-to fix the test. You can run the test for `simpleStorage` separately: 
+to fix the test.
+
+You can run the test for `simpleStorage` separately: 
 
 ```bash
 $ truffle test test/simpleStorage.test.js 
 ```
 
-The unit-test facility in Truffle is built on top of Mocha. So if you are fluent with it, things will look in order. If you are not, you can look up Mocha at any time.
+The **unit-test facility** in Truffle is built on top of Mocha. So if you are fluent with it, things will look in order. If you are not, you can look up Mocha at any time.
 
 If you are not familiar with the concept of unit-tests, this [primer](https://searchsoftwarequality.techtarget.com/definition/unit-testing) is as good as any.
 
 <HighlightBox type="tip">
-Tests do not interfere with your instances deployed via truffle migrate. Yes, tests use the same migrations/* files, but precisely to deploy new instances.
+
+Tests don't interfere with your instances deployed via Truffle migrate. Yes, tests use the same migrations/* files, but precisely to deploy new instances.
 
 It is good practice for your tests to check that these migration files deployed instances as expected. On the other hand, it is bad practice to use these instances for the rest of the tests. For that, the best practice is to deploy a new instance in a `beforeEach` block.
 
 </HighlightBox>
 
-# Structure of JavaScript tests
+## Structure of JavaScript tests
 
 You can have as many test files as needed. Each test file can have as many tests as needed. Test files are structured in the following way.
 
@@ -316,12 +326,12 @@ First, you need to import the contracts you are going to test, with for instance
 const SimpleStorage = artifacts.require("SimpleStorage");
 ```
 
-The artifacts object here is already injected by Truffle test and allows you to quickly instantiate the truffle-contract factory of your contract. In this case, `const SimpleStorage` is the factory.
+The **artifacts object** here is already injected by Truffle test and allows you to quickly instantiate the Truffle-contract factory of your contract. In this case, `const SimpleStorage` is the factory.
 
-Then, for the testing proper, a `contract()` method takes:
+Then, for the **testing proper**, a `contract()` method takes:
 
-- a string that helps you identify what you are testing; this string will be repeated for every test inside it.
-- a callback function that receives the list of accounts of the node client it connects to.
+- A **string** that helps you identify what you are testing; this string will be repeated for every test inside it;
+- A **callback function** that receives the list of accounts of the node client it connects to.
 
 <HighlightBox type="tip">
 
@@ -329,9 +339,9 @@ You can still use `describe()` to run normal Mocha tests.
 
 </HighlightBox>
 
-## The console
+### The console
 
-Let us see how we can interact with the contracts.
+Let's see how we can interact with the contracts.
 
 Run:
 
@@ -340,16 +350,18 @@ $ truffle console
 truffle(development)> 
 ```
 
-Here, we are in, wait for it, the Truffle console. It is a similar JavaScript environment and provides some auto-completion with the **TAB** key. We can basically do some testing in a more interactive way:
+Here, we are in, wait for it, the Truffle console. It is a similar JavaScript environment and provides some auto-completion with the **TAB** key.
+
+We can basically do some testing in a more interactive way:
 
 ```javascript
 truffle(development)> const simpleStorageInstance = await SimpleStorage.deployed()
 undefined
 ```
 
-Also note how the Truffle console tells you ´truffle(development)´. This development is in relation to how you launched the console. It is not in relation to the node you connected to.
+Also note how the Truffle console tells you `truffle(development)`. This development is in relation to how you launched the console. It is not in relation to the node you connected to.
 
-let us have a look into `simpleStorageInstance`:
+Let's have a look into `simpleStorageInstance`:
 
 ```javascript
 truffle(development)> simpleStorageInstance
@@ -419,14 +431,16 @@ TruffleContract {
 }
 ```
 
-There is a lot of information. You will find the Michelson code of the **repeater** contract which does the same as the `SimpleStorage` contract in the Tezos Truffle Box. In addition you can see the `methods` we can call. Let us first fetch the storage:
+There is a lot of information. You will find the Michelson code of the **repeater contract**, which does the same as the `SimpleStorage` contract in the Tezos Truffle Box. In addition, you can see the `methods` we can call.
+
+Let's first **fetch the storage**:
 
 ```javascript
 truffle(development)> await simpleStorageInstance.storage()
 3
 ```
 
-Now let us change this value:
+Now let's change this value:
 
 ```javascript
 truffle(development)> await simpleStorageInstance.main(90)
@@ -499,7 +513,7 @@ truffle(development)> await simpleStorageInstance.storage()
 90
 ```
 
-## Test Certification
+### Test Certification
 
 We now have a test suit for our certification smart contract in LIGO:
 
@@ -530,15 +544,15 @@ function main (const studentName : string; const oldState:certStorage) : (list(o
   end with ((nil : list(operation)), newState)
   ```
 
-you can create a project with:
+You can create a project with:
 
 ```bash
 $ truffle init
 ```
 
-and save the students contract as `students.ligo` in the `contracts` folder of the initiated project. You will also see the migrations contract which keeps the record of the successful compilations.
+and save the students contract as `students.ligo` in the `contracts` folder of the initiated project. You will also see the **migrations contract**, which keeps the record of the successful compilations.
 
-Now try to compile the contract:
+Now, try to **compile** the contract:
 
 ```
 $ truffle compile
@@ -553,7 +567,7 @@ Compiling your contracts...
    - ligo: next
 ```
 
-We need a script to deploy the contract:
+We need a **script to deploy** the contract:
 
 ```javascript
 const Students = artifacts.require("Students");
@@ -563,9 +577,11 @@ module.exports = deployer => {
 };
 ```
 
-you can save this as `2_deploy_students.js` in the `migrations` folder. We use as certifier Alice's key from the `accounts.js`.
+You can save this as `2_deploy_students.js` in the `migrations` folder.
 
-Now we can write a simple test:
+We use as certifier Alice's key from the `accounts.js`.
+
+Now we can write a **simple test**:
 
 ```javascript
 const Students = artifacts.require("Students");
@@ -590,6 +606,6 @@ contract("Students", () => {
 
 <HighlightBox type="tip">
 
-Add another test with another key and see if you can certify a student
+Add another test with another key, and see if you can certify a student
 
 </HighlightBox>
