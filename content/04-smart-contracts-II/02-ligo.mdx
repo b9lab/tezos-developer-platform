@@ -17,7 +17,7 @@ In the next section, we will take a closer look at Michelson. This will help you
 
 ## OCaml
 
-With OCaml, you can use [functional](https://en.wikipedia.org/wiki/Functional_programming), [imperative](https://en.wikipedia.org/wiki/Imperative_programming) or [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) programming.
+With OCaml, you can use [functional](https://en.wikipedia.org/wiki/Functional_programming), [imperative](https://en.wikipedia.org/wiki/Imperative_programming), or [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) programming.
 
 We don't want to look at objects and loops here, instead we will learn the syntax and some design concepts in functional programming.
 
@@ -294,7 +294,7 @@ val div : int -> int -> int = <fun>
 Exception: Division_by_zero.
 ```
 
-gives us an error, since a division by `0` is not defined and we do not return an `int`, even though our signature is `val div : int -> int -> int = <fun>`. We can solve the problem with option:
+gives us an error, since a division by `0` is not defined and we don't return an `int`, even though our signature is `val div : int -> int -> int = <fun>`. We can solve the problem with option:
 
 ```ocaml
 # let div x y = if y = 0 then None else Some (x/y) ;;
@@ -882,7 +882,7 @@ type student = {
   }
 ```
 
-Since we do not want everyone to be able to issue certificates, we also want to save an address which represents the authorised person:
+Since we don't want everyone to be able to issue certificates, we also want to save an address which represents the authorised person:
 
 ```ocaml
 type storage = {
