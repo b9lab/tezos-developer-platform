@@ -28,3 +28,23 @@ To build the deployable website, run `npm run build`. This will create the outpu
 
 ## Information for content creators
 You can find a markdown file in `features/feature_test.mdx` which demonstrates the use of all Markdown features and additional components. (This file will not be linked in the final version).
+
+## Git workflow
+Branch naming scheme: xx-feature-description, where `xx` are the name initials of the developer, lowercase.
+Merging scheme: `feature-branch` --> `master` --> `review` --> `production`
+
+## CI & CD
+Pushes to the `master` and `review` branch are automatically deployed
+* `master` on http://preview-uqq8yju5was05rgy.b9lab.com/
+* `review` on http://preview-uqq8yju5was05rgy-review.b9lab.com/
+
+## Review process
+We use Gitlab Merge Requests to organize content reviews. To start a review, content creators will prepare an update on the `review` branch, and then open a Merge Request towards `production` with the content for review. Comments, discussions and updates should start on the Merge Request page. If you move discussions outside (slack/email), please indicate on the Merge Request once an issue has been resolved.
+
+### Review finalization
+Once a reviewer has completed a review, they should indicate so by adding a comment to the Merge Request, stating that they have completed their review of part x (in most cases, x is a module or a specific section).
+
+When all reviewers have completed their review and no further changes are required, the Merge Request is closed, moving the content changes to the `production` branch.
+
+### Support
+In case of any problems with the app (dev, build and deployment), git or any associated services, please contact Ibo (ibo@b9lab.com).
