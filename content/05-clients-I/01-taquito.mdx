@@ -8,20 +8,31 @@ slug: /taquito
 
 After writing smart contracts for the Tezos blockchain, we will now dive into clients.
 
-As we know the tezos-node offers a JSON/RPC interface. In this chapter, we want to communicate with the tezos-node without using the tezos-client. The reason is that, at the end of the day, we want to write applications, which we can hand over to the client without more ado.
+As we know the tezos-node offers a JSON/RPC interface. In this chapter, we want to communicate with the *tezos-node* without using the *tezos-client*. The reason is that, at the end of the day, we want to write applications, which we can hand over to the client without more ado.
 
-We need a possibility for the average user to interact with our smart contract. It is similar to the student certification smart contract, which you already deployed. We do not store the name of the students to keep our first client simple.
+We need a possibility for the average user to interact with a smart contract. We will work with a smart contract similar to the student certification smart contract, which you already deployed. We do not store the name of the students to keep our first clients simple.
 
-For that we will need:
+So we will need:
 
 - A user interface to check if a student is certified.
 - A user interface for the certifier.
 
+[Taquito](https://tezostaquito.io/) is a Tezos Typescript library. You can find the source code in the [offical repository](https://github.com/ecadlabs/taquito). 
+
+It includes various features, among others:
+
+- The @taquito/taquito package that builds upon the other packages in the Tezos Typescript Library Suite and offers higher level utility
+- @taquito/rpc package that wraps the RPC endpoints
+- @taquito/signer package to sign with tezos keys
+- @taquito/tezbridge-wallet and @taquito/beacon-wallet packages implementing Wallet API
+
+
+In addition, it is very well [documented](https://tezostaquito.io/docs/quick_start/). There is a npm package for [Taquito](https://www.npmjs.com/package/@taquito/taquito) that we can use.
+But our first contact with Taquito will be without Node.js but later we will also talk about it with Node.js.
+
 # Certificate Verifier
 
 Since fetching the contract storage is relatively simple, it qualifies well to see Taquito in action for the first time. We will keep all our GUI project files in a folder. So go ahead and create a folder for it, and download [jQuery](https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js) into it.
-
-There is a npm package for [Taquito](https://www.npmjs.com/package/@taquito/taquito) that we can use.
 
 In addition, we can embed Taquito into a HTML page with:
 
@@ -34,7 +45,11 @@ The Verifier has to fulfil a simple task: verify the certification of a given st
 
 ![](images/screen_alice.png)
 
-We are taking the primrose path: We will first create a HTML page, and with it contact a public server to fetch data from the Tezos blockchain.
+We are taking the primrose path: We will first create a HTML page, and with it contact a public node to fetch data from the Tezos blockchain.
+
+<tip>
+You can find a list of [community tezos nodes](https://tezostaquito.io/docs/rpc_nodes/) at the documentation.
+</tip>
 
 Let us start with the `index.html` file:
 
@@ -129,9 +144,15 @@ Save this. It is brief, but will do the job. The interesting part is:
       const found = students.find(student => student == inputVal);
 ```
 
-Note that it returns us the _whole_ storage. Afterwards, we look for the requested student.
+Note that it returns us the _whole_ storage. Afterwards, we look for the requested student. 
 
-You can [download this DApp](repolink) and test it. The smart contract is hardcoded at the address KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK, and we added a student with the address tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN.
+<tip>
+Taquito offers [MichelsonMap](https://tezostaquito.io/docs/maps_bigmaps) for working with `Map` and `BigMap` types.
+</tip>
+
+https://tezostaquito.io/docs/maps_bigmaps
+
+You can [download this DApp](https://github.com/b9lab/tezos-sample-verifier) and test it. The smart contract is hardcoded at the address KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK, and we added a student with the address tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN.
 
 <expandable>
 The CSS file for styling if you want to:
@@ -255,16 +276,31 @@ With the in-browser private key generation covered, let us move on to sending a 
 tezos.contract.at(accountSettings.contractAddress)
                        .then((contract) => {
                         reportResult("Sending...", "info", "#result-bar");
-                        return contract.methods.default(studentAddress, "").send();})
+                        return contract.methods.default(studentAddress).send();})
 ```
 
-to call the contract.
+to call the contract. You can see that Taquito can create a [contract abstraction](https://tezostaquito.io/docs/wallet_API#--contract-properties-and-methods) with the address of the smart contract.
 
-In the present case, we only need to pass the address of the student to certify, which is easily done. Taquito extracts the entrypoints from the contract and allows us to do an usual call on those.
+We can pass to the `contract.methods.entrypoint` as many parameters as the `entrypoint` needs, where `entrypoint` is the method you want to call on your smart contract. So we could do:
 
-The testnet network processes transactions with a 0 fee, but with this wallet from the faucet we are rich. 
+```javascript
+contract.methods.default(studentAddress, studentName).send()
+```
 
-This time, to be able to pack all the necessary information, we need more than one input field:
+if we want to test our certification smart contract which also stores the names of the students.
+For an entrypoint without parameters, you can use:
+
+```javascript
+[['unit']]
+```
+
+as parameter. In the present case, we only need to pass the address of the student to certify, which is easily done. 
+
+The testnet network processes transactions with a 0 fee, but with this wallet from the faucet we are rich. So if you want to specify any fees, or set limits, you can do so with [send](https://tezostaquito.io/docs/wallet_API#--send-function-arguments).
+
+In addition you can use Taquitos [estimation methods](https://tezostaquito.io/docs/estimate#estimate-values) to pick up reasonable values.
+
+Let us continue with the HTML code. This time, to be able to pack all the necessary information, we need more than one input field:
 
 ![](images/screen_certifier.png)
 
@@ -449,7 +485,7 @@ and Browserify via:
 $ browserify abovescript.js -o signer.js
 ```
 
-or download it from the [certifier](repolink) repository.
+or download it from the [certifier repository](https://github.com/b9lab/tezos-sample-certifier).
 
 <expandable>
 The CSS file for styling:
@@ -587,3 +623,62 @@ a {
 }
 ```
 </expandable>
+
+# Taquito with NodeJS
+There are many tasks, which we would rather handle from the server side. For such cases, we can use Taquito with NodeJS. You just have to create a node project with:
+
+```bash
+$ npm init
+```
+
+Afterwards, you can include the Taquito NPM package in your project with:
+
+```bash
+$ npm i @taquito/taquito
+```
+
+Then create a index.js and try the [first sample](https://tezostaquito.io/docs/quick_start#get-the-current-tezos-balance-for-an-address) from the documentation:
+
+```javascript
+const { TezosToolkit } = require("@taquito/taquito");
+const Tezos = new TezosToolkit('https://api.tez.ie/rpc/edonet');
+
+Tezos.tz
+  .getBalance('tz1h3rQ8wBxFd8L9B3d7Jhaawu6Z568XU3xY')
+  .then((balance) => console.log(`${balance.toNumber() / 1000000} ꜩ`))
+  .catch((error) => console.log(JSON.stringify(error)));
+```
+
+<tip>
+Have a look at the offical samples at the [documentation](https://tezostaquito.io/docs/boilerplate)
+You will see one sample working with [Parcel](https://parceljs.org/getting_started.html) and another one with [React](https://reactjs.org/). They are written in TypeScript like the Tezos Typescript Library Suite.
+</tip>
+
+Let us try another sample and validate a signature:
+
+```javascript
+const {
+    validateSignature
+} = require("@taquito/utils");
+
+//valid
+const signature =
+    'edsigtkpiSSschcaCt9pUVrpNPf7TTcgvgDEDD6NCEHMy8NNQJCGnMfLZzYoQj74yLjo9wx6MPVV29CvVzgi7qEcEUok3k7AuMg';
+const validation = validateSignature(signature);
+console.log(`Calling the validateSignature function with ${signature} returns ${validation}.`);
+
+//invalid checksum
+const invalidSignature =
+    'edsigtkpiSSschcaCt9pUVrpNPf7TTcgvgDEDD6NCEHMy8NNQJCGnMfLZzYoQj74yLjo9wx6MPVV29CvVzgi7qEcEUok3k7AuM';
+const invalidValidation = validateSignature(invalidSignature);
+console.log(
+    `Calling the validateSignature function with ${invalidSignature} returns ${invalidValidation}.`
+);
+```
+
+The result of validateSignature will be `0 (NO_PREFIX_MATCHED)`, `1 (INVALID_CHECKSUM)`, `2 (INVALID_LENGTH)` or `3 (VALID)`.
+
+<reading>
+- Taquito documentation [Tutorial Links](https://tezostaquito.io/docs/tutorial_links/)
+- [Batch API](https://tezostaquito.io/docs/batch_API) for more efficient handling of multiple transactions.
+</reading>
