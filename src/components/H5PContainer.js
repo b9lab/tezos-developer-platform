@@ -12,12 +12,16 @@ export default class H5PContainer extends React.Component {
 
   componentDidMount() {
     console.log("component did mount");
-    const { H5P } = require('h5p-standalone');
-    console.log(H5P);
-    const el = document.getElementById('h5p_container');
-    const h5pLocation = '/test1';
+    
+    window.setTimeout(function() {
+      console.log("load h5p");
+      const { H5P } = require('h5p-standalone');
+      const el = document.getElementById('h5p_container');
+      const h5pLocation = '/test2';
 
-    const h5p = new H5P(el, h5pLocation);
+      const h5p = new H5P(el, h5pLocation);
+    }, 1500);
+    
     console.log("created");
   }
 
