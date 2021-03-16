@@ -1,0 +1,143 @@
+---
+title: TzKT-API
+description: TzKT-API
+slug: /tzkt
+---
+
+# TzKT
+
+[TzKT](https://github.com/baking-bad/tzkt) is Tezos Blockchain indexer. We have talked about how a Blockchain includes a lot of transactions and information. Working directly on the whole Blockchain to fetch and process data will be time consuming. The TzKT indexer can reduce this time and offers in addition high level [functionalities](https://github.com/baking-bad/tzkt#features) which are not provided by the Tezos JSON/RPC interface. 
+
+You can [install](https://github.com/baking-bad/tzkt#installation-docker) or [build](https://github.com/baking-bad/tzkt#installation-from-source) it and [configure](https://github.com/baking-bad/tzkt#install-tzkt-indexer-and-api-for-testnets) for the testnet.
+
+Here we want to learn how to work with the [TzKT-API]. Therefore we will work with a [public endpoint](https://api.tzkt.io/#section/Introduction). 
+
+For Edonet we can use:
+
+```
+https://api.edo2net.tzkt.io/
+```
+
+Because TzKT offers a REST API, we have different options to test it here. Let us start by [fetching accounts](https://api.tzkt.io/#tag/Accounts). 
+
+We can do a request via [browser](https://api.tzkt.io/v1/accounts) or in a terminal:
+
+```bash
+$ curl https://api.edo2net.tzkt.io/v1/accounts
+```
+
+The endpoint gives you access to the list of the accounts in the network and the output is limited to 100 by default. We will see how to adjust this limit soon. As you see we could work with any language and tool which supports HTTP requests. Here we want to continue with Node.js and [request](https://www.npmjs.com/package/request).
+
+Create a folder and an `index.js` in it:
+
+```javascript
+
+const request = require('request');
+
+request('https://api.edo2net.tzkt.io/v1/accounts?limit=10&select=balance', (err, res, body) => {
+  console.log(body);
+});
+
+```
+
+Now run:
+
+```bash
+$ npm install request
+```
+
+and
+
+```bash
+$ node index.js
+```
+
+You see that we limit the output to 10 accounts and we want to fetch the account balance for those. It is important that you first think about what you want to get before making a request because it will [impact the performance](https://baking-bad.org/blog/2020/08/10/tezos-explorer-api-tzkt-request-only-what-you-need/). 
+
+<tip>
+By default the `limit` is set to 100 and you can increase it up to 1000.
+</tip>
+
+You can specify ´select´ and use `select.fields` or `select.values` to fetch the fields or the values.
+
+In addition we can use some [filter](
+https://baking-bad.org/blog/2020/09/28/tezos-explorer-api-tzkt-filter-data-on-the-api/) though the API:
+
+```javascript
+const request = require('request');
+
+request('https://api.edo2net.tzkt.io/v1/accounts?balance.gt=10000000000000', (err, res, body) => {
+  console.log(body);
+});
+```
+
+this finds you an account with a balance of 10 million tez. 
+
+<info>
+The amount of endpoints TzKT offers is huge. Each is documented and you can find in the **QUERY PARAMETERS** filters you can apply and in the **RESPONSE SCHEMA** the fields you can fetch.
+</info>
+
+Let us fetch the storage of our certification smart contract:
+
+```javascript
+const request = require('request');
+
+request('https://api.edo2net.tzkt.io/v1/contracts/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK/storage', 
+  (err, res, body) => {
+  console.log(JSON.parse(body));
+});
+```
+
+You see that the response is a JSON which we can parse. Now the question appers, if we want to track the activity on our smart contract, [how often](https://baking-bad.org/blog/2020/07/29/tezos-explorer-api-tzkt-how-often-to-make-requests/) do we need to do this request?
+
+You know that each transaction needs to be included into a block. So we do not need to fetch data more often than blocks apper. For the testnet we can assume, that every 30 seconds we will get a new block. Notice, usually you would also wait more than one block to confirm a transaction.
+
+With [request-promise](https://github.com/request/request-promise) we can do:
+
+```javascript
+
+const request = require('request-promise');
+
+const blockTime = () => {
+  let recentBlockTime = Date.now();  
+  return request('https://api.edo2net.tzkt.io/v1/head').then((body) => {
+    recentBlockTime = Date.parse(JSON.parse(body).timestamp);
+    return recentBlockTime;
+  });
+}
+
+const contractStorage = (address) => {
+  let storage = null;
+  return request('https://api.edo2net.tzkt.io/v1/contracts/' + address + '/storage').then((body) => {
+      storage = JSON.parse(body);
+      return storage;
+    });
+}
+
+const Sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
+
+async function main() {
+  let nextBlockTime = await blockTime() + 30000;
+  while(true) {
+    if(Date.now() >= nextBlockTime) {
+      nextBlockTime = await blockTime() + 30000;
+      console.log(await contractStorage("KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK"));
+    }
+    await Sleep(5000);
+  }
+}
+
+main();
+
+```
+
+This will wait 30 seconds from the timestamp of the last recent block before starting to fetch the timestamp of the most recent block. And even if 30 seconds are past, it will not do more requests than once each 5 seconds. This should be enough to have an accurate storage. Notice we do not catch any error above but you should always check for the response if you work with an API.
+
+<tip>
+You can also try the [WebSocket API](https://api.tzkt.io/#section/JS-simple-client) and subscribe to events.
+</tip>
+
+<reading>
+- https://baking-bad.org/blog/tag/TzKT/
+- https://baking-bad.org/blog/2020/12/28/tzkt-v131-released-with-edo-support-and-new-features-in-tezos-explorer-and-api/
+</reading>
