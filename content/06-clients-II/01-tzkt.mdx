@@ -1,10 +1,10 @@
 ---
 title: TzKT-API
-description: TzKT-API
+description: Fetching information from the Tezos blockchain
 slug: /tzkt
 ---
 
-# TzKT
+import HighlightBox from "../../src/components/HighlightBox"
 
 [TzKT](https://github.com/baking-bad/tzkt) is Tezos Blockchain indexer. We have talked about how a Blockchain includes a lot of transactions and information. Working directly on the whole Blockchain to fetch and process data will be time consuming. The TzKT indexer can reduce this time and offers in addition high level [functionalities](https://github.com/baking-bad/tzkt#features) which are not provided by the Tezos JSON/RPC interface. 
 
@@ -73,11 +73,13 @@ request('https://api.edo2net.tzkt.io/v1/accounts?balance.gt=10000000000000', (er
 
 this finds you an account with a balance of 10 million tez. 
 
-<info>
-The amount of endpoints TzKT offers is huge. Each is documented and you can find in the **QUERY PARAMETERS** filters you can apply and in the **RESPONSE SCHEMA** the fields you can fetch.
-</info>
+<HighlightBox type="info">
 
-Let us fetch the storage of our certification smart contract:
+The amount of endpoints TzKT offers is huge. Each is documented and you can find in the **QUERY PARAMETERS** filters you can apply and in the **RESPONSE SCHEMA** the fields you can fetch.
+
+</HighlightBox>
+
+Let's fetch the storage of our certification smart contract:
 
 ```javascript
 const request = require('request');
@@ -88,9 +90,9 @@ request('https://api.edo2net.tzkt.io/v1/contracts/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7
 });
 ```
 
-You see that the response is a JSON which we can parse. Now the question appers, if we want to track the activity on our smart contract, [how often](https://baking-bad.org/blog/2020/07/29/tezos-explorer-api-tzkt-how-often-to-make-requests/) do we need to do this request?
+You see that the response is a JSON which we can parse. Now the question appears, if we want to track the activity on our smart contract, [how often](https://baking-bad.org/blog/2020/07/29/tezos-explorer-api-tzkt-how-often-to-make-requests/) do we need to do this request?
 
-You know that each transaction needs to be included into a block. So we do not need to fetch data more often than blocks apper. For the testnet we can assume, that every 30 seconds we will get a new block. Notice, usually you would also wait more than one block to confirm a transaction.
+You know that each transaction needs to be included into a block. So we do not need to fetch data more often than blocks appear. For the testnet we can assume, that every 30 seconds we will get a new block. Notice, usually you would also wait more than one block to confirm a transaction.
 
 With [request-promise](https://github.com/request/request-promise) we can do:
 
@@ -133,11 +135,15 @@ main();
 
 This will wait 30 seconds from the timestamp of the last recent block before starting to fetch the timestamp of the most recent block. And even if 30 seconds are past, it will not do more requests than once each 5 seconds. This should be enough to have an accurate storage. Notice we do not catch any error above but you should always check for the response if you work with an API.
 
-<tip>
-You can also try the [WebSocket API](https://api.tzkt.io/#section/JS-simple-client) and subscribe to events.
-</tip>
+<HighlightBox type="tip">
 
-<reading>
+You can also try the [WebSocket API](https://api.tzkt.io/#section/JS-simple-client) and subscribe to events.
+
+</HighlightBox>
+
+<HighlightBox type="reading">
+
 - https://baking-bad.org/blog/tag/TzKT/
 - https://baking-bad.org/blog/2020/12/28/tzkt-v131-released-with-edo-support-and-new-features-in-tezos-explorer-and-api/
-</reading>
+
+</HighlightBox>

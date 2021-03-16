@@ -4,4 +4,5 @@ module.exports = {
   "Writing Smart Contracts": require("./03-smart-contracts-I/structure.js"),
   "More Smart Contract Development": require("./04-smart-contracts-II/structure.js"),
   "Developing Clients": require("./05-clients-I/structure.js"),
+  "More on Clients": require("./06-clients-II/structure.js"),
 };
