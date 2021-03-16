@@ -6,11 +6,19 @@ slug: /tzkt
 
 import HighlightBox from "../../src/components/HighlightBox"
 
-[TzKT](https://github.com/baking-bad/tzkt) is Tezos Blockchain indexer. We have talked about how a Blockchain includes a lot of transactions and information. Working directly on the whole Blockchain to fetch and process data will be time consuming. The TzKT indexer can reduce this time and offers in addition high level [functionalities](https://github.com/baking-bad/tzkt#features) which are not provided by the Tezos JSON/RPC interface. 
+[TzKT](https://github.com/baking-bad/tzkt) is a **Tezos blockchain indexer**.
 
-You can [install](https://github.com/baking-bad/tzkt#installation-docker) or [build](https://github.com/baking-bad/tzkt#installation-from-source) it and [configure](https://github.com/baking-bad/tzkt#install-tzkt-indexer-and-api-for-testnets) for the testnet.
+We have talked about how a blockchain includes a lot of transactions and information. Working directly on the whole blockchain to fetch and process data will be time consuming. The **TzKT indexer** can reduce this time and in addition, offers high-level [functionalities](https://github.com/baking-bad/tzkt#features), which are not provided by the Tezos JSON/RPC interface. 
 
-Here we want to learn how to work with the [TzKT-API]. Therefore we will work with a [public endpoint](https://api.tzkt.io/#section/Introduction). 
+You can [install](https://github.com/baking-bad/tzkt#installation-docker) or [build](https://github.com/baking-bad/tzkt#installation-from-source) it, and [configure](https://github.com/baking-bad/tzkt#install-tzkt-indexer-and-api-for-testnets) it for the testnet.
+
+At this point, we want to learn how to work with the **TzKT-API**. Therefore, we will work with a [public endpoint](https://api.tzkt.io/#section/Introduction). 
+
+<HighilightBox type="info">
+
+You want an overview of the provided TzKT APIs and staging environments for testing, take a look [here](https://api.tzkt.io/#section/Introduction).
+
+</HighlightBox>
 
 For Edonet we can use:
 
@@ -18,15 +26,19 @@ For Edonet we can use:
 https://api.edo2net.tzkt.io/
 ```
 
-Because TzKT offers a REST API, we have different options to test it here. Let us start by [fetching accounts](https://api.tzkt.io/#tag/Accounts). 
+Because TzKT offers a **REST API**, we have different options to test it here.
 
-We can do a request via [browser](https://api.tzkt.io/v1/accounts) or in a terminal:
+Let's start by [fetching accounts](https://api.tzkt.io/#tag/Accounts).
+
+We can do a request via a [browser](https://api.tzkt.io/v1/accounts) or in a terminal:
 
 ```bash
 $ curl https://api.edo2net.tzkt.io/v1/accounts
 ```
 
-The endpoint gives you access to the list of the accounts in the network and the output is limited to 100 by default. We will see how to adjust this limit soon. As you see we could work with any language and tool which supports HTTP requests. Here we want to continue with Node.js and [request](https://www.npmjs.com/package/request).
+The endpoint gives you **access** to the list of accounts in the network - The output is **limited to 100** by default. We will soon see how to adjust this limit.
+
+As you can see, we could work with any language and tool which supports HTTP requests. Here we want to continue with Node.js and [request](https://www.npmjs.com/package/request).
 
 Create a folder and an `index.js` in it:
 
@@ -52,16 +64,26 @@ and
 $ node index.js
 ```
 
-You see that we limit the output to 10 accounts and we want to fetch the account balance for those. It is important that you first think about what you want to get before making a request because it will [impact the performance](https://baking-bad.org/blog/2020/08/10/tezos-explorer-api-tzkt-request-only-what-you-need/). 
+We **limit the output** to 10 accounts, and we want to fetch the account balance for those 10.
 
-<tip>
-By default the `limit` is set to 100 and you can increase it up to 1000.
-</tip>
+It is important that you first think about what you want to get before making a request, because it will [impact the performance](https://baking-bad.org/blog/2020/08/10/tezos-explorer-api-tzkt-request-only-what-you-need/). 
 
-You can specify ´select´ and use `select.fields` or `select.values` to fetch the fields or the values.
+<HighlightBox type="tip">
 
-In addition we can use some [filter](
-https://baking-bad.org/blog/2020/09/28/tezos-explorer-api-tzkt-filter-data-on-the-api/) though the API:
+By default the `limit` is set to 100. You can increase it to up to 1000.
+
+</HighlightBox>
+
+You can specify `select`, and use `select.fields` or `select.values` to fetch the fields or the values.
+
+<HighlightBox type="tip">
+
+Using **data filters** on the Tezos API, instead of on the client, helps increase performance and reduce the risk of errors by developing on the TzKT API. Thus, applying them can be understood as a best practice for developers.
+
+</HighlightBox>
+
+Additionally, we can apply some [filters](
+https://baking-bad.org/blog/2020/09/28/tezos-explorer-api-tzkt-filter-data-on-the-api/) through the API:
 
 ```javascript
 const request = require('request');
@@ -71,11 +93,11 @@ request('https://api.edo2net.tzkt.io/v1/accounts?balance.gt=10000000000000', (er
 });
 ```
 
-this finds you an account with a balance of 10 million tez. 
+This finds you an account with a balance of 10 million tez. 
 
 <HighlightBox type="info">
 
-The amount of endpoints TzKT offers is huge. Each is documented and you can find in the **QUERY PARAMETERS** filters you can apply and in the **RESPONSE SCHEMA** the fields you can fetch.
+The **amount of endpoints** TzKT offers is huge. Each is documented, and you can find in the **QUERY PARAMETERS** filters to apply and in the **RESPONSE SCHEMA** the fields you can fetch.
 
 </HighlightBox>
 
@@ -90,9 +112,17 @@ request('https://api.edo2net.tzkt.io/v1/contracts/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7
 });
 ```
 
-You see that the response is a JSON which we can parse. Now the question appears, if we want to track the activity on our smart contract, [how often](https://baking-bad.org/blog/2020/07/29/tezos-explorer-api-tzkt-how-often-to-make-requests/) do we need to do this request?
+You see that the response is a JSON, which we can parse.
 
-You know that each transaction needs to be included into a block. So we do not need to fetch data more often than blocks appear. For the testnet we can assume, that every 30 seconds we will get a new block. Notice, usually you would also wait more than one block to confirm a transaction.
+Now the question arises: If we want to track the activity on our smart contract, [how often](https://baking-bad.org/blog/2020/07/29/tezos-explorer-api-tzkt-how-often-to-make-requests/) do we need to conduct this request?
+
+<HighlightBox tye="tip">
+
+It is a recommended best practice when using the TzKT API to not conduct the same data request until there has been a change. Being aware of how often data updates occur, helps you define how often you want to request data.
+
+</HighlightBox>
+
+You know that each transaction needs to be included into a block. So we don't need to fetch data more often than blocks appear. For the testnet, we can assume that every 30 seconds we will get a new block. Notice, usually you would also wait more than one block to confirm a transaction.
 
 With [request-promise](https://github.com/request/request-promise) we can do:
 
@@ -133,7 +163,9 @@ main();
 
 ```
 
-This will wait 30 seconds from the timestamp of the last recent block before starting to fetch the timestamp of the most recent block. And even if 30 seconds are past, it will not do more requests than once each 5 seconds. This should be enough to have an accurate storage. Notice we do not catch any error above but you should always check for the response if you work with an API.
+This will wait 30 seconds from the timestamp of the last recent block before starting to fetch the timestamp of the most recent block. Also, even after the 30 seconds passed, it won't do more than one request each 5 seconds. This should be enough to have an accurate storage.
+
+Notice, we didn't catch any error above, but you should always check for the response if you work with an API.
 
 <HighlightBox type="tip">
 
@@ -143,7 +175,7 @@ You can also try the [WebSocket API](https://api.tzkt.io/#section/JS-simple-clie
 
 <HighlightBox type="reading">
 
-- https://baking-bad.org/blog/tag/TzKT/
-- https://baking-bad.org/blog/2020/12/28/tzkt-v131-released-with-edo-support-and-new-features-in-tezos-explorer-and-api/
+- [Baking Bad Blog](https://baking-bad.org/blog/tag/TzKT/)
+- [TzKT v1.3.1 Released With Edo Support and Some New Features in the Tezos Explorer and API](https://baking-bad.org/blog/2020/12/28/tzkt-v131-released-with-edo-support-and-new-features-in-tezos-explorer-and-api/) 
 
 </HighlightBox>
