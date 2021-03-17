@@ -8,6 +8,9 @@ variables:
   AWS_DEFAULT_REGION: eu-west-1
   BUCKET_NAME_STAGING: preview-uqq8yju5was05rgy.b9lab.com
   BUCKET_NAME_REVIEW: preview-uqq8yju5was05rgy-review.b9lab.com
+  BUCKET_NAME_REVIEW_2: preview-uqq8yju5was05rgy-review-2.b9lab.com
+  BUCKET_NAME_REVIEW_3: preview-uqq8yju5was05rgy-review-3.b9lab.com
+  BUCKET_NAME_REVIEW_4: preview-uqq8yju5was05rgy-review-4.b9lab.com
   BUCKET_NAME_PRODUCTION: xxx
   DISTRIBUTION_ID_PRODUCTION: XXX
 
@@ -72,6 +75,70 @@ deploy-aws-s3-review:
   script:
     # do not use sync here
     - aws s3 cp public/ s3://${BUCKET_NAME_REVIEW}/ --recursive --acl public-read
+
+deploy-aws-s3-review-2:
+  stage: deploy
+  only:
+    refs:
+      - review-2
+      - schedules
+  tags:
+    - main-runner
+  
+  image: python:latest
+  
+  dependencies:
+    - build-code
+
+  before_script:
+    - pip install awscli
+
+  script:
+    # do not use sync here
+    - aws s3 cp public/ s3://${BUCKET_NAME_REVIEW_2}/ --recursive --acl public-read
+
+deploy-aws-s3-review-3:
+  stage: deploy
+  only:
+    refs:
+      - review-3
+      - schedules
+  tags:
+    - main-runner
+  
+  image: python:latest
+  
+  dependencies:
+    - build-code
+
+  before_script:
+    - pip install awscli
+
+  script:
+    # do not use sync here
+    - aws s3 cp public/ s3://${BUCKET_NAME_REVIEW_3}/ --recursive --acl public-read
+
+deploy-aws-s3-review-4:
+  stage: deploy
+  only:
+    refs:
+      - review-4
+      - schedules
+  tags:
+    - main-runner
+  
+  image: python:latest
+  
+  dependencies:
+    - build-code
+
+  before_script:
+    - pip install awscli
+
+  script:
+    # do not use sync here
+    - aws s3 cp public/ s3://${BUCKET_NAME_REVIEW_4}/ --recursive --acl public-read
+
 
 deploy-aws-s3-production:
   stage: deploy
