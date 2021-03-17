@@ -4,35 +4,50 @@ description: Beacon
 slug: /beacon
 ---
 
-A wallet will store your keys and can also fulfill other tasks like transaction signing. 
+import HighlightBox from "../../src/components/HighlightBox"
 
-[Beacon](https://www.walletbeacon.io/) is an interface between such a wallet and your application. At the time of writing, Beacon supports [AirGap](https://airgap.it/), [Galleon](https://github.com/Cryptonomic/Deployments/wiki/Galleon:-Releases), [Kukai](https://wallet.kukai.app/), [Thanos](https://templewallet.com/) and [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn). 
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
 
-We have different options how we can use the [Beacon SDK](https://github.com/airgap-it/beacon-sdk). We will work with Taquito's [Wallet API](https://tezostaquito.io/docs/wallet_api/) and extend our [certifier application](https://github.com/b9lab/tezos-sample-certifier) so it can be used with a wallet. This is possible because there is a wallet interaction specification called [TZIP-10](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-10/tzip-10.md) which is implemented by Beacon.
+A **wallet** will store your keys and can also fulfil other tasks, like signing transactions. 
 
-# Wallet API
+[Beacon](https://www.walletbeacon.io/) is an **interface** between such a wallet and your application. At the time of writing, Beacon supports:
 
-Wallet API supports different wallets, the npm package for Beacon is `@taquito/beacon-wallet`. 
-Create a folder for this project and run in it:
+* [AirGap](https://airgap.it/),
+* [Galleon](https://github.com/Cryptonomic/Deployments/wiki/Galleon:-Releases),
+* [Kukai](https://wallet.kukai.app/),
+* [Temple](https://templewallet.com/) formerly known as Thanos, and
+* [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn). 
+
+We have different options for how we can use the [Beacon SDK](https://github.com/airgap-it/beacon-sdk). We will work with Taquito's [Wallet API](https://tezostaquito.io/docs/wallet_api/), and extend our [certifier application](https://github.com/b9lab/tezos-sample-certifier) so it can be used with a wallet. This is possible because there is a wallet interaction specification called [TZIP-10](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-10/tzip-10.md), which is implemented by Beacon.
+
+## Wallet API
+
+The **Wallet API** supports different wallets. The **npm package** for Beacon is `@taquito/beacon-wallet`.
+
+**Create a folder** for this project, and **run** in it:
 
 ```bash
 $ npm init
 ```
 
-Then you can install the necessary packages:
+Then you can **install the necessary packages**:
 
 ```bash
 $ npm install @taquito/taquito
 $ npm install @taquito/beacon-wallet
 ```
 
-You have seen how we can use such libraries in the browser with the help of [Browserify](http://browserify.org/). Here we want to work with the [Parcel](https://parceljs.org/getting_started.html) bundler, so it is best if you install it globally:
+You have seen how we can use such libraries in the browser with the help of [Browserify](http://browserify.org/). Here we want to work with the [Parcel](https://parceljs.org/getting_started.html) bundler, so it is best if you **install it globally**:
 
 ```
 $ npm install -g parcel-bundler
 ```
 
-Then we can again create an `index.html`:
+Then we can again **create an `index.html`**:
 
 ```html
 
@@ -74,8 +89,9 @@ Then we can again create an `index.html`:
 
 ```
 
-<expendable>
-and a bit styling so it does not hurt our eyes:
+<ExpansionPanel title="The CSS file">
+
+A bit of styling, so it doesn't hurt our eyes:
 
 ```css
 body {
@@ -209,9 +225,12 @@ a {
   display: none;
 }
 ```
-</expendable>
 
-Ok so far we just removed the input fields for the faucet account. Instead we now have a button to connect to a wallet. Now you need to rewrite parts of `certifier.js`:
+</ExpansionPanel>
+
+Ok, so far we just **removed the input fields** for the faucet account. Instead, we now have a button to connect a wallet.
+
+Now you need to rewrite parts of `certifier.js`:
 
 ```javascript
 
@@ -257,7 +276,7 @@ function reportResult(result, type, itemSelector) {
 
 let tezos, wallet;
 
-// This is function will connect your application with the wallet
+// This function will connect your application with the wallet
 function connectWallet() {
     const accountSettings = readUISettings();
     tezos = new TezosToolkit(accountSettings.provider);
@@ -279,7 +298,7 @@ function connectWallet() {
 
 }
 
-// This is the main function, interacting with the contract through Taquito Wallet API
+// This is the main function, interacting with the contract through the Taquito Wallet API
 function certify(studentAddress) {
     const accountSettings = readUISettings();
     return tezos.wallet.at(accountSettings.contractAddress)
@@ -314,7 +333,7 @@ You see our new function `connectWallet()`. What is new there?
 
 ```
 
-There are other [usefull options](https://tezostaquito.io/docs/wallet_api/#--tzip-10-wallet) like `eventHandlers` which should be utilized for better user exprience in a real application. Anyway we will keep it simple and set only what must be set. 
+There are other [useful options](https://tezostaquito.io/docs/wallet_api/#--tzip-10-wallet), like `eventHandlers` which should be utilised for better user experience in a real application. Anyway we will keep it simple and set only what must be set. 
 
 ```javascript
     wallet
@@ -328,9 +347,9 @@ There are other [usefull options](https://tezostaquito.io/docs/wallet_api/#--tzi
         .then(() => tezos.setWalletProvider(wallet));
 ```
 
-we first call for a `requestPermissions` for the edonet testnet, fetch the address of the user and print it into the console. Then we set the wallet as our provider.
+We first call for a `requestPermissions` for the Edonet testnet, fetch the address of the user, and print it into the console. Then we **set the wallet** as our provider.
 
-Now the wallet will do the signing of our transactions:
+Now the wallet will **sign our transactions**:
 
 ```javascript
 
@@ -354,21 +373,25 @@ function certify(studentAddress) {
 }
 ```
 
-As you can see it is just slightly changed, we use `tezos.wallet.at` instead of `tezos.contract.at` to get the contract abstraction. Let us test this.
+As you can see, it is just **slightly changed**: We use `tezos.wallet.at` instead of `tezos.contract.at` to **get the contract abstraction**.
 
-First you need the [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn) extension for Chrome. After installation you can turn on the developer mode:
+Let's test this!
+
+First, you need the [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn) extension for Chrome. After installation you can turn on the developer mode:
 
 ![](images/beacon1.png)
 
-In this case you can setup a local secret and you do not need a wallet to pair with. 
+In this case, you can **setup a local secret** and you don't need a wallet to pair it with. 
 
 ![](images/beacon2.png)
 
-Now we can set the network to edonet:
+Now we can **set the network** to Edonet:
 
 ![](images/beacon3.png)
 
-Now let us start our application. Run in your project folder:
+Now let's **start our application**!
+
+Run in your project folder:
 
 ```bash
 $ parcel index.html
@@ -381,11 +404,13 @@ Server running at http://localhost:1234
 
 ```
 
-it will tell you where the server is running so you can test your application. In addition show the console to see the outputs:
+It will tell you where the server is running so you can test your application.
+
+In addition, show the console to see the outputs:
 
 ![](images/beacon4.png)
 
-Now when you hit the connect button, you most likely will see in the console something smilar to:
+Now, when you hit the `Connect Wallet` button, you most likely will see in the console something similar to:
 
 ```
 TypeError: sodium.crypto_generichash is not a function
@@ -395,7 +420,7 @@ TypeError: sodium.crypto_generichash is not a function
     at fulfilled (index.9c3bd9ee.js:102140)
 ```
 
-this is an issue with Parcel we need to fix first, in your project folder run:
+This is an issue with Parcel we need to fix first. Thus, in your project folder run:
 
 ```bash
 $ sed -i 's/require("libsodium-wrappers"));/require("libsodium-wrappers")).default;/g' ./dist/index.9c3bd9ee.js
@@ -403,21 +428,25 @@ $ sed -i 's/require("libsodium-wrappers"));/require("libsodium-wrappers")).defau
 $ sed -i 's/qrcode(/qrcode.default(/g' ./dist/index.9c3bd9ee.js
 ```
 
-Please adjust the name `index.9c3bd9ee.js` into the correct one which will be generated by Parcel in the `dist` folder.
+Please adjust the name `index.9c3bd9ee.js` into the correct one, which will be generated by Parcel in the `dist` folder.
 
-<tip>
+<HighlightBox type="tip">
+
 If you work on MacOs, you will need the command to start with `-i ''` like `sed -i '' 's/require("l....`
-</tip>
+
+</HighlightBox>
 
 ![](images/beacon5.png)
 
-Now we can select our wallet Spire to use our local keys:
+Now, we can **select our wallet Spire** to use our local keys:
 
 ![](images/beacon6.png)
 
+You have to confirm the permission request:
+
 ![](images/beacon7.png)
 
-Now you should see your address in the console.
+You should see your address in the console.
 
 ```
 ...
@@ -429,15 +458,30 @@ index.9c3bd9ee.js:112926 0ac90fc8-a9fc-5908-5d6f-1b0e9a77db4c: 2754.822998046875
 index.9c3bd9ee.js:502 tz1PseT4U3hKdkC5dWhvHwxcnhSYc5qmtBfn
 ```
 
-Unfortunately at the time of writing, we cannot import faucet accounts into Spire. Instead it will generate a new account with 0 tez in it. 
+At the time of writing, unfortunately we **cannot** import faucet accounts into Spire. Instead it will generate a new account with 0 tez in it.
 
-So to continue, first you will need to transfer some tez from a faucet account on the testnet to your address in Spire. You can do this like we did in the CLI section with the `tezos-client` or via [SmartPy](https://smartpy.io/wallet.html). You will need to visit SmartPy anyway to deploy the [certification contract](https://smartpy.io/ide?code=eJytkUFLxDAQhe_5FaGnFCUguhehoO5F8SKoiIiEmKQ0uE1jZna1_nqTtnG77N40h0LnvZnvZWJb3wWk0MqAvqcSKHhC1EoC0KUJaGurJNrOMfB82TkMUmF5Tmg82tRUCOssCsHArOpjqsYWEyZLOknhycWyqquX15m32naRoesiskxE9cJ31uEvbPT1E8vLIFuYgzzfmDAYPAfjdBxdDXQtUfIZZSfajqi5X0PDptmEpChSa4EGkDnZGlrRYlxMX5QkpRqkKcals6voiE2pKqRS3dohK1K9GLk3b90hRyxPhuGTV13tv0KMEwwAK_D75A7Mw9njaXOr35cL_dRsrj@_lGvun9Xio8Wr2hXlOBSUcTLYOTqX2LT1_H9UZfg2zr7G82Okq@VMJQ_rmHFc_V@jHmDFJf0X6gddefug) again for your new address.
+So to continue, you will need to transfer some tez from a faucet account on the testnet to your address in Spire first. You can do this, like we did in the _CLI section_, with the `tezos-client` or via [SmartPy](https://smartpy.io/wallet.html) - You will need to visit SmartPy anyway to deploy the [certification contract](https://smartpy.io/ide?code=eJytkUFLxDAQhe_5FaGnFCUguhehoO5F8SKoiIiEmKQ0uE1jZna1_nqTtnG77N40h0LnvZnvZWJb3wWk0MqAvqcSKHhC1EoC0KUJaGurJNrOMfB82TkMUmF5Tmg82tRUCOssCsHArOpjqsYWEyZLOknhycWyqquX15m32naRoesiskxE9cJ31uEvbPT1E8vLIFuYgzzfmDAYPAfjdBxdDXQtUfIZZSfajqi5X0PDptmEpChSa4EGkDnZGlrRYlxMX5QkpRqkKcals6voiE2pKqRS3dohK1K9GLk3b90hRyxPhuGTV13tv0KMEwwAK_D75A7Mw9njaXOr35cL_dRsrj@_lGvun9Xio8Wr2hXlOBSUcTLYOTqX2LT1_H9UZfg2zr7G82Okq@VMJQ_rmHFc_V@jHmDFJf0X6gddefug) again for your new address.
 
-After that you can try to issue a certificate. Spire will pop up and let you confirm the transaction:
+After that, you can try to **issue a certificate**.
+
+Spire will pop up and let you confirm the transaction:
 
 ![](images/beacon8.png)
 
-<reading>
-https://medium.com/coinmonks/build-a-tezos-dapp-using-taquito-and-the-beacon-sdk-692d7dc822aa
-https://medium.com/tezos-israel/building-a-simple-react-d-app-on-the-tezos-blockchain-part-1-777ff6b0b84e
-</reading>
+<HighlightBox type="reading">
+
+* Barde, Claude (2020): [Build a Tezos dapp using Taquito and the Beacon SDK](https://medium.com/coinmonks/build-a-tezos-dapp-using-taquito-and-the-beacon-sdk-692d7dc822aa)
+* Lev-Ari, Chaim (2020): [Building a Simple React Dapp on the Tezos Blockchain](https://medium.com/tezos-israel/building-a-simple-react-d-app-on-the-tezos-blockchain-part-1-777ff6b0b84e)
+* [AirGap](https://airgap.it/)
+* [Galleon](https://github.com/Cryptonomic/Deployments/wiki/Galleon:-Releases)
+* [Kukai](https://wallet.kukai.app/)
+* [Temple](https://templewallet.com/) formerly known as Thanos
+* [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn)
+* [Beacon SDK](https://github.com/airgap-it/beacon-sdk)
+* [Taquito Wallet API](https://tezostaquito.io/docs/wallet_api/)
+* [TZIP-10](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-10/tzip-10.md)
+* [Browserify](http://browserify.org/)
+* [Parcel: Getting Started](https://parceljs.org/getting_started.html)
+* [SmartPy Wallet](https://smartpy.io/wallet.html)
+
+</HighlightBox>
