@@ -1,5 +1,119 @@
 ---
 title: FA2
-description: FA2
+description: A unified token contract interface
 slug: /fa2
 ---
+
+import HighlightBox from "../../src/components/HighlightBox"
+
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
+
+There are many considerations when implementing a smart contract, especially one that is the basis for tokens, from which language to choose to what standard to implement. We have talked about smart contract development on Tezos and how to work with clients, let's now focus our attention on the implementation of **standardisation** when it comes to tokens.
+
+Let's first begin with a general definition on what is meant as a token in the blockchain world:
+
+> A **token** is _a digital representation of an asset or utility_.
+
+The first challenge, when it comes to creating tokens, is deciding on the **type of token**. One can differentiate between fungible (like ERC-20 tokens), non-fungible (e.g. ERC-721), and even semi-fungible tokens, also known by their abbreviation NFT. In addition, tokens can differentiate in their transferrability.
+
+What is meant by **fungibility** when talking about tokens? Fungibility addresses if a token is **interchangeable** with other tokens or not. Non-fungible tokens are important when a token requires a certain degree of uniqueness to be valueable.
+
+Now, one could ask: Why is **standardisation** gaining track?
+
+The **demand for token standards** has continously risen, especially since the development of ERC-standards and the STO wave. As a reaction, **FA1.2** (TZIP-7), a token standard, was released in 2019 leading to implementations in among others SmartPy and LIGO as well as financial use cases for fungible token contracts.
+
+## FA: A unified token contract interface
+
+**FA2** is a **token standard** on Tezos. It provides a standard API to manage tokens.
+
+The standard is based on a proposal for a unified token contract interface. It addresses two aspects of importance to token standards: **Token type and permission standardisation**.
+
+It was meant to help support **different token types**. While FA1.2 was tailored to single fungible token smart contracts, FA2 allows **single- and multi-token** smart contracts for a variety of tokens. Thus, FA2 maintains the functionalities from FA1.2 and adds token creation possibilities, i.e. allows for greater tokenisation on the Tezos blockchain. FA2 being applicable to different types of tokens is meant by saying: FA2 is agnostic to the token type.
+
+The greater degree of tokenisation stems from the possibility of token varieties it can be applied to as well as use cases.
+
+<HighlightBox type="info">
+
+Do you want to take a look at the [proposal for FA2 (TZIP-12)](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-12/tzip-12.md)?
+
+</HighlightBox>
+
+The **main aim** was to create standartisation that allows for a variety of implementations for different token types, while providing widely-applicable **common interface standards** to integrate wallets, exchanges, and external developers. This was especially challenging in regard to the longevity to the standard: As Tezos is a self-amending protocol with evolving functionalities, FA2 needed to cover a broad spectrum to maintain its compatability in the long term.
+
+When it comes to the **standardisation of permissions**, standardisation brings the benefit of increasing trust in external smart contracts and centrally managed tokens. For this reason, FA2 standardises:
+
+* transfer semantics,
+* metadata,
+* accessing balances,
+* total supply, and
+* permission rights.
+
+<HighlightBox type="info">
+
+Remember the role permissions play in the deployment pattern of a blockchain? If not, take a quick look at the section _Main Ideas Behind the Tezos Protocol - Managing Chains_.
+
+When we talk about permissions regarding tokens, they can be understood as:
+
+> _the rules that determine who can send how many tokens, receive them, and manage tokens for other users._
+
+</HighlightBox>
+
+With FA2, those implementing the token contracts can configure freely:
+
+* the token type(s),
+* the token management (administration, whitelisting, etc.),
+* the supply operations (minting and burning tokens),
+* the permissioning architecture, and
+* questions on contract upgradability.
+
+Specifically the **permissioning architecture** relates to whether permissioning is determined in the contract, i.e. a _monolith_, with a transfer hook to another contract, or a seperate wrapper contract. Each of this options represents an FA2 implementation pattern for permissions.
+
+Let's take a closer look at the permission implementation patterns!
+
+### FA2 permission implementation patterns
+
+We can differentiate three implementation patterns:
+
+* monolith,
+* wrapper, and
+* transfer hook.
+
+In a **monolith smart contract implementation**, the permissions are included in the FA2 token contrarct. This is often considered as the most viable option for Tezos when considering gas efficiency because calls in a contract are more efficient. Monolith architectures do have disadvantages: They are less modular and permissioning is less flexible. In addition, upgrading the permissioning often requires re-deploying the smart contract or a migration. FA2 addresses this last aspect by including specifications for operators and signing-off permissions for tokens to another contract, either a generalised or application-specific permissioning contracts.
+
+In a **wrapper implementation**, the seperate wrapper contract is on-chain and applies permissions by forwarding calls to the main contract, which manages the token ledger. Wrappers allow for modularity and extending the functionalities of the main token contract. Moreover, they allow for upgrades and replacements. Thus, permissions can be changed without having to change and re-deploy the contract. Wrapper approaches can lead to fragmentation, increase complexity, and decrease the adoption of a standard due to multi-wrapper support.
+
+When using **transfer hooks**, the main token contract calls another contract, which includes the permissioning specifications, i.e. "permissioning policies". Its main benefits are a seperation of concerns, granular permissioning rules, and the possibility to upgrade permissions. At the same time, transfer hooks bring gas limitation concerns, as do wrappers. Additionally, permissioning policies are more complex and the contract size increases with contract use because of increasing permissioning policies.
+
+## FA2 entry points and data structures
+
+FA2 **formalises token design**. Thus, a specific list of entry points and related data structures have to be implemented. To manipulate data structures, FA2 provides helper functions to manipulate data structures.
+
+Therefore, every contract **must** contain the following entry points:
+
+type fa2_entry_points is
+  Transfer                of transfer_params
+| Balance_of              of balance_of_params
+| Token_metadata_registry of token_metadata_registry_params
+| Permissions_descriptor  of permissions_descriptor_params
+| Update_operators        of update_operator_params
+| Is_operator             of is_operator_params
+--> see https://tezosacademy.io/pascal/chapter-fa2 and add
+
+
+
+
+<HighlightBox type="tip">
+
+You can find an overview document of the semantics, metadata, a set of standard errors and error mnemonics used for FA2 implementation [here](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-12/tzip-12.md).
+
+</HighlightBox>
+
+
+
+<HighlightBox type="reading">
+
+</HighlightBox>
