@@ -12,7 +12,7 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-The term **[oracle](https://en.wikipedia.org/wiki/Oracle_machine)**, in computability theory, describes an instance which can solve problems that a turing machine is not capable of. In blockchain, we have a similar situation where the term oracle appers.
+The term **[oracle](https://en.wikipedia.org/wiki/Oracle_machine)**, in computability theory, describes an instance which can solve problems that a Turing machine is not capable of. In blockchain, we have a similar situation where the term oracle appears.
 
 ## The need to introduce external data
 
@@ -36,7 +36,7 @@ So, there are use cases for which access to some off-chain data is necessary, fo
 
 ## Chainlink
 
-Chainlink provides a **[decentralized network](https://docs.chain.link/docs/architecture-decentralized-model#decentralized-oracle-network)** formed by **[oracle nodes](https://docs.chain.link/docs/listing-services)**. They are maintained by indepented operators. So, we don't depend on just one node but a **network of nodes** - Data becomes more trustworthy and there is no central point of failure. In Chainlink, decentralisation is already set on the node operator level.
+Chainlink provides a **[decentralized network](https://docs.chain.link/docs/architecture-decentralized-model#decentralized-oracle-network)** formed by **[oracle nodes](https://docs.chain.link/docs/listing-services)**. They are maintained by independent operators. So, we don't depend on just one node but a **network of nodes** - Data becomes more trustworthy and there is no central point of failure. In Chainlink, decentralisation is already set on the node operator level.
 
 Basically, Chainlink connects smart contracts and off-chain data through their decentralised oracle network. Therefore, the oracle network provided allows to access off-chain data in a **secure** and **reliable** way.
 
@@ -50,9 +50,9 @@ If you want to take a closer look at Chainlink's source code, we can recommend t
 
 ### Chainlink and Tezos: Combining institutional-grade contracts with secure and reliable off-chain data
 
-A cooperation of [SmartPy.io](https://smartpi.io) and [Cryptonomic](https://cryptonomic.tech/) has led to Chainlink being natively available to Tezos developers. Whereas, Tezos and its ecosystem can profit from leveraging Chainlink's oracle network to enable applications relying on trustworthy external data.
+A cooperation of [SmartPy.io](https://smartpi.io) and [Cryptonomic](https://cryptonomic.tech/) has led to Chainlink being natively available to Tezos developers. Whereas Tezos and its ecosystem can profit from leveraging Chainlink's oracle network to enable applications relying on trustworthy external data.
 
-Chainlink's oracle network bears the benefit of integrating developed, reliable, secure oracle solutions. The network builds on a **growing number of independent, recurity reviewed, and Sybil resistant node operators**. Additionally, being able to work with a shared node set makes integration less prone to attacks and more seamless. Furthermore, Chainlink has serviced smart contracts worth millions of dollars across multiple projects and chains, i.e. its **performance has been tested**, and it's used by a number of DeFi applications and blockchain protocols.
+Chainlink's oracle network bears the benefit of integrating developed, reliable, secure oracle solutions. The network builds on a **growing number of independent, security reviewed, and Sybil resistant node operators**. Additionally, being able to work with a shared node set makes integration less prone to attacks and more seamless. Furthermore, Chainlink has serviced smart contracts worth millions of dollars across multiple projects and chains, i.e. its **performance has been tested**, and it's used by a number of DeFi applications and blockchain protocols.
 
 Another major argument for using Chainlink is that it provides market data for many **price feeds**. These use at least seven nodes for each feed. The price feed nodes query data from different data aggregators, i.e. the data level is decentralised too. Afterwards, the nodes' data is aggregated and pushed on-chain as a _price update_.
 
@@ -64,7 +64,7 @@ Leveraging Chainlink will allow for the development of **fully-integrated contra
 
 The smart contracts to integrate Chainlink are written in SmartPy. The deployment, indexing, and querying is done with the Cryptonomic stack, and Conseil will index the data to make it available through the API. The smart contracts are deployed and invoked with ConseilJS.
 
-You can find a template for Chainlink oracles by SmartPy [here](https://smartpy.io/ide?template=oracle.py), and there also is the offical [Solidity implementation](https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/src/v0.6/Oracle.sol). You can also take a look at the [Chainlink Developer Ressources](https://docs.chain.link/docs/getting-started), if you want to dive deeper.
+You can find a template for Chainlink oracles by SmartPy [here](https://smartpy.io/ide?template=oracle.py), and there also is the official [Solidity implementation](https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/src/v0.6/Oracle.sol). You can also take a look at the [Chainlink Developer Ressources](https://docs.chain.link/docs/getting-started), if you want to dive deeper.
 
 </ExpansionPanel>
 
@@ -77,21 +77,21 @@ You can find a template for Chainlink oracles by SmartPy [here](https://smartpy.
 
 ## Harbringer: Bringing a price oracle to the Tezos ecosystem
 
-For many DeFi applications to run seemesly a **trustworthy and reliable price feed** is vital. Among others, a price feed allows for derivatives, futures smart contracts, insurance, etc.
+For many DeFi applications to run seamlessly a **trustworthy and reliable price feed** is vital. Among others, a price feed allows for derivatives, futures smart contracts, insurance, etc.
 
 Why is a price feed so important?
 
-It comes down to a question of **trust**. As DeFi applications involve financial means and their value stemms strongly from the accuracy, reliability, and safety of price data, it is important to integrate a price oracle on protocols like Tezos. This avoids (maliciously) manipulated data creating unreliable and untrusty price feeds.
+It comes down to a question of **trust**. As DeFi applications involve financial means and their value stems strongly from the accuracy, reliability, and safety of price data, it is important to integrate a price oracle on protocols like Tezos. This avoids (maliciously) manipulated data creating unreliable and untrusty price feeds.
 
 **Harbringer** is such _a price oracle for digital assets_. It provides a set of tools and reference contracts. With them anyone can deploy a price oracle on Tezos.
 
-It allowes you to fetch signed price feeds from market data. Exchanges, such as Coinbase or OKEx can let their oracles submit a signed price feed, which is then included on-chain by a so-called poster. The exchange signes the price with their private key.
+It allows you to fetch signed price feeds from market data. Exchanges, such as Coinbase or OKEx can let their oracles submit a signed price feed, which is then included on-chain by a so-called poster. The exchange signs the price with their private key.
 
 <HighlightBox type="">
 
 Exchanges can provide Harbinger-compatible price feeds at low costs through a reference signer.
 
-</HightlightBox>
+</HighlightBox>
 
 The **poster** "posts" the **signed price** on-chain. Once a smart contract is deployed that relies on the signed price, the signing key is checked, and if correct, the contract deploys using it. This ensures that only trustworthy, i.e. "good", data is used.
 
@@ -105,7 +105,7 @@ Let's take a step-by-step look at the how Harbinger works in a processual sense 
 
 <ExpansionPanelListItem number="1">
 
-An exchange provides a **market data API**, which responses with a price when queryed. Price data usulally comes from an exchange's market order book.
+An exchange provides a **market data API**, which responses with a price when queried. Price data usually comes from an exchange's market order book.
 
 </ExpansionPanelListItem>
 
@@ -119,7 +119,7 @@ Data is retrieved from an exchange by the **signer**. The data is signed with a 
 
 The **poster** gets the price from the signer. The signed data is posted to the **storage contract**.
 
-**Or**, the poster invokes a callback on the storage contact pushing the data to a **normaliser contract**. The **volume-weighted average price** is then calaculated by the latter.
+**Or**, the poster invokes a callback on the storage contact pushing the data to a **normaliser contract**. The **volume-weighted average price** is then calculated by the latter.
 
 </ExpansionPanelListItem>
 
@@ -147,16 +147,13 @@ Harbinger consists of three main components:
 * the **signers**, who retrieves and signs price data, and
 * the **posters** that retrieves price data from the signer and pushes it to the oracle contract.
 
-
-
-
-
+Let's take a closer look at the seperation of responsibility! 
 
 ### The different roles
 
 First, let's address the **signer**!
 
-In Harbinger, a [reference signer](https://github.com/tacoinfra/harbinger-signer) is used to upport market data APIs from exchanges like [Coinbase](https://pro.coinbase.com/), [Binance](https://www.binance.com/), and [OKEx](http://okex.com/). Whereas, the architecture allows exchanges to provide signed price data for the same asset. Thus, **multiple data sources** are possible for the same price. This increases trust and reliability of price data as a medianised price can be calculated.
+In Harbinger, a [reference signer](https://github.com/tacoinfra/harbinger-signer) is used to support market data APIs from exchanges like [Coinbase](https://pro.coinbase.com/), [Binance](https://www.binance.com/), and [OKEx](http://okex.com/). Whereas, the architecture allows exchanges to provide signed price data for the same asset. Thus, **multiple data sources** are possible for the same price. This increases trust and reliability of price data as a medianised price can be calculated.
 
 <HighlightBox type="info">
 
@@ -164,15 +161,15 @@ The Harbinger reference signer is a Serverless Framework application leveraging 
 
 </HighlightBox>
 
-By using the reference signer, security is increased while it deploys independently from the excahnge's network and servers, doesn't have to be maintained, and has a secure caching API gateway. Posters cannot request a price from the APIs more than once per minute.
+By using the reference signer, security is increased while it deploys independently from the exchange's network and servers, doesn't have to be maintained, and has a secure caching API gateway. Posters cannot request a price from the APIs more than once per minute.
 
 Now, let's turn to the **poster**!
 
-To provide reliable and updated price data, posters get signed prices from either a signer or directly from an exchange. The poster can post the prices on-chain at any time. Updating prices is thus decentrally organised - everyone can post price data from multiple sources and posting doesn't have to rely on just one poster.
+To provide reliable and updated price data, posters get signed prices from either a signer or directly from an exchange. The poster can post the prices on-chain at any time. Updating prices is thus decentralised - everyone can post price data from multiple sources and posting doesn't have to rely on just one poster.
 
 As mentioned before, the price is only accepted by the storage contract if the data is signed with a private key.
 
-Posters can function as Serverless Framework applications or run a command line as part of their process to get price data in continous intervals.
+Posters can function as Serverless Framework applications or run a command line as part of their process to get price data in continuous intervals.
 
 ### Harbinger's price storage contracts and normaliser contract
 
@@ -185,9 +182,9 @@ The **price storage contract** is written in SmartPy and compiled to Michelson. 
 
 <HighlightBox type="info">
 
-The price data is availabale in so-called *data candles** (i.e. data points for a digital asset). Each candle includes:
+The price data is available in so-called *data candles** (i.e. data points for a digital asset). Each candle includes:
 
-* starttime,
+* start time,
 * end time, 
 * open price,
 * close price,
@@ -207,11 +204,11 @@ The **normaliser contract** is also a reference contract. It helps with the norm
 
 Posting the newest price data and updating a normaliser contract can both be performed by invoking a callback to the storage contract. This is done in a single atomic transaction and not two.
 
-Protocols and applications can also invole a callback on a storage or normaliser contract. By doing this, data is pushed to the protocols or applications contract.
+Protocols and applications can also invoke a callback on a storage or normaliser contract. By doing this, data is pushed to the protocols or applications contract.
 
 <HighlightBox type="tip">
 
-When developing on Tezos, use the callback to get data to avoid reentrancy attacks.
+When developing on Tezos, use the callback to get data to avoid re-entrancy attacks.
 
 </HighlightBox>
 
@@ -219,7 +216,7 @@ When developing on Tezos, use the callback to get data to avoid reentrancy attac
 
 Harbinger's price data can be represented in two different formats: 
 
-* As a standard unix timepstamp for a candle start and end, or
+* As a standard unix timestamp for a candle start and end, or
 * As a natural, six digit number for prices and volumes.
 
 Furthermore, Harbinger has certain asset codes. Contracts can be specified in regard to:
@@ -241,7 +238,7 @@ The contract can be configured in regard to:
 
 * the **price storage contract address** set to push updates,
 * the **asset pair's name** of the to-be-normalised asset,
-* the **number of data points** being stored and normlised.
+* the **number of data points** being stored and normalised.
 
 _Remember that the number of data points also determines the amount of gas and storage needed. So, the **more** data points, the **higher** the gas consumption and storage fees._
 
