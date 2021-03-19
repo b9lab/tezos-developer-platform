@@ -13,14 +13,17 @@ export default class H5PContainer extends React.Component {
   componentDidMount() {
     console.log("component did mount");
     
-    window.setTimeout(function() {
-      console.log("load h5p");
-      const { H5P } = require('h5p-standalone');
-      const el = document.getElementById('h5p_container');
-      const h5pLocation = '/test2';
+    const { H5P } = require('h5p-standalone');
+    const el = document.getElementById('h5p_container');
+    
+    const h5pLocation = this.props.location;
 
-      const h5p = new H5P(el, h5pLocation);
-    }, 1500);
+    const options = {
+      frameJs: '/js/h5p/frame.bundle.js',
+      frameCss: '/css/h5p/h5p.css'
+    };
+
+    const h5p = new H5P(el, h5pLocation, options);
     
     console.log("created");
   }
@@ -35,7 +38,6 @@ export default class H5PContainer extends React.Component {
     return (
       <H5PContainerWrapper className="h5p-container-wrapper" id="h5p_container">
         {this.props.children}  
-           
       </H5PContainerWrapper>
     );
   }
