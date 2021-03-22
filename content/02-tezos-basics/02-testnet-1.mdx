@@ -23,6 +23,32 @@ There are currently three Tezos networks:
 
 The **Mainnet** is the main Tezos blockchain, where Tezos tokens (tez) have real value - so play with it only when you are confident in what you are doing. 
 
+<ExpansionPanel title="The history mode - Different types of nodes">
+
+**History modes** are a _representation of different policies determining the historical/past data included in a node_. They are useful as you can select what part of the chain's history you want to store in our node setup. This helps **manage the disk storage** required.
+
+For nodes there are **three modes** in Tezos:
+
+* The **rolling mode**: A node that only stores the minimal rolling fragment of data to validate blocks and synchronise with the head;
+* The **full mode**: The **deault mode**, the node stores the **minimum data amount** needed to reconstruct the complete ledger state since the genesis block;
+* The **archive mode**: Node stores all chain data to query for information since the genesis block.
+
+As said before, in the **rolling mode**, the minimal data for rolling is stored. Thus, it is the _lightest mode_. The node is able to validate blocks and only requires minimal and bounded disk storage. Bootstrapping the mode can be done within minutes. It is suitable to run on low-resource architectures. At the same time, the node cannot query block information in regard to balances and staking rights. Furthermore, it doesn't help other nodes to bootstrap because it cannot provide the complete chain history.
+
+If you want to take a closer look at how to **set up a rolling node**, we recommend the [documentation on setting up a node in rolling mode](https://tezos.gitlab.io/user/history_modes.html#set-up-a-rolling-node).
+
+**Full mode** for nodes allows to store the minimal data needed to reconstruct the ledger state, thus requiring little disk storage. It can be synchronised using a snapshot, and can help other nodes bootstrap and synchronise with the Tezos chain. This mode is most-suitable for baker nodes. The necessary
+
+The **full mode** 
+
+
+It can be synchronised with a snapshot and doesn't require much disk storage. 
+
+
+
+
+</ExpansionPanel>
+
 The easiest way to maintain a Tezos node is to use the docker images that are generated from the [Tezos repository](https://gitlab.com/tezos/tezos/tree/master) on GitLab. They are published on DockerHub and the repository offers a script called `tezos-docker-manager.sh`, which can pull the necessary images and start a Docker Compose network. 
 
 <HighlightBox type="tip">
