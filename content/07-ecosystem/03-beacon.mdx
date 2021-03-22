@@ -333,7 +333,7 @@ You see our new function `connectWallet()`. What is new there?
 
 ```
 
-There are other [useful options](https://tezostaquito.io/docs/wallet_api/#--tzip-10-wallet), like `eventHandlers` which should be utilised for better user experience in a real application. Anyway we will keep it simple and set only what must be set. 
+There are other [useful options](https://tezostaquito.io/docs/wallet_api/#--tzip-10-wallet), like [eventHandlers](https://github.com/airgap-it/beacon-sdk/blob/9d610e015d183cf2689835b94398bd0128ddf32e/src/events.ts#L38) which should be utilised for better user experience in a real application. Anyway we will keep it simple and set only what must be set. 
 
 ```javascript
     wallet
@@ -374,6 +374,8 @@ function certify(studentAddress) {
 ```
 
 As you can see, it is just **slightly changed**: We use `tezos.wallet.at` instead of `tezos.contract.at` to **get the contract abstraction**.
+
+## Test run
 
 Let's test this!
 
