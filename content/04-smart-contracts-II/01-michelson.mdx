@@ -6,6 +6,12 @@ slug: /michelson
 
 import HighlightBox from "../../src/components/HighlightBox"
 
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
+
 We already talked about Michelson, and you have come in contact with it when you took a look at the compiled code. But we did not dive deeper, and just wrote a simple repeater contract.
 
 Here, we want to give a general overview. In the end, we want to write a pure Michelson code to have a more complex example of the language.
@@ -656,7 +662,7 @@ The operation has only been included 0 blocks ago.
 
 You can check its state and script with [Better Call Dev](https://better-call.dev/alpha/KT1WVvuTvzzYPMZSbZRfEZfPGhUx9vqGDArz/script).
 
-## Full grammar
+<ExpansionPanel title="Full grammar">
 
 Michelson will be a new language for most of you. The following list can help you to quickly find out what you might have done wrong -in case something does not go as intended.
 
@@ -787,6 +793,8 @@ Michelson will be a new language for most of you. The following list can help yo
   | timestamp
   | address
 ```
+
+</ExpansionPanel>
 
 <HighlightBox type="tip">
 
