@@ -18,7 +18,7 @@ Let's first begin with a general definition on what is meant as a token in the b
 
 > A **token** is _a digital representation of an asset or utility_.
 
-The first challenge, when it comes to creating tokens, is deciding on the **type of token**. One can differentiate between fungible (like ERC-20 tokens), non-fungible (e.g. ERC-721), and even semi-fungible tokens, also known by their abbreviation NFT. In addition, tokens can differentiate in their transferrability.
+The first challenge, when it comes to creating tokens, is deciding on the **type of token**. One can differentiate between fungible (like [ERC-20 tokens](https://youtu.be/cqZhNzZoMh8)), non-fungible (e.g. [ERC-721](https://youtu.be/HTm-1JtI0fA)), and even semi-fungible tokens, also known by their abbreviation NFT. In addition, tokens can differentiate in their transferrability.
 
 What is meant by **fungibility** when talking about tokens? Fungibility addresses if a token is **interchangeable** with other tokens or not. Non-fungible tokens are important when a token requires a certain degree of uniqueness to be valueable.
 
@@ -28,17 +28,13 @@ The **demand for token standards** has continously risen, especially since the d
 
 ## FA: A unified token contract interface
 
-**FA2** is a **token standard** on Tezos. It provides a standard API to manage tokens.
-
-The standard is based on a proposal for a unified token contract interface. It addresses two aspects of importance to token standards: **Token type and permission standardisation**.
+**FA2** is a **token standard** on Tezos. The standard is based on a proposal for a unified token contract interface. It addresses two aspects of importance to token standards: **Token type and permission standardisation**.
 
 It was meant to help support **different token types**. While FA1.2 was tailored to single fungible token smart contracts, FA2 allows **single- and multi-token** smart contracts for a variety of tokens. Thus, FA2 maintains the functionalities from FA1.2 and adds token creation possibilities, i.e. allows for greater tokenisation on the Tezos blockchain. FA2 being applicable to different types of tokens is meant by saying: FA2 is agnostic to the token type.
 
-The greater degree of tokenisation stems from the possibility of token varieties it can be applied to as well as use cases.
-
 <HighlightBox type="info">
 
-Do you want to take a look at the [proposal for FA2 (TZIP-12)](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-12/tzip-12.md)?
+Take a look at the [proposal for FA2 (TZIP-12)](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-12/tzip-12.md)?
 
 </HighlightBox>
 
@@ -54,7 +50,7 @@ When it comes to the **standardisation of permissions**, standardisation brings 
 
 <HighlightBox type="info">
 
-Remember the role permissions play in the deployment pattern of a blockchain? If not, take a quick look at the section _Main Ideas Behind the Tezos Protocol - Managing Chains_.
+Remember the role permissions play in the deployment pattern of a blockchain? If not, take a quick look at the section [Main Ideas Behind the Tezos Protocol - Managing Chains](../blockchain-fundamentals/getting-1).
 
 When we talk about permissions regarding tokens, they can be understood as:
 
@@ -72,8 +68,6 @@ With FA2, those implementing the token contracts can configure freely:
 
 Specifically the **permissioning architecture** relates to whether permissioning is determined in the contract, i.e. a _monolith_, with a transfer hook to another contract, or a seperate wrapper contract. Each of this options represents an FA2 implementation pattern for permissions.
 
-Let's take a closer look at the permission implementation patterns!
-
 ### FA2 permission implementation patterns
 
 We can differentiate three implementation patterns:
@@ -90,14 +84,13 @@ When using **transfer hooks**, the main token contract calls another contract, w
 
 ## FA2 entrypoints and data structures
 
-FA2 **formalises token design**. Thus, a specific list of entry points and related data structures have to be implemented. To manipulate data structures, FA2 provides helper functions to manipulate data structures.
+FA2 **formalises token design**. Thus, a specific list of entry points and related data structures have to be implemented. 
 
 Therefore, every contract **must** contain the following entry points:
 
 - Transfer
 - Balance_of
 - Token_metadata_registry
-- Permissions_descriptor
 - Update_operators
 - Is_operator
 
@@ -126,11 +119,58 @@ You can go to [SmartPy IDE](https://smartpy.io/ide) and pick up the FA2 contract
 
 so the configuration is flexible and offers an easy adjustable contract. Then you will see some type definitions, e.g. `Batch_transfer` which represents a [transfer batch](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-12/tzip-12.md#transfer). 
 
-Then you see the class `FA2_core` which implements the FA2 strict standard. With some other classes, which implement usefull functions, it is inherited by the `FA2` class.
+Then you see the class `FA2_core` which implements the FA2 strict standard. In it you can find the definition of the entry points we mentioned before:
+
+```python
+    @sp.entry_point
+    def transfer(self, params):
+      ...
+
+    @sp.entry_point
+    def balance_of(self, params):
+      ...
+
+    @sp.entry_point
+    def update_operators(self, params):
+      ...
+```
+
+and
+
+```python
+self.token_meta_data = Token_meta_data(self.config)
+```
+
+With some other classes, which implement usefull functions, it is inherited by the `FA2` class.
 
 ```python
 class FA2(FA2_change_metadata, FA2_token_metadata, FA2_mint, FA2_administrator, FA2_pause, FA2_core)
 ```
+
+In addition, `FA2` class will implement:
+
+```python
+    @sp.offchain_view(pure = True)
+    def is_operator(self, query):
+      ...
+```
+
+and
+
+```python
+        self.init_metadata("metadata_base", metadata_base)
+```
+
+as well as 
+
+
+```python
+    sp.add_compilation_target("FA2_comp", FA2(config = environment_config(),
+                              metadata = sp.metadata_of_url("https://example.com"),
+                              admin = sp.address("tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr")))
+```
+
+We have not used the metadata standard for Tezos smart contracts, [Tzip16](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-16/tzip-16.md), so far [with SmartPy](https://smartpy-io.medium.com/metadata-in-smartpy-3eb09fcd1de7). Basically some data can be stored off-chain with a link on-chain (as `big_map %metadata string bytes`) to be easier accessible. 
 
 You can [deploy and test such a contract](https://assets.tqtezos.com/docs/token-contracts/fa2/1-fa2-smartpy/) to play with it. Here let us have a quick look at the tests this implementation includes. Those will let you remember the FA2 definition.
 
@@ -196,6 +236,11 @@ How would such transactions look like in Michelson? We can easly see it in the I
 }
 ```
 
+You can see that we transfer `from_` the address `tz1Ns3YQJR6piMZ8GrD2iYu94Ybi1HFfNyBP` `to_`:
+
+- `tz1WxrQuZ4CK1MBUa2GqUWK1yJ4J6EtG1Gwi` 10 tokens of type 0
+- `tz1WxrQuZ4CK1MBUa2GqUWK1yJ4J6EtG1Gwi` 10 tokens of type 1
+- `tz1WxrQuZ4CK1MBUa2GqUWK1yJ4J6EtG1Gwi` 10 tokens of type 2
 
 <HighlightBox type="reading">
 
