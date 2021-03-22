@@ -39,12 +39,13 @@ Both the governance mechanism and self-amendment are built in at the protocol le
 
 ### The Tezos amendment process
 
-The **Tezos amendment process** consists of **four** different stages:
+The **Tezos amendment process** consists of **five** different stages:
 
 * the proposal period,
 * the exploration vote period or testing_vote period,
-* the testing period, and
-* the promotion vote period.
+* the testing period,
+* the promotion vote period, and
+* the adoption period.
 
 ![The Tezos amendment process](images/process-stages.png)
 
@@ -72,10 +73,25 @@ The **Tezos amendment process** consists of **four** different stages:
 
 **Promotion vote period:** The network has to decide on the upgrade. Basis for the network's decision is the results of the testing period as well as the off-chain discussions of the proposal. Bakers' votes are weighed proportionally to the number of rolls in the baker's staking balance from the start of this period. Bakers can only cast one vote during the period, e.g. each baker can send one ballot operation. If the proposal is accepted with an 80% supermajority of non-abstentions and the quorum is met, the upgrade is included in the Mainnet. If one of these requirements is not fulfilled it is back to square one, the proposal period.
 </ExpansionPanelListItem>
+
+<ExpansionPanelListItem number="4">
+
+**Adoption period:** Introduced with the Edo upgrade, this period is meant to provide enough time for tool providers and other ecosystem participants to prepare for the changes being introduced by a proposal. The aim is to enable a stable protocol transition for the protocol itself and its ecosystem. At the end of this period, the proposal is activated. Adding this last phase through the Edo upgrade represented a **proof of resilience and the evolving nature of the mechanism**, as it was the first amendment to the process itself. 
+</ExpansionPanelListItem>
 </ExpansionPanelList>
 </ExpansionPanel>
 
-All the above mentioned periods lasts for **eight baking cycles** - eight baking cycles are almost 33 blocks/23 days. For a **full cycle** to be conducted one can expect a **three month duration period**. When a period is successful, the amendment process is finalised. In case it is not, the proposal period begins again, the process restarts so to say.
+All the above mentioned periods lasts for **five baking cycles** - the length of the amendment process was reduced from eight to five cycles by the _Edo upgrade_.
+
+<HighlightBox type="info">
+
+What is a cycle? Cycles are used as a term in Tezos to indicate **time** measurements.
+
+How do cycles relate to know time measurements? One cycle equals to a total of **4,096 blocks**. As the time between the creation of two blocks is fixed to **1 minute**, a cycle lasts approximately 4096 minutes, i.e. two days, 20 hours, and 16 minutes. Remember that the time between two blocks can vary.
+
+</HighlightBox>
+
+When a period is successful, the amendment process is finalised. In case it is not, the proposal period begins again, the process restarts so to say.
 
 <ExpansionPanel title="The necessary quorum and its function">
 
