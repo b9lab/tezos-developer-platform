@@ -6,6 +6,8 @@ slug: /tzkt
 
 import HighlightBox from "../../src/components/HighlightBox"
 
+# TzKT-API
+
 [TzKT](https://github.com/baking-bad/tzkt) is a **Tezos blockchain indexer**.
 
 We have talked about how a blockchain includes a lot of transactions and information. Working directly on the whole blockchain to fetch and process data will be time consuming. The **TzKT indexer** can reduce this time and in addition, offers high-level [functionalities](https://github.com/baking-bad/tzkt#features), which are not provided by the Tezos JSON/RPC interface. 
@@ -37,6 +39,8 @@ $ curl https://api.edo2net.tzkt.io/v1/accounts
 ```
 
 The endpoint gives you **access** to the list of accounts in the network - The output is **limited to 100** by default. We will soon see how to adjust this limit.
+
+# Fetching data with Node.js
 
 As you can see, we could work with any language and tool which supports HTTP requests. Here we want to continue with Node.js and [request](https://www.npmjs.com/package/request).
 
@@ -97,7 +101,7 @@ This finds you an account with a balance of 10 million tez.
 
 <HighlightBox type="info">
 
-The **amount of endpoints** TzKT offers is huge. Each is documented, and you can find in the **QUERY PARAMETERS** filters to apply and in the **RESPONSE SCHEMA** the fields you can fetch.
+The **amount of endpoints** TzKT offers is huge. [Each is documented](https://api.tzkt.io/), and you can find in the **QUERY PARAMETERS** filters to apply and in the **RESPONSE SCHEMA** the fields you can fetch.
 
 </HighlightBox>
 
@@ -112,7 +116,19 @@ request('https://api.edo2net.tzkt.io/v1/contracts/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7
 });
 ```
 
-You see that the response is a JSON, which we can parse.
+You see that the response is a JSON, which we can parse:
+
+```json
+{
+   "certified":[
+      "tz1YTVs4uDn1jEQ2Z4RJyR47zAzhXv1b9Q7t",
+      "KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK",
+      "tz1ZRdP17rsZ1DqUbrraQhbcacVHyh4E6Dkw",
+      "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"
+   ],
+   "certifier":"tz1WNmpLG56yT4XixkCFe5M5NpZ7gPgVpVqc"
+}
+```
 
 Now the question arises: If we want to track the activity on our smart contract, [how often](https://baking-bad.org/blog/2020/07/29/tezos-explorer-api-tzkt-how-often-to-make-requests/) do we need to conduct this request?
 
@@ -122,9 +138,15 @@ It is a recommended best practice when using the TzKT API to not conduct the sam
 
 </HighlightBox>
 
-You know that each transaction needs to be included into a block. So we don't need to fetch data more often than blocks appear. For the testnet, we can assume that every 30 seconds we will get a new block. Notice, usually you would also wait more than one block to confirm a transaction.
+You know that each transaction needs to be included into a block. So we don't need to fetch data more often than blocks appear. For the testnet, we can assume that every **30 seconds** we will get a new block. Notice, usually you would also wait more than one block to confirm a transaction.
 
-With [request-promise](https://github.com/request/request-promise) we can do:
+With [request-promise](https://github.com/request/request-promise):
+
+```bash
+$ npm install request
+```
+
+we can do:
 
 ```javascript
 
@@ -169,7 +191,66 @@ Notice, we didn't catch any error above, but you should always check for the res
 
 <HighlightBox type="tip">
 
-You can also try the [WebSocket API](https://api.tzkt.io/#section/JS-simple-client) and subscribe to events.
+You can also try the [WebSocket API JS simple client](https://api.tzkt.io/#section/JS-simple-client) and subscribe to [events](https://api.tzkt.io/#tag/TzKT-Events). This will reduce the traffic further and make the data real-time available.
+
+</HighlightBox>
+
+Let us do something not easy to do without the TzKT API and ask for the [number of smart contracts](https://api.tzkt.io/#operation/Accounts_GetCount) in the edonet:
+
+```
+https://api.edo2net.tzkt.io/v1/accounts/count?type=contract
+```
+
+Another important request you will want to do is to fetch the supported protocols:
+
+```
+https://api.edo2net.tzkt.io/v1/protocols
+```
+
+this will give you:
+
+```json
+[
+   {
+      "code":-1,
+      "hash":"PrihK96nBAFSxVL1GLJTVhu9YnzkMFiBeuJRPA8NwuZVZCE1L6i",
+      "firstLevel":0,
+      "lastLevel":0,
+      "constants":{
+        ...
+      }
+   },
+   {
+      "code":0,
+      "hash":"PtYuensgYBb3G3x1hLLbCmcav8ue8Kyd2khADcL5LsT5R1hcXex",
+      "firstLevel":1,
+      "lastLevel":1,
+      "constants":{
+        ...
+      }
+   },
+   {
+      "code":1,
+      "hash":"PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA",
+      "firstLevel":2,
+      "constants":{
+        ...
+      }
+   }
+]
+```
+
+There you see the protocol constrains in the `constants` and the regarding protocol hash:
+
+- PrihK96nBAFSxVL1GLJTVhu9YnzkMFiBeuJRPA8NwuZVZCE1L6i : Genesis block
+- PtYuensgYBb3G3x1hLLbCmcav8ue8Kyd2khADcL5LsT5R1hcXex : Genesis protocol
+- PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA : Edonet protocol
+
+So the [current protocol](https://api.edo2net.tzkt.io/v1/protocols/current) is **PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA**. 
+
+<HighlightBox type="tip">
+
+You can check protocol details on [tzStats](https://tzstats.com/protocols)
 
 </HighlightBox>
 
