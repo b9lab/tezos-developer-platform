@@ -32,6 +32,30 @@ After initialisation, the node will sync up with the Tezos network. As the node 
 
 The node also gathers metadata about peers and multiple chains that may exist so it can select the best one based on its fitness. “Fitness” determines the quality of the chain leading up to that block.
 
+<ExpansionPanel title="The history mode - Different types of nodes">
+
+**History modes** are a _representation of different policies determining the historical/past data included in a node_. They are useful as you can select what part of the chain's history you want to store in our node setup. This helps **manage the disk storage** required.
+
+For nodes there are **three modes** in Tezos:
+
+* The **rolling mode**: A node that only stores the minimal rolling fragment of data to validate blocks and synchronise with the head;
+* The **full mode**: The **deault mode**, the node stores the **minimum data amount** needed to reconstruct the complete ledger state since the genesis block;
+* The **archive mode**: Node stores all chain data to query for information since the genesis block.
+
+As said before, in the **rolling mode**, the minimal data for rolling is stored. Thus, it is the _lightest mode_. The node is able to validate blocks and only requires minimal and bounded disk storage. Bootstrapping the node can be done within minutes. It is suitable to run on low-resource architectures. As a downside, the node cannot query historical block information in regard to balances and staking rights. Furthermore, it doesn't help other nodes to bootstrap because it cannot provide the complete chain history.
+
+**Full mode** for nodes allows to store the minimal data needed to reconstruct the ledger state, thus requiring little disk storage. It can be synchronised using a snapshot, and can help other nodes bootstrap and synchronise with the Tezos chain. This mode is most-suitable for baker nodes. The necessary disk storage continously increases while history "progresses". This type of node cannot query historical balances or staking rights before the checkpoint.
+
+The **archive mode** is the _heaviest mode_ as archive nodes store the whole data of the blockchain. This allows archive nodes to query for any information since the genesis block. As the whole chain is available, archive nodes are especially suited for indexers and block explorers. At the same time, this node type requires a large amount data storage.
+
+If you want to find out more on how to set up the different node types, we recommend the documentation on:
+
+* [Setting up a node in rolling mode](https://tezos.gitlab.io/user/history_modes.html#set-up-a-rolling-node);
+* [Setting up a node in full mode](https://tezos.gitlab.io/user/history_modes.html#set-up-a-full-node);
+* [Settinp up a node in archive mode](https://tezos.gitlab.io/user/history_modes.html#set-up-an-archive-node).
+
+</ExpansionPanel>
+
 ### Client
 
 The Tezos client is the main interface to the node. The client can read the context and inspect the state (get) and it can instruct the node to perform work such as broadcasting an operation to the network.
