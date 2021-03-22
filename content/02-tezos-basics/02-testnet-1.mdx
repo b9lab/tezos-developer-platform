@@ -109,11 +109,11 @@ $ export TEZOS_ALPHANET_DO_NOT_PULL=yes
 
 <HighlightBox type="warn">
 
-When the script is being updated, you may again need the command `chmod +x alphanet.sh` to make it executable.
+When the script is being updated, you may again need the command `chmod +x edonet.sh` to make it executable.
 
 </HighlightBox>
 
-Wait a few minutes for the node container to start synchronising with the alphanet and then check its logs with:
+Wait a few minutes for the node container to start synchronising with the edonet and then check its logs with:
 
 ```sh
 $ docker logs edonet_node_1 --follow
@@ -387,7 +387,32 @@ This sequence of operations was run:
 
 <HighlightBox type="tip">
 
-If you want to deploy a contract with this account, make sure your node is sync'd up. You can check if the node is sync'd up with `./edonet.sh client bootstrapped`.
+If you want to deploy a contract with this account, make sure your node is sync'd up. You can check if the node is sync'd up with `./edonet.sh client bootstrapped`. 
+
+If you have difficulties to sync up, you can try to import a [snapshot](https://snapshots-tezos.giganode.io/).
+
+Just download a rolling or full snapshot for the edonet, stop the node:
+
+```bash
+$ ./edonet.sh stop
+```
+
+and import it with:
+
+```bash
+$ ./edonet.sh clear
+$ ./edonet.sh snapshot import FULLPATH/snapshot.full
+```
+
+please replace `FULLPATH` with the path of the file, it needs to be an **absolute path**.
+
+**IMPORTANT**: 
+
+```bash
+./edonet.sh clear 
+```
+
+will remove all blockchain data, so please if you made good progress with syncing up and you can estimate the time left, it will be better to wait. 
 
 </HighlightBox>
 
