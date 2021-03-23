@@ -58,24 +58,28 @@ Leveraging Chainlink will allow for the development of **fully-integrated contra
 
 <ExpansionPanel title="Some technical specificities">
 
-You can find a template for Chainlink oracles by SmartPy [here](https://smartpy.io/ide?template=oracle.py), and there also is the official [Solidity implementation](https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/src/v0.6/Oracle.sol). You can also take a look at the [Chainlink Developer Resources](https://docs.chain.link/docs/getting-started), if you want to dive deeper.
+You can find a template for Chainlink oracles by SmartPy [here](https://smartpy.io/ide?template=oracle.py), and there also is the official [Solidity implementation](https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/src/v0.6/Oracle.sol).
+
+You can also take a look at the [Chainlink Developer Resources](https://docs.chain.link/docs/getting-started), if you want to dive deeper.
 
 </ExpansionPanel>
 
 ## How to use Chainlink
 
 <HighlightBox type="tip">
+
 Please have a look at this [sample project](https://github.com/kuldeep23907/Bifrost-DeFi-DApp/tree/master/TezosChainlinkOracle).The smart contracts to integrate Chainlink are written in SmartPy. The smart contracts are deployed and invoked with [ConseilJS](https://cryptonomic.github.io/ConseilJS/#/).
+
 </HighlightBox>
 
-First let us have a look at the [SmartPy Chainlink template](https://smartpy.io/ide?template=oracle.py).
+First, let's have a look at the [SmartPy Chainlink template](https://smartpy.io/ide?template=oracle.py).
 
 There you will find:
 
-- An Oracle contract
-- An escrow contract
-- A client contract
-- A token contract
+- an Oracle contract,
+- an escrow contract,
+- a client contract, and
+- a token contract.
 
 You can see that there is an FA2 implementation of the Chainlink token [LINK](https://coinmarketcap.com/currencies/chainlink/). It is used to pay node operators for retrieving data for smart contracts:
 
@@ -98,7 +102,7 @@ class Link_token(FA2.FA2):
 
 ```
 
-Let us have a look at the client contract:
+Let's have a look at the client contract:
 
 ```python
 
@@ -139,7 +143,7 @@ In the template comments, among others, you can find:
     result (TValue): result value computed by the Oracle
 ```
 
-Let us have a look at the oracle contract:
+Let's have a look at the oracle contract:
 
 ```python
 # Oracle is the on-chain incarnation of an Oracle provider.
@@ -171,7 +175,7 @@ class Oracle(sp.Contract):
         )
 ```
 
-There you see the requests list `requests = sp.big_map(tkey = sp.TNat, tvalue = TRequest)`. At the time of writing, each data provider will need to deploy an oracle contract, so we do not have any proxy. This contract has two important methods:
+There you see the requests list `requests = sp.big_map(tkey = sp.TNat, tvalue = TRequest)`. At the time of writing, each data provider will need to deploy an oracle contract, so we don't have any proxy. This contract has two important methods:
 
 ```python
     @sp.entry_point
@@ -191,7 +195,7 @@ and
 
 the `create_request` entry point will be called by the escrow contract and `fulfill_request` by an external source. 
 
-Finally let us have a look the escrow contract comments:
+Finally, let's have a look the escrow contract comments:
 
 ```python
 # Escrow receive the request and payment and transmits the request to the oracle
@@ -204,7 +208,7 @@ class Escrow(sp.Contract):
 
 So client will call escrow, which will forward a request to the oracle. Because the escrow contract handles the payments and validation, it increases the trust in the system. 
 
-Let us see this in a test from the template:
+Let's see this in a test from the template:
 
 ```python
         ##########
@@ -262,24 +266,26 @@ so there are two calls(and a lot of validations because this is a test):
 
 Those call are the calls you will need to make with your clients if all contracts are deployed. 
 
-Data provider will:
+The data provider will:
 
-- check the storage of Oracle contract
-- process a request and call `fulfill_request` on the Oracle contract
+- check the storage of the Oracle contract, and
+- process a request and call `fulfill_request` on the Oracle contract.
 
-Data seeker will:
+The data seeker will:
 
-- call `request_value` with the amount of token and timeout parameters
-- check the storage for the requested value
+- call `request_value` with the amount of token and timeout parameters, and
+- check the storage for the requested value.
 
 <HighlightBox type="tip">
-You will also need to deploy a faucet to get some tokens to test this. Have a look at the [Writing Smart Contracts](..smartpy/exercise-1/) section to see how you can deploy those contracts with SmartPy and a look at the [Developing Clients](../taquito) section to see how you can fetch the storage and call the entry points of deployed contracts.
+
+You will also need to deploy a faucet to get some tokens to test this. Have a look at the _[Writing Smart Contracts](..smartpy/exercise-1/)_ section to see how you can deploy those contracts with SmartPy and a look at the [Developing Clients](../taquito) section to see how you can fetch the storage and call the entry points of deployed contracts.
+
 </HighlightBox>
 
 <HighlightBox type="reading">
 
-* SmartPy.io (2020): [Bringing Chainlink Oracles to the Tezos Ecosystem](https://smartpy-io.medium.com/bringing-chainlink-oracles-to-the-tezos-ecosystem-ed47dfc631bd)
-* SmartContent (2020): [Chainlink: Beyond Price Feeds and Data Delivery](https://smartcontentpublication.medium.com/chainlink-beyond-price-feeds-and-data-delivery-4e57c43dbf74)
+* [SmartPy.io (2020): Bringing Chainlink Oracles to the Tezos Ecosystem](https://smartpy-io.medium.com/bringing-chainlink-oracles-to-the-tezos-ecosystem-ed47dfc631bd)
+* [SmartContent (2020): Chainlink: Beyond Price Feeds and Data Delivery](https://smartcontentpublication.medium.com/chainlink-beyond-price-feeds-and-data-delivery-4e57c43dbf74)
 
 </HighlightBox>
 
@@ -302,6 +308,8 @@ The **poster** "posts" the **signed price** on-chain. Once a smart contract is d
 ### How signed price data gets on-chain
 
 Let's take a step-by-step look at the how Harbinger works in a processual sense and the different conceptual elements.
+
+![Harbinger price data process](images/harbinger-process.png)
 
 <ExpansionPanel title="The Harbinger process">
 
@@ -337,7 +345,6 @@ A DeFi protocol or decentralised application can now callback the normaliser con
 
 </ExpansionPanel>
 
-![Harbinger price data process](images/harbinger-process.png)
 
 <HighlightBox type="tip">
 
@@ -365,8 +372,8 @@ Posters can function as Serverless Framework applications or run a command line 
 
 Developers are given the option to leverage Harbinger while configuring contract implementations in regard to gas costs, storage use, and data points. This is done through the implementation of two reference contracts:
 
-* The **price storage contract:** stores newest price data for each market at a certain point of time, and
-* The **normaliser contract:** normalises data points - the number of data points can be customised - for one market for a specific range of updates - the number of updates can be also customised.
+* the **price storage contract:** stores newest price data for each market at a certain point of time, and
+* the **normaliser contract:** normalises data points - the number of data points can be customised - for one market for a specific range of updates - the number of updates can be also customised.
 
 The **price storage contract** is written in SmartPy and compiled to Michelson. The contract is initialised with the signer's public key. The newest price data is retrieved from a signer and stored with the contract.
 
@@ -378,7 +385,7 @@ The price data is available in so-called data candles(i.e. data points for a dig
 * end time, 
 * open price,
 * close price,
-* low, price
+* low price,
 * high price, and
 * volume.
 
@@ -394,10 +401,10 @@ Posting the newest price data and updating a normaliser contract can both be per
 
 <ExpansionPanel title="Technical specifications for Harbinger">
 
-Harbinger's price data can be represented in two different formats: 
+Harbinger's price data can be represented in **two different formats**: 
 
-* As a standard unix timestamp for a candle start and end, or
-* As a natural, six digit number for prices and volumes.
+* as a standard unix timestamp for a candle start and end, or
+* as a natural, six digit number for prices and volumes.
 
 Furthermore, Harbinger has certain asset codes. Contracts can be specified in regard to:
 
@@ -417,7 +424,7 @@ The **normaliser contract** can only normalise one asset and receive update data
 The contract can be configured in regard to:
 
 * the **price storage contract address** set to push updates,
-* the **asset pair's name** of the to-be-normalised asset,
+* the **asset pair's name** of the to-be-normalised asset, and
 * the **number of data points** being stored and normalised.
 
 _Remember that the number of data points also determines the amount of gas and storage needed. So, the **more** data points, the **higher** the gas consumption and storage fees._
@@ -437,36 +444,50 @@ $ npm i -g @tacoinfra/harbinger-cli
 If you deploy the contract, you will need to pass a public key for the signer. 
 
 <HighlightBox type="tip">
-There are already contracts deployed for [Coinbase](https://tzkt.io/KT1Jr5t9UvGiqkvvsuUbPJHaYx24NzdUwNW9/storage) - signed by Coinbase Pro, [Binance](https://tzkt.io/KT1Mx5sFU4BZqnAaJRpMzqaPbd2qMCFmcqea/storage), [Gemini](https://tzkt.io/KT1Jud6STRGZs6hSfgZsaeztbkzfwC3JswJP/storage) and [OKEx](https://tzkt.io/KT1G3UMEkhxso5cdx2fvoJRJu5nUjBWKMrET/storage) - signed by Blockscale on the mainnet. You can see the public keys of the signer in the storage. Notice that only a signer can update a price feed. 
+
+There are already contracts deployed for:
+* [Coinbase](https://tzkt.io/KT1Jr5t9UvGiqkvvsuUbPJHaYx24NzdUwNW9/storage) - signed by Coinbase Pro,
+* [Binance](https://tzkt.io/KT1Mx5sFU4BZqnAaJRpMzqaPbd2qMCFmcqea/storage),
+* [Gemini](https://tzkt.io/KT1Jud6STRGZs6hSfgZsaeztbkzfwC3JswJP/storage), and
+* [OKEx](https://tzkt.io/KT1G3UMEkhxso5cdx2fvoJRJu5nUjBWKMrET/storage) - signed by Blockscale on the mainnet.
+
+You can see the public keys of the signer in the storage.
+
+Notice that only a signer can update a price feed.
+
 </HighlightBox>
 
 Then you can use the [Harbinger Serverless Price Feed Signer](https://github.com/tacoinfra/harbinger-signer) to sign price feeds. The CLI can also update the contract with signed price. In addition you can use [Harbinger Serverless Poster](https://github.com/tacoinfra/harbinger-poster) which can update the price automatically.
 
 <HighlightBox type="tip">
-If you do not want to use those high level tools, have a look at the [harbinger-lib](https://github.com/tacoinfra/harbinger-lib) repository.
+
+If you don't want to use those high level tools, have a look at the [harbinger-lib repository](https://github.com/tacoinfra/harbinger-lib).
+
 </HighlightBox>
 
 In the price storage contract each item will have:
 
-- Oracle Data for Asset
-- Period Start
-- Period End
-- Open
-- High
-- Low
-- Close
+- oracle data for asset,
+- period start,
+- period end,
+- open,
+- high,
+- low, and
+- close.
 
 like you can see here for XTZ:
 
 ![](images/ha.png)
 
 <HighlightBox type="tip">
-Have a look at the [Developing Clients](../taquito) section to see how you can fetch the storage. Notice that it might be better to fetch the rates from the normaliser contract because of the volume weighted average price it contains. 
+
+Have a look at the [Developing Clients](../taquito) section to see how you can fetch the storage. Notice that it might be better to fetch the rates from the normaliser contract because of the volume weighted average price it contains.
+
 </HighlightBox>
 
 <HighlightBox type="reading">
 
-* Luke Youngblood (2020): [Introducing Harbinger: a Self-Sustaining Price Oracle for Tezos](https://medium.com/@Blockscale/introducing-harbinger-a-self-sustaining-price-oracle-for-tezos-7cab5c9971d)
+* [Luke Youngblood (2020): Introducing Harbinger: a Self-Sustaining Price Oracle for Tezos](https://medium.com/@Blockscale/introducing-harbinger-a-self-sustaining-price-oracle-for-tezos-7cab5c9971d)
 * [Harbinger GitHub - Introduction & Quickstart](https://github.com/tacoinfra/harbinger#quickstart)
 
 </HighlightBox>
