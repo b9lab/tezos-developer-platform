@@ -270,6 +270,9 @@ Data seeker will:
 - call `request_value` with the amount of token and timeout parameters
 - check the storage for the requested value
 
+<HighlightBox type="tip">
+You will also need to deploy a faucet to get some tokens to test this. Have a look at the [Writing Smart Contracts](..smartpy/exercise-1/) section to see how you can deploy those contracts with SmartPy and a look at the [Developing Clients](../taquito) section to see how you can fetch the storage and call the entrypoints of deployed contracts.
+</HighlightBox>
 
 <HighlightBox type="reading">
 
@@ -420,6 +423,44 @@ _Remember that the number of data points also determines the amount of gas and s
 The contract only has **one entry point**: `update`. The contract receives data updates from the price storage contract.
 
 </ExpansionPanel>
+
+## How to use Harbinger
+
+Basically you can deploy the [Oracle](https://github.com/tacoinfra/harbinger-contracts/blob/master/oracle.py) and [Normalizer](https://github.com/tacoinfra/harbinger-contracts/blob/master/normalizer.py) contracts with the [Harbinger CLI](https://github.com/tacoinfra/harbinger-cli). 
+
+```bash
+$ npm i -g @tacoinfra/harbinger-cli
+```
+
+If you deploy the contract, you will need to pass a public key for the signer. 
+
+<HighlightBox type="tip">
+There are allready contracts deployed for [Coinbase](https://tzkt.io/KT1Jr5t9UvGiqkvvsuUbPJHaYx24NzdUwNW9/storage) - signed by Coinbase Pro, [Binance](https://tzkt.io/KT1Mx5sFU4BZqnAaJRpMzqaPbd2qMCFmcqea/storage), [Gemini](https://tzkt.io/KT1Jud6STRGZs6hSfgZsaeztbkzfwC3JswJP/storage) and [OKEx](https://tzkt.io/KT1G3UMEkhxso5cdx2fvoJRJu5nUjBWKMrET/storage) - signed by Blockscale on the mainnet. You can see the public keys of the signer in the storage. Notice that only a signer can update a price feed. 
+</HighlightBox>
+
+Then you can use the [Harbinger Serverless Price Feed Signer](https://github.com/tacoinfra/harbinger-signer) to sign price feeds. The CLI can also update the contract with signed price. In addition you can use [Harbinger Serverless Poster](https://github.com/tacoinfra/harbinger-poster) which can update the price automatically.
+
+<HighlightBox type="tip">
+If you do not want to use those high level tools, have a look at the [harbinger-lib](https://github.com/tacoinfra/harbinger-lib) repository.
+</HighlightBox>
+
+In the price storage contract each item will have:
+
+- Oracle Data for Asset
+- Period Start
+- Period End
+- Open
+- High
+- Low
+- Close
+
+like you can see here for XTZ:
+
+![](images/ha.png)
+
+<HighlightBox type="tip">
+Have a look at the [Developing Clients](../taquito) section to see how you can fetch the storage. Notice that it might be better to fetch the rates from the normaliser contract because of the volume weighted average price it contains. 
+</HighlightBox>
 
 <HighlightBox type="reading">
 
