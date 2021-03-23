@@ -18,7 +18,7 @@ The term **[oracle](https://en.wikipedia.org/wiki/Oracle_machine)**, in computab
 
 One of the main issue areas, when it comes to developing tools and applications on blockchain protocols, is how to introduce **external/off-chain** data. The problem is that you cannot verify if introduced **data is correct and/or potentially malicious**. Thus, introducing off-chain data can be **unreliable** or even have severe **security implications**. How to approach the issue of off-chain data reliability?
 
-As you probably already guessed, the answer is simple: Oracles. 
+As you probably already guessed, the answer is simple: oracles. 
 
 By an **oracle**, in the blockchain context, we understand _a third-party service capable of verifying external data_, i.e. a provider enabling the query of the external data source. Because external data cannot be verified internally an oracle is necessary to uphold reliability. Oracles help introduce reliable external data about external events on the blockchain. In addition, oracles don't only allow the development of smart contracts relying on off-chain data, but furthermore allow for external API services and the triggering of actions.
 
@@ -44,7 +44,7 @@ If you want to take a closer look at Chainlink's source code, we can recommend t
 
 </HighlightBox>
 
-### Chainlink and Tezos: Combining institutional-grade contracts with secure and reliable off-chain data
+### Combining institutional-grade contracts with secure and reliable off-chain data
 
 A cooperation of [SmartPy.io](https://smartpi.io) and [Cryptonomic](https://cryptonomic.tech/) has led to Chainlink being natively available to Tezos developers. Whereas Tezos and its ecosystem can profit from leveraging Chainlink's oracle network to enable applications relying on trustworthy external data.
 
@@ -76,12 +76,12 @@ First, let's have a look at the [SmartPy Chainlink template](https://smartpy.io/
 
 There you will find:
 
-- an Oracle contract,
+- an oracle contract,
 - an escrow contract,
 - a client contract, and
 - a token contract.
 
-You can see that there is an FA2 implementation of the Chainlink token [LINK](https://coinmarketcap.com/currencies/chainlink/). It is used to pay node operators for retrieving data for smart contracts:
+You can see that there is an FA2 implementation of the Chainlink token, [LINK](https://coinmarketcap.com/currencies/chainlink/). It is used to pay node operators for retrieving data for smart contracts:
 
 ```python
 
@@ -102,7 +102,7 @@ class Link_token(FA2.FA2):
 
 ```
 
-Let's have a look at the client contract:
+Let's have a look at the **client contract**:
 
 ```python
 
@@ -121,9 +121,9 @@ class Client(Client_requester, Client_receiver):
                        token_is_proxy = True):
 ```
 
-It inherits the classes `Client_requester` and `Client_receiver`. This simplifies things because we need to deploy one contract less. `Client_requester` can send and pay requests to oracle via the escrow contract. The `Client_receiver` expects to be called by the oracle contract.
+It inherits the classes `Client_requester` and `Client_receiver`. This simplifies things because one contract less needs to be deployed. `Client_requester` can send and pay requests to the oracle via the escrow contract. The `Client_receiver` expects to be called by the oracle contract.
 
-In the template comments, among others, you can find:
+In the **template comments**, among others, you can find:
 
 ```python
     A Request contains:
@@ -143,7 +143,7 @@ In the template comments, among others, you can find:
     result (TValue): result value computed by the Oracle
 ```
 
-Let's have a look at the oracle contract:
+Let's have a look at the **oracle contract**:
 
 ```python
 # Oracle is the on-chain incarnation of an Oracle provider.
@@ -175,7 +175,9 @@ class Oracle(sp.Contract):
         )
 ```
 
-There you see the requests list `requests = sp.big_map(tkey = sp.TNat, tvalue = TRequest)`. At the time of writing, each data provider will need to deploy an oracle contract, so we don't have any proxy. This contract has two important methods:
+There you see the request's list, `requests = sp.big_map(tkey = sp.TNat, tvalue = TRequest)`.
+
+At the time of writing, each data provider needs to deploy an oracle contract, so we don't have any proxy. This contract has **two important methods**:
 
 ```python
     @sp.entry_point
@@ -186,16 +188,15 @@ There you see the requests list `requests = sp.big_map(tkey = sp.TNat, tvalue = 
 
 and
 
-
 ```python
     @sp.entry_point
     def fulfill_request(self, request_id, result, force):
       ...
 ```
 
-the `create_request` entry point will be called by the escrow contract and `fulfill_request` by an external source. 
+The `create_request` entry point will be called by the escrow contract and `fulfill_request` by an external source. 
 
-Finally, let's have a look the escrow contract comments:
+Finally, let's have a look the **escrow contract comments**:
 
 ```python
 # Escrow receive the request and payment and transmits the request to the oracle
@@ -206,9 +207,9 @@ class Escrow(sp.Contract):
   ...
 ```
 
-So client will call escrow, which will forward a request to the oracle. Because the escrow contract handles the payments and validation, it increases the trust in the system. 
+So, the client will call the escrow, which will forward a request to the oracle. Because the escrow contract handles the payments and validation, it increases trust in the system.
 
-Let's see this in a test from the template:
+Let's look into this in a **test from the template**:
 
 ```python
         ##########
@@ -252,24 +253,26 @@ Let's see this in a test from the template:
         scenario.verify_equal(receiver1.data.value.open_some(), 2_500_000)
 ```
 
-so there are two calls(and a lot of validations because this is a test):
+So there are **two calls** (and a lot of validations because this is a test):
 
 ```python
         scenario += requester1.request_value(request_value_params).run(sender = requester1_admin)
 ```
 
+and
+
 ```python
         scenario += oracle.fulfill_request(request_id = request_id - 1, result = value_int(2_500_000), force = False).run(sender = oracle1)
 ```
 
-![](images/chainlink-contracts.png)
+These calls are the calls you will need to make with your clients, if all contracts are deployed. 
 
-Those call are the calls you will need to make with your clients if all contracts are deployed. 
+![](images/chainlink-contracts.png)
 
 The data provider will:
 
-- check the storage of the Oracle contract, and
-- process a request and call `fulfill_request` on the Oracle contract.
+- check the storage of the oracle contract, and
+- process a request and call `fulfill_request` on the oracle contract.
 
 The data seeker will:
 
@@ -278,14 +281,14 @@ The data seeker will:
 
 <HighlightBox type="tip">
 
-You will also need to deploy a faucet to get some tokens to test this. Have a look at the _[Writing Smart Contracts](..smartpy/exercise-1/)_ section to see how you can deploy those contracts with SmartPy and a look at the [Developing Clients](../taquito) section to see how you can fetch the storage and call the entry points of deployed contracts.
+You will also need to deploy a faucet to get some tokens to test this. Have a look at the _[Writing Smart Contracts](..smartpy/exercise-1/)_ section to see how you can deploy the contracts with SmartPy and also at the _[Developing Clients](../taquito)_ section to see how you can fetch the storage and call the entry points of deployed contracts.
 
 </HighlightBox>
 
 <HighlightBox type="reading">
 
-* [SmartPy.io (2020): Bringing Chainlink Oracles to the Tezos Ecosystem](https://smartpy-io.medium.com/bringing-chainlink-oracles-to-the-tezos-ecosystem-ed47dfc631bd)
 * [SmartContent (2020): Chainlink: Beyond Price Feeds and Data Delivery](https://smartcontentpublication.medium.com/chainlink-beyond-price-feeds-and-data-delivery-4e57c43dbf74)
+* [SmartPy.io (2020): Bringing Chainlink Oracles to the Tezos Ecosystem](https://smartpy-io.medium.com/bringing-chainlink-oracles-to-the-tezos-ecosystem-ed47dfc631bd)
 
 </HighlightBox>
 
@@ -435,7 +438,7 @@ The contract only has **one entry point**: `update`. The contract receives data 
 
 ## How to use Harbinger
 
-Basically you can deploy the [Oracle](https://github.com/tacoinfra/harbinger-contracts/blob/master/oracle.py) and [Normalizer](https://github.com/tacoinfra/harbinger-contracts/blob/master/normalizer.py) contracts with the [Harbinger CLI](https://github.com/tacoinfra/harbinger-cli). 
+Basically you can deploy the [oracle](https://github.com/tacoinfra/harbinger-contracts/blob/master/oracle.py) and [normalizer](https://github.com/tacoinfra/harbinger-contracts/blob/master/normalizer.py) contracts with the [Harbinger CLI](https://github.com/tacoinfra/harbinger-cli). 
 
 ```bash
 $ npm i -g @tacoinfra/harbinger-cli
@@ -446,6 +449,7 @@ If you deploy the contract, you will need to pass a public key for the signer.
 <HighlightBox type="tip">
 
 There are already contracts deployed for:
+
 * [Coinbase](https://tzkt.io/KT1Jr5t9UvGiqkvvsuUbPJHaYx24NzdUwNW9/storage) - signed by Coinbase Pro,
 * [Binance](https://tzkt.io/KT1Mx5sFU4BZqnAaJRpMzqaPbd2qMCFmcqea/storage),
 * [Gemini](https://tzkt.io/KT1Jud6STRGZs6hSfgZsaeztbkzfwC3JswJP/storage), and
@@ -457,7 +461,7 @@ Notice that only a signer can update a price feed.
 
 </HighlightBox>
 
-Then you can use the [Harbinger Serverless Price Feed Signer](https://github.com/tacoinfra/harbinger-signer) to sign price feeds. The CLI can also update the contract with signed price. In addition you can use [Harbinger Serverless Poster](https://github.com/tacoinfra/harbinger-poster) which can update the price automatically.
+Then you can use the [Harbinger Serverless Price Feed Signer](https://github.com/tacoinfra/harbinger-signer) to sign price feeds. The CLI can also update the contract with a signed price. In addition, you can use the [Harbinger Serverless Poster](https://github.com/tacoinfra/harbinger-poster), which can update the price automatically.
 
 <HighlightBox type="tip">
 
@@ -473,7 +477,7 @@ In the price storage contract each item will have:
 - open,
 - high,
 - low, and
-- close.
+- close,
 
 like you can see here for XTZ:
 
@@ -481,13 +485,13 @@ like you can see here for XTZ:
 
 <HighlightBox type="tip">
 
-Have a look at the [Developing Clients](../taquito) section to see how you can fetch the storage. Notice that it might be better to fetch the rates from the normaliser contract because of the volume weighted average price it contains.
+Have a look at the _[Developing Clients](../taquito)_ section to see how you can fetch the storage. Notice that it might be better to fetch the rates from the normaliser contract because of the volume weighted average price it contains.
 
 </HighlightBox>
 
 <HighlightBox type="reading">
 
-* [Luke Youngblood (2020): Introducing Harbinger: a Self-Sustaining Price Oracle for Tezos](https://medium.com/@Blockscale/introducing-harbinger-a-self-sustaining-price-oracle-for-tezos-7cab5c9971d)
 * [Harbinger GitHub - Introduction & Quickstart](https://github.com/tacoinfra/harbinger#quickstart)
+* [Youngblood, Luke (2020): Introducing Harbinger: a Self-Sustaining Price Oracle for Tezos](https://medium.com/@Blockscale/introducing-harbinger-a-self-sustaining-price-oracle-for-tezos-7cab5c9971d)
 
 </HighlightBox>
