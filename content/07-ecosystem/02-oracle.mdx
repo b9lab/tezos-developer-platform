@@ -58,7 +58,7 @@ Leveraging Chainlink will allow for the development of **fully-integrated contra
 
 <ExpansionPanel title="Some technical specificities">
 
-You can find a template for Chainlink oracles by SmartPy [here](https://smartpy.io/ide?template=oracle.py), and there also is the official [Solidity implementation](https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/src/v0.6/Oracle.sol). You can also take a look at the [Chainlink Developer Ressources](https://docs.chain.link/docs/getting-started), if you want to dive deeper.
+You can find a template for Chainlink oracles by SmartPy [here](https://smartpy.io/ide?template=oracle.py), and there also is the official [Solidity implementation](https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/src/v0.6/Oracle.sol). You can also take a look at the [Chainlink Developer Resources](https://docs.chain.link/docs/getting-started), if you want to dive deeper.
 
 </ExpansionPanel>
 
@@ -129,7 +129,7 @@ In the template comments, among others, you can find:
     job_id (sp.TBytes): job_id as required by Oracle
     parameters (TParameters): Optional parameters
     cancel_timeout (sp.TTimestamp): Time after which the Client can cancel the request
-    fulfill_timeout (sp.TTimestamp): Time after which the Oracle cannot fulfill anymore
+    fulfill_timeout (sp.TTimestamp): Time after which the Oracle cannot fulfil anymore
     client_request_id (sp.TNat): Id of the request. Client shall never emits two requests with same id for its own safety.
     
     A Result contains:
@@ -189,7 +189,7 @@ and
       ...
 ```
 
-the `create_request` entrypoint will be called by the escrow contract and `fulfill_request` by an external source. 
+the `create_request` entry point will be called by the escrow contract and `fulfill_request` by an external source. 
 
 Finally let us have a look the escrow contract comments:
 
@@ -202,7 +202,7 @@ class Escrow(sp.Contract):
   ...
 ```
 
-So client will call escrow, which will forward a request to the oracle. Beacuse the escrow contract handels the payments and validation, it increases the trust in the system. 
+So client will call escrow, which will forward a request to the oracle. Because the escrow contract handles the payments and validation, it increases the trust in the system. 
 
 Let us see this in a test from the template:
 
@@ -273,7 +273,7 @@ Data seeker will:
 - check the storage for the requested value
 
 <HighlightBox type="tip">
-You will also need to deploy a faucet to get some tokens to test this. Have a look at the [Writing Smart Contracts](..smartpy/exercise-1/) section to see how you can deploy those contracts with SmartPy and a look at the [Developing Clients](../taquito) section to see how you can fetch the storage and call the entrypoints of deployed contracts.
+You will also need to deploy a faucet to get some tokens to test this. Have a look at the [Writing Smart Contracts](..smartpy/exercise-1/) section to see how you can deploy those contracts with SmartPy and a look at the [Developing Clients](../taquito) section to see how you can fetch the storage and call the entry points of deployed contracts.
 </HighlightBox>
 
 <HighlightBox type="reading">
@@ -351,7 +351,7 @@ Harbinger consists of three main components:
 * the **signers**, who retrieves and signs price data, and
 * the **posters** that retrieves price data from the signer and pushes it to the oracle contract.
 
-In Harbinger, a [reference signer](https://github.com/tacoinfra/harbinger-signer) is used to support market data APIs from exchanges like [Coinbase](https://pro.coinbase.com/), [Binance](https://www.binance.com/), and [OKEx](http://okex.com/). Whereas, the architecture allows exchanges to provide signed price data for the same asset. Thus, **multiple data sources** are possible for the same price. This increases trust and reliability of price data as a medianised price can be calculated.
+In Harbinger, a [reference signer](https://github.com/tacoinfra/harbinger-signer) is used to support market data APIs from exchanges like [Coinbase](https://pro.coinbase.com/), [Binance](https://www.binance.com/), and [OKEx](http://okex.com/). Whereas the architecture allows exchanges to provide signed price data for the same asset. Thus, **multiple data sources** are possible for the same price. This increases trust and reliability of price data as a medianised price can be calculated.
 
 By using the reference signer, security is increased while it deploys independently from the exchange's network and servers, doesn't have to be maintained, and has a secure caching API gateway. Posters cannot request a price from the APIs more than once per minute.
 
@@ -437,7 +437,7 @@ $ npm i -g @tacoinfra/harbinger-cli
 If you deploy the contract, you will need to pass a public key for the signer. 
 
 <HighlightBox type="tip">
-There are allready contracts deployed for [Coinbase](https://tzkt.io/KT1Jr5t9UvGiqkvvsuUbPJHaYx24NzdUwNW9/storage) - signed by Coinbase Pro, [Binance](https://tzkt.io/KT1Mx5sFU4BZqnAaJRpMzqaPbd2qMCFmcqea/storage), [Gemini](https://tzkt.io/KT1Jud6STRGZs6hSfgZsaeztbkzfwC3JswJP/storage) and [OKEx](https://tzkt.io/KT1G3UMEkhxso5cdx2fvoJRJu5nUjBWKMrET/storage) - signed by Blockscale on the mainnet. You can see the public keys of the signer in the storage. Notice that only a signer can update a price feed. 
+There are already contracts deployed for [Coinbase](https://tzkt.io/KT1Jr5t9UvGiqkvvsuUbPJHaYx24NzdUwNW9/storage) - signed by Coinbase Pro, [Binance](https://tzkt.io/KT1Mx5sFU4BZqnAaJRpMzqaPbd2qMCFmcqea/storage), [Gemini](https://tzkt.io/KT1Jud6STRGZs6hSfgZsaeztbkzfwC3JswJP/storage) and [OKEx](https://tzkt.io/KT1G3UMEkhxso5cdx2fvoJRJu5nUjBWKMrET/storage) - signed by Blockscale on the mainnet. You can see the public keys of the signer in the storage. Notice that only a signer can update a price feed. 
 </HighlightBox>
 
 Then you can use the [Harbinger Serverless Price Feed Signer](https://github.com/tacoinfra/harbinger-signer) to sign price feeds. The CLI can also update the contract with signed price. In addition you can use [Harbinger Serverless Poster](https://github.com/tacoinfra/harbinger-poster) which can update the price automatically.
