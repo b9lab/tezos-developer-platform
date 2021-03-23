@@ -58,15 +58,217 @@ Leveraging Chainlink will allow for the development of **fully-integrated contra
 
 <ExpansionPanel title="Some technical specificities">
 
-The smart contracts to integrate Chainlink are written in SmartPy. The deployment, indexing, and querying is done with the Cryptonomic stack, and Conseil will index the data to make it available through the API. The smart contracts are deployed and invoked with ConseilJS.
-
 You can find a template for Chainlink oracles by SmartPy [here](https://smartpy.io/ide?template=oracle.py), and there also is the official [Solidity implementation](https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/src/v0.6/Oracle.sol). You can also take a look at the [Chainlink Developer Ressources](https://docs.chain.link/docs/getting-started), if you want to dive deeper.
 
 </ExpansionPanel>
 
+## How to use Chainlink
+
 <HighlightBox type="tip">
-Please have a look at this [sample project](https://github.com/kuldeep23907/Bifrost-DeFi-DApp/tree/master/TezosChainlinkOracle). It implements a use case with SmartPy and ConseilJS.
+Please have a look at this [sample project](https://github.com/kuldeep23907/Bifrost-DeFi-DApp/tree/master/TezosChainlinkOracle).The smart contracts to integrate Chainlink are written in SmartPy. The smart contracts are deployed and invoked with [ConseilJS](https://cryptonomic.github.io/ConseilJS/#/).
 </HighlightBox>
+
+First let us have a look at the [SmartPy Chainlink template](https://smartpy.io/ide?template=oracle.py).
+
+There you will find:
+
+- An Oracle contract
+- An escrow contract
+- A client contract
+- A token contract
+
+You can see that there is an FA2 implementation of the Chainlink token [LINK](https://coinmarketcap.com/currencies/chainlink/). It is used to pay node operators for retrieving data for smart contracts:
+
+```python
+
+# Oracle Requests are paid with tokens handled in an FA2 contract.
+# The FA2 contract template can be extended by a proxy entry point to
+# ensure transfers to Oracle and payments are synchronized.
+
+FA2 = sp.import_template("FA2.py")
+
+...
+
+class Link_token(FA2.FA2):
+    def __init__(self, admin, config, metadata, token_is_proxy = True):
+        self.token_is_proxy = token_is_proxy
+        if token_is_proxy:
+            self.proxy = sp.entry_point(proxy)
+        FA2.FA2_core.__init__(self, config, metadata, paused = False, administrator = admin)
+
+```
+
+Let us have a look at the client contract:
+
+```python
+
+# Client class is both requester and receiver
+# As a consequence, overall architecture is simplified
+
+class Client(Client_requester, Client_receiver):
+    def __init__(self, escrow,
+                       oracle,
+                       token_contract,
+                       job_id,
+                       admin,
+                       verify_answer_validity = False,
+                       token_is_escrow = False,
+                       token_address = None,
+                       token_is_proxy = True):
+```
+
+It inherits the classes `Client_requester` and `Client_receiver`. This simplifies things because we need to deploy one contract less. `Client_requester` can send and pay requests to oracle via the escrow contract. The `Client_receiver` expects to be called by the oracle contract.
+
+In the template comments, among others, you can find:
+
+```python
+    A Request contains:
+    tag (sp.TString): `REQUEST_TAG`
+    oracle (sp.TAddress): address of the Oracle
+    target (sp.TAddress): address (and entry point) of the target
+    job_id (sp.TBytes): job_id as required by Oracle
+    parameters (TParameters): Optional parameters
+    cancel_timeout (sp.TTimestamp): Time after which the Client can cancel the request
+    fulfill_timeout (sp.TTimestamp): Time after which the Oracle cannot fulfill anymore
+    client_request_id (sp.TNat): Id of the request. Client shall never emits two requests with same id for its own safety.
+    
+    A Result contains:
+    tag (sp.TString): `RESULT_TAG`
+    client (sp.TAddress): address of the client requester
+    client_request_id (sp.TNat): Id of the request
+    result (TValue): result value computed by the Oracle
+```
+
+Let us have a look at the oracle contract:
+
+```python
+# Oracle is the on-chain incarnation of an Oracle provider.
+# It maintains a queue of requests of type `TRequest` containing
+# a sender, a target entry point and parameters.
+class Oracle(sp.Contract):
+    def __init__(self,
+                 admin,
+                 escrow_contract,
+                 escrow_address      = None,
+                 min_cancel_timeout  = 5,
+                 min_fulfill_timeout = 5,
+                 min_amount          = 0):
+        self.escrow_contract = escrow_contract
+        if escrow_address is None:
+            escrow_address = escrow_contract.address
+        self.init(
+            setup = sp.record(
+                admin               = admin,
+                active              = True,
+                min_cancel_timeout  = min_cancel_timeout,
+                min_fulfill_timeout = min_fulfill_timeout,
+                min_amount          = min_amount,
+                escrow              = escrow_address
+                ),
+            next_id = 0,
+            reverse_requests = sp.big_map(tkey = sp.TRecord(client = sp.TAddress, client_request_id = sp.TNat), tvalue = sp.TNat),
+            requests = sp.big_map(tkey = sp.TNat, tvalue = TRequest),
+        )
+```
+
+There you see the requests list `requests = sp.big_map(tkey = sp.TNat, tvalue = TRequest)`. At the time of writing, each data provider will need to deploy an oracle contract, so we do not have any proxy. This contract has two important methods:
+
+```python
+    @sp.entry_point
+    def create_request(self, params):
+      ...
+      data.requests[data.next_id] = request.copy
+```
+
+and
+
+
+```python
+    @sp.entry_point
+    def fulfill_request(self, request_id, result, force):
+      ...
+```
+
+the `create_request` entrypoint will be called by the escrow contract and `fulfill_request` by an external source. 
+
+Finally let us have a look the escrow contract comments:
+
+```python
+# Escrow receive the request and payment and transmits the request to the oracle
+# The requester can cancel the request and recover his payment after a timeout
+# If the Oracle answers before a cancel:
+#    the Escrow sends the reward to the Oracle and the answer to Target
+class Escrow(sp.Contract):
+  ...
+```
+
+So client will call escrow, which will forward a request to the oracle. Beacuse the escrow contract handels the payments and validation, it increases the trust in the system. 
+
+Let us see this in a test from the template:
+
+```python
+        ##########
+        # Test 1 #
+        ##########
+        scenario.h2("requester1 sends a request that gets fulfilled")
+        requester1_balance = compute_balance(scenario, link_token, requester1.address)
+        escrow_balance     = compute_balance(scenario, link_token, escrow.address)
+        scenario.h3("A request")
+
+        scenario += requester1.request_value(request_value_params).run(sender = requester1_admin)
+
+        request_id += 1
+        # Founds should be locked
+        requester1_new_balance = compute_balance(scenario, link_token, requester1.address)
+        escrow_new_balance     = compute_balance(scenario, link_token, escrow.address)
+        scenario.verify(sp.as_nat(requester1_balance - amount) == requester1_new_balance)
+        scenario.verify(escrow_balance + amount == escrow_new_balance)
+
+        scenario.h3("Ledger")
+        scenario.show(link_token.data.ledger)
+
+        oracle_balance = compute_balance(scenario, link_token, oracle.address)
+        escrow_balance = compute_balance(scenario, link_token, escrow.address)
+        # Request must be registered in oracle
+        request_key = sp.record(client = requester1.address, client_request_id = request_id)
+        scenario.verify(oracle.data.reverse_requests.contains(request_key))
+
+        scenario.h3("Oracle consumes the request")
+
+        scenario += oracle.fulfill_request(request_id = request_id - 1, result = value_int(2_500_000), force = False).run(sender = oracle1)
+
+        # Founds must be unlocked
+        oracle_new_balance = compute_balance(scenario, link_token, oracle.address)
+        escrow_new_balance = compute_balance(scenario, link_token, escrow.address)
+        scenario.verify(oracle_balance + amount == oracle_new_balance)
+        scenario.verify(sp.as_nat(escrow_balance - amount) == escrow_new_balance)
+        # Request must be removed from oracle
+        scenario.verify(~oracle.data.reverse_requests.contains(request_key))
+        # Receiver must have registered the result
+        scenario.verify_equal(receiver1.data.value.open_some(), 2_500_000)
+```
+
+so there are two calls(and a lot of validations because this is a test):
+
+```python
+        scenario += requester1.request_value(request_value_params).run(sender = requester1_admin)
+```
+
+```python
+        scenario += oracle.fulfill_request(request_id = request_id - 1, result = value_int(2_500_000), force = False).run(sender = oracle1)
+```
+
+Those call are the calls you will need to make with your clients if all contracts are deployed. 
+
+Data provider will:
+
+- check the storage of Oracle contract
+- process a request and call `fulfill_request` on the Oracle contract
+
+Data seeker will:
+
+- call `request_value` with the amount of token and timeout parameters
+- check the storage for the requested value
 
 
 <HighlightBox type="reading">
