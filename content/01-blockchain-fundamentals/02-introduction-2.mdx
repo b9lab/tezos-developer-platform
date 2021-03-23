@@ -6,6 +6,12 @@ slug: /blockchain-fundamentals/introduction-2
 
 import HighlightBox from "../../src/components/HighlightBox"
 
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
+
 Now that we have taken a look at the origins of blockchain technology and the Tezos protocol, let's focus our attention on **Tezos as a blockchain network** and **trusted execution on-chain**.
 
 ## Tezos a blockchain network: What is a blockchain?
@@ -124,7 +130,7 @@ Let's look at a selection of the most popular consensus algorithms.
 
 **Practical Byzantine Fault Tolerance (PBFT)**
 
-PBFT was published in 1999 and arose in academic corners. It is a three-phase protocol, in which the client sends a request to a so-called primary. In the first phase, the primary broadcasts the request with a sequence number to the replicas. Then the replicas agree on the sequence number and create a message. If a certain amount of same message is reached, the message is verified and replicas agree on total order for requests within a view. At the end, the replicas send the reply to the client. 
+PBFT was first published in 1999 and arose in academic corners. PBFT focuses on providing a **practical Byzantine state machine replication**, which is able to tolerate malicious nodes and manipulated messages. The main aim is achieving a **consensus of all honest nodes**. This translates into a **practical requirement** for networks: The amount of malicious nodes needs to be equal or less to 1/3 of all nodes. Thus, the more nodes the less likely the practical requirement has been surpassed.
 
 <HighlightBox type="info">
 
@@ -132,55 +138,60 @@ You can access the paper by Miguel Castro and Barabara Liskov on *Practical Byza
 
 </HighlightBox>
 
+All **nodes** in the network are **ordered in sequence** with the primary node as leader and the remaining nodes as followers (called backup nodes). In addition, there are validating and non-validating peer nodes.
+
+It is a **three-phase protocol**, in which the client sends a request to a so-called primary, i.e. leader node. The primary multicasts the request to the backup nodes/replicas with a sequence number. These agree on the sequence number, execute the request and send a reply to the client. The message is verified when a certain amount of repetitive messages is send and then the replicas agree on the total order of requests. The backup nodes/replicas agree on a total order of requests, i.e. achieve consensus on the order of record. The nodes then accept or reject the order of record.
+
 **Proof-of-Work (PoW)**
 
-PoW was first introduced with Bitcoin. It presented a solution to determining the order of transactions in a distributed network.
+PoW was first introduced with Bitcoin. It presented a solution to determining **the order of transactions** in a distributed network.
 
 How does it work?
 
-A user completes a task of **arbitrary difficulty**. This is generally implemented as a search for a random number which when combined with ordered transactions in a block yields a hash function result that matches a criteria such as minimum number of leading zeroes. Finding such a solution is taken as evidence of considerable effort (or proof that considerable work *must* have been invested in the search).
+A user completes a task of **arbitrary difficulty**. This is generally implemented as a search for a random number, which when combined with ordered transactions in a block yields a hash function result that matches a criteria such as minimum number of leading zeroes, i.e. the aim of the specified task. Finding such a solution is taken as evidence of considerable effort (or proof that considerable work *must* have been invested in the search).
 
 `youtube: https://youtu.be/2tLfvo_f9_c`
 
-**Nodes**, also known as miners, conduct their searches independently. The successful node that announces a solution first receives an economic reward that encourages participation in the process. A claim is substantiated through an arbitrary amount of work.
-
-If a node wishes to distort/influence the ledger in a PoW system, it must first acquire an **authoritative position**. Acquiring an authoritative position implies overcoming the *combined* problem-solving capacity of the network and maintaining that lead over time. This known attack vector is called 51%-attack. As the name suggests: if a single party acquires more than 51% of the total problem-solving capacity of the network, that party is theoretically able to alter the consensus. 
+**Nodes**, also known as **miners**, conduct their searches independently. The successful node that announces a solution first receives an economic reward, i.e. the economic incentive for mining. The claim is substantiated through the arbitrary amount of work. If a node wishes to distort/influence the ledger in a PoW system, it must first acquire an **authoritative position**, i.e. overcoming the *combined problem-solving capacity* of the network and maintaining that lead over time. This known attack vector is called 51%-attack - If a single party acquires more than 51% of the total problem-solving capacity of the network, that party is theoretically able to alter the consensus.
 
 The control mechanism for the amount of work is called **difficulty** and it guarantees a given average block creation time. Difficulty adjusts to compensate for increasing/decreasing total network problem-solving capacity. Thus, PoW networks do not get faster as more computing capacity is added. They become more resilient by increasing difficulty, which raises the threshold a 51%-attacker will need to overcome.
 
-PoW mechanisms require a large resource investment as work is the base for the substantiation of the claim, i.e. mining is resource-intensive. For example, PoW consensus mechanisms have been widely criticised for their energy consumption - Running Bitcoin requires the energy consumption of a small country.
+PoW mechanisms require a large resource investment as invested work is the base for claim substantiation, so to say, mining is resource-intensive. For this reason, PoW mechanisms have been widely criticised for their energy consumption - Running Bitcoin requires the energy consumption of a small country.
 
 **Proof-of-Stake (PoS)**
 
-PoS is based on the assumption that those with the most to lose, i.e. with a stake invested in the network, are the most incentivised to safeguard network integrity.
+PoS is based on the assumption that _those with the most to lose_, i.e. with a stake invested in the network, are the most incentivised to safeguard network integrity. Validators place funds at risk (i.e. **the stake**). For any given block, a validator is selected in pseudo-random fashion. Whereas a validator with more stake has a higher probability of being selected for block generation. While PoS systems generally reward validators with new coins for honest behaviour (i.e. block rewards), validators also receive transaction fees when creating blocks. PoS solves the energy problem in PoW as "work" (i.e. use of energy through computational power) is not the proof requested.
 
-A successful Proof-of-Stake system must address the problem of **"nothing at stake"**; Randomly-selected validators must face a disincentive for bad behaviour as well as a high probability that bad behaviour will be detected. A solution to the disincentive aspect is to incentivise validators to generate blocks that are likely to be accepted by the network and faces economic punishment when it fails to do so.
+A successful PoS system must address the problem of **"nothing at stake"**; Randomly-selected validators must face a disincentive for bad behaviour as well as a high probability that bad behaviour will be detected. A solution is to incentivise validators to generate blocks that are likely to be accepted by the network and face them with economic punishment when a block isn't.
 
-Validators place funds at risk (i.e. **the stake**). For any given block, a validator is selected in pseudo-random fashion with a validator with more stake having a higher probability of being selected to generate a block. While PoS systems generally reward validators with new coins for honest behaviour (i.e. block rewards), validators also receive transaction fees in return for generating blocks the rest of the network accepts. 
-
-Tezos was the first large-scale, pure PoS system to launch when it did so in June 2018. PoS solves the energy problem in PoW as "work" (i.e. use of energy through computational power) is not the proof requested.
-
-PoS networks do not only face the "nothing at stake" problem, but furthermore introduce challenges in regard to centralisation. **Economies of scale** in staking can lead to a situation, in which token holders with a small stake have a smaller profit margin than those with a large stake. In the end, it creates incentives to only participate as a large token holder or a consortium of many smaller holders, i.e. individual nodes with small stakes dropping out. Thus, it leads to centralisation, which then creates new risk as a high degree of decentralisation is the base for a secure network.
-
-<HighlightBox type="info">
-
-At the time of writing (February 2021), there are [over 400 participants in Tezos PoS](https://tzstats.com/bakers). MyTezosBaker, a popular curation site for Tezos validators (referred to as **bakers** in Tezos), currently lists more than 100 public delegation services from over 30 countries across 6 continents. Check out this [site](https://mytezosbaker.com/).
-
-</HighlightBox>
+PoS networks do not only face the "nothing at stake" problem, but furthermore introduce challenges in regard to **centralisation**. **Economies of scale** in staking can lead to a situation, in which token holders with a small stake have a smaller profit margin than those with a large stake. This creates incentives to only participate as a large token holder or a consortium of many smaller holders leading to centralisation, which then creates new risk as a high degree of decentralisation is the base for a secure network.
 
 **Delegated-Proof-of-Stake (DPoS)**
 
-An extension of proof-of-stake algorithms is called **Delegated-Proof-of-Stake (DPoS)**. The algorithm is called DPoS because like in PoS the value of a vote is determined by the stake. However, in DPoS systems, there is a fixed validator set.
+An extension of the PoS algorithms is called **Delegated-Proof-of-Stake (DPoS)**. The algorithm is called DPoS because like in PoS the value of a vote is determined by the stake. However, there is a fixed validator set.
 
-In this type of consensus mechanism, so-called **"witnesses"** are elected by the stakeholders of the network. Witnesses secure the network. Afterwards, several witnesses are chosen for the block creation so that they represent at least 50% of the stakeholders' votes.
+In this type of consensus mechanism, so-called **witnesses** are elected by the stakeholders of the network. Witnesses secure the network. Afterwards, several witnesses, representing at least 50% of the stakeholders' votes, are chosen for the block creation.
 
 ![Delegated-Proof-of-Stake](images/delegated-proof-of-stake.png)
 
-Witnesses are paid for their services: They are paid fees for creating and validating blocks. This economic incentive to become a witness also leads to competition potentially increasing with each new member because the number of witnesses is limited. In case a witness misbehaves, the network's community is able to withdraw their votes for a single witness, i.e. fire the witness. Witnesses that no longer hold enough votes lose their income basis.
+Witnesses are paid ffees for creating and validating blocks, i.e. providing their services. This economic incentive also leads to competition potentially increasing with each new member due to the limited number of witnesses. In case a witness misbehaves, the network's community is able to withdraw their votes for a single witness, i.e. "fire" the witness.
 
-Alongside ascribing the role of witnesses to some participants, DPoS networks also elect **"delegates"**. Delegates are a group of participants that supervise network governance and performance, and propose changes that are then voted on by the entire network.
+Alongside ascribing the role of witnesses to some participants, DPoS networks also elect **delegates**. Delegates are a group of participants that supervise network governance and performance, and propose changes that are then voted on by the entire network.
 
 Many consider DPoS algorithms superior to PoW and PoS because of their fast block creation, a high degree of security, energy efficiency, level of integrity, and democratic structure. However, DPoS systems are less decentralized than PoW and PoS systems because they have fixed validator sets and higher barriers to entry.
+
+<ExpansionPanel title="Consensus on Tezos: Liquid Proof-of-Stake">
+
+Tezos relies on a consensus mechanism, which combines elements of classical PoS with DPoS. It is called **Liquid Proof-of-Stake (LPoS)**. This consensus mechanism is rather PoS with the opportunity of delegation than a classical DPoS mechanism.
+
+Tezos' LPoS shares attributes with both, but can also be differentiated through specific characteristics unique to Tezos:
+
+* **DPoS elements:** Participants can **delegate** their stake to validators creating a lower entry barrier, BUT delegation is optional, and consensus relies on a more inclusive **set of validators** - multiple ten-thousands instead of only under 100, modest computing infrastructure needed;
+* **PoS element:** Validators are **selected based on the amount of stake/tokens** they hold.
+
+We will dive deeper into Tezos' consensus mechanism in the section _Main Ideas Behind the Tezos Protocol - Change and Evolution: Implementing change without hard forks_.
+
+</ExpansionPanel>
 
 ## Trusted execution on-chain - Smart contracts
 

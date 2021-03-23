@@ -243,19 +243,31 @@ The last stage, the **promotion period**, began with an adjusted quorum of 81.39
 </ExpansionPanelList>
 </ExpansionPanel>
 
-## Improved PoS consensus
+## Improved PoS consensus - Liquid Proof-of-Stake
 
-Another attribute of Tezos that should be highlighted is its consensus mechanism design, **Liquid Proof-of-Stake (LPoS)**. Compared to a DPoS mechanism, LPoS prioritises security, decentralisation, and accountability in governance. Let's take a closer look at LPoS!
+Another attribute of Tezos is its consensus mechanism, **Liquid Proof-of-Stake (LPoS)**. Compared to a DPoS mechanism, LPoS prioritises security, decentralisation, and accountability in governance. Let's take a closer look at LPoS!
 
-In an LPoS-based blockchain, a baker, i.e. validator node, that produces blocks is **randomly selected** to do so based on its **own funds staked** and those that are **delegated** to it by other stakeholders. Whereas, the stake is measured in Tezos tokens (XTZ), also called tez. Afterwards, randomly selected endorsers validate blocks produced by bakers.
+In an LPoS-based blockchain, a **baker**, i.e. validator node, is **randomly selected** to generate blocks based on its **own funds staked** and those that are **delegated** to it by other stakeholders. Whereas, the **stake** is measured in Tezos tokens (XTZ), also called **tez**. Afterwards, randomly selected endorsers validate blocks produced by bakers.
 
-In Tezos, block production rights are randomly selected proportional to a baker’s stake. For performance reasons, stake is measured in "rolls". Currently, one **roll** is equal to 8,000 tez, rounded down (e.g. 15,999 tez is one roll) - This constant may be changed via the Tezos governance mechanism. The rolls available to a baker consist of the bakers own staked tez as well as tez delegated to it from originated accounts. Bakers must put up a security deposit to disincentivise malicious behaviour. The size of a baker's security deposit depends on the amount of blocks a baker is selected to produce and/or endorse.
+Block creation rights are randomly selected proportional to a baker’s stake, for performance reasons measured in "rolls". Currently, one **roll** is equal to 8,000 tez, rounded down (e.g. 15,999 tez equals one roll) - This constant may be changed via the Tezos governance mechanism. The rolls available to a baker consist of the bakers own staked tez and the delegated tez from originated accounts. Bakers are required to put up a _security deposit_ to disincentivise malicious behaviour. The size of a baker's deposit depends on the amount of blocks a baker is selected to produce and/or endorse.
 
-Bakers earn rewards for securing the network (producing and endorsing blocks). Rewards are currently [dynamically calculated](https://blog.nomadic-labs.com/emmy-an-improved-consensus-algorithm.html) and are calibrated for a target inflation rate of approximately 5.5% initially. As rewards are a fixed amount, this inflation rate will decrease over time. However, these constants may also be changed by stakeholders via the Tezos governance mechanism. The rewards paid by bakers to delegates are outside the scope of the protocol. Thus, it is up to bakers to distribute their rewards to delegates. It is expected that bakers will compete for delegated tez on the basis of reliability, fees, security, and other factors like contributions to the Tezos ecosystem.
+Bakers earn **rewards** for securing the network through the generation and endorsment of blocks. Rewards are currently [dynamically calculated](https://blog.nomadic-labs.com/emmy-an-improved-consensus-algorithm.html) and were initially calibrated for a target inflation rate of approximately 5.5%.
 
-Stakeholders that do not bake themselves (via an implicit account) can delegate their stakes (i.e. Tezos tokens, XTZ, "tez") to bakers. The ability to delegate increases the amount of tez that bakers can count towards their total stake participating in consensus (their own, plus the tez delegated to them by others). It also allows stakeholders of any size to participate in LPoS and earn the associated rewards for securing the Tezos network. The more total stake a baker has participating in consensus, the higher probability it has of being randomly selected to produce a block as block production rights are proportional to one’s total stake.
+<HighlightBox type="info">
 
-Tezos stakeholders have the ability to participate in consensus either directly themselves or to delegate their stake to other bakers. As such, Tezos consensus can be described as "proof of stake with delegation". Stakeholders can fluidly switch between participating themselves or delegating, and can also easily switch delegators. For these reasons, LPoS has gained traction when describing Tezos’ consensus mechanism.
+As rewards are fixed, the inflation rate is expected to decrease over time. However, these constants may also be changed by stakeholders via the Tezos governance mechanism.
+
+</HighlightBox>
+
+As mentioned, stakeholders that do not bake themselves (via an implicit account) can delegate their stakes to bakers. This allows stakeholders of any size to participate in LPoS and earn associated rewards for securing the network. The rewards paid by bakers to delegates are outside the protocol's scope. Thus, it is up to bakers to distribute their rewards to delegates. It is expected that bakers will compete for delegated tez on the basis of reliability, fees, security, and other factors like contributions to the Tezos ecosystem.
+
+<HighlightBox type="info">
+
+At the time of writing (February 2021), there are [over 400 participants in Tezos PoS](https://tzstats.com/bakers). MyTezosBaker, a popular curation site for Tezos validators (referred to as **bakers** in Tezos), currently lists more than 100 public delegation services from over 30 countries across 6 continents. Check out this [site](https://mytezosbaker.com/). These are good indicators for the network stability and security.
+
+</HighlightBox>
+
+As Tezos stakeholders have the ability to participate in consensus either directly themselves or to delegate their stake to other bakers. As such, Tezos consensus can be described as "proof of stake with delegation". Stakeholders can fluidly switch between participating themselves or delegating, and can also easily switch delegators. For these reasons, LPoS has gained traction when describing Tezos’ consensus mechanism.
 
 <HighlightBox type="tip">
 
