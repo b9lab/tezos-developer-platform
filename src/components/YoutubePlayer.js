@@ -2,25 +2,31 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 const YoutubePlayerWrapper = styled.div({
-    height: "30vw",
-    width: "100%",
+  position: "relative",
+  paddingTop: "56.25%"
+});
+
+const YoutubePlayerContent = styled.iframe({
+  position: "absolute",
+  top: "0",
+  left: "0",
+  width: "100%",
+  height: "100%"
 });
 
 export default function YoutubePlayer(props) {
-  const videoUrl = "https://www.youtube.com/embed/" + props.videoId;
+  const videoUrl = "https://www.youtube-nocookie.com/embed/" + props.videoId + "?noref=true";
 
   return (
     <YoutubePlayerWrapper>
-        <iframe
-            src={videoUrl}
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            frameBorder="0"
-            width="100%"
-            height="100%"
-            webkitallowfullscreen="true"
-            mozallowfullscreen="true"
-            allowFullScreen
-        />
-    </YoutubePlayerWrapper>
+      <YoutubePlayerContent
+          src={videoUrl}
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          frameBorder="0"
+          webkitallowfullscreen="true"
+          mozallowfullscreen="true"
+          allowFullScreen
+      />
+  </YoutubePlayerWrapper>
   );
 }
