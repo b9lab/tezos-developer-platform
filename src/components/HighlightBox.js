@@ -39,7 +39,7 @@ const HighlightBoxIcon = styled.div`
     background: #DE7150;
   `}
 
-  ${({ type }) => type==="warn" && `
+  ${({ type }) => (type==="warn" || type==="warning") && `
     background: #DD4F52;
   `}
 
@@ -78,7 +78,7 @@ const HighlightBoxContent = styled.div`
     }
   `}
 
-  ${({ type }) => type==="warn" && `
+  ${({ type }) => (type==="warn" || type==="warning") && `
     &::before {
       content: "Warning";
       color: #DD4F52;
@@ -98,7 +98,7 @@ const IconImage = ({type}) => {
 
   if (type==="info") icon=IconInfo
   if (type==="tip") icon=IconTip
-  if (type==="warn") icon=IconWarn
+  if (type==="warn"|| type==="warning") icon=IconWarn
   if (type==="reading") icon=IconReading
 
   return (
