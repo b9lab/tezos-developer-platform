@@ -4,5 +4,4 @@ module.exports = [
     `${here}01-fa2`,
     `${here}02-oracle`,
     `${here}03-beacon`,
-    `${here}04-dexchg`,
 ];
