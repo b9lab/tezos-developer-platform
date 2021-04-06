@@ -39,7 +39,7 @@ const HighlightBoxIcon = styled.div`
     background: #DE7150;
   `}
 
-  ${({ type }) => type==="warn" || type==="warning") && `
+  ${({ type }) => (type==="warn" || type==="warning") && `
     background: #DD4F52;
   `}
 
@@ -78,7 +78,7 @@ const HighlightBoxContent = styled.div`
     }
   `}
 
-  ${({ type }) => type==="warn" || type==="warning") && `
+  ${({ type }) => (type==="warn" || type==="warning") && `
     &::before {
       content: "Warning";
       color: #DD4F52;

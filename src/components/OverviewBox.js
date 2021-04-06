@@ -24,6 +24,7 @@ const ContentLeft = styled.div({
 });
 
 const ContentFloating = styled.div({
+  width: "100%",
 	paddingRight: "5%",
   [breakpoints.md]: {
     width: "100%",
