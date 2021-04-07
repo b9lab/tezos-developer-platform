@@ -113,7 +113,7 @@ When the script is being updated, you may again need the command `chmod +x edone
 
 </HighlightBox>
 
-Wait a few minutes for the node container to start synchronising with the edonet and then check its logs with:
+Wait a few minutes for the node container to start synchronising with Edonet and then check its logs with:
 
 ```sh
 $ docker logs edonet_node_1 --follow
@@ -312,11 +312,11 @@ Zero tez! There is no free lunch. Because we do not even have any tez, we cannot
 
 ## Adding testnet tez (XTZ)
 
-Let's get some Edonet tez to work with! The easiest way to get some _Edonet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also give you a brand new wallet (public-private key pair) on the Edonet, which you will have to copy into your node container.
+Let's get some Edonet tez to work with! The easiest way to get some _Edonet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also give you a brand new wallet (public-private key pair) on Edonet, which you will have to copy into your node container.
 
 <HighlightBox type="info">
 
-Yes, the faucet website created a private key for you and you had to download it. This means that someone, somewhere, could have a copy of your private key. That would not be safe **if we were using tez on the mainnet**. But we are using the Edonet, so we will let it slide this time.
+Yes, the faucet website created a private key for you and you had to download it. This means that someone, somewhere, could have a copy of your private key. That would not be safe **if we were using tez on the mainnet**. But we are using Edonet, so we will let it slide this time.
 
 Also remember: The private key created by the faucet is **only meant for the testnet**. Thus, they are not meant to be used in the Mainnet.
 
@@ -393,7 +393,7 @@ If you want to deploy a contract with this account, make sure your node is sync'
 
 If you have difficulties syncing up, you can try to **import a [snapshot](https://snapshots-tezos.giganode.io/)**.
 
-Just download a rolling or full snapshot for the edonet, stop the node:
+Just download a rolling or full snapshot for Edonet, stop the node:
 
 ```bash
 $ ./edonet.sh stop
