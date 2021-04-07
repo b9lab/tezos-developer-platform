@@ -42,7 +42,7 @@ Create a folder and an `index.js` in it:
 
 const request = require('request');
 
-request('https://api.edo2net.tzkt.io/v1/accounts?limit=10&select=balance', (err, res, body) => {
+request('https://api.edo2net.tzkt.io/v1/accounts?limit=10&select=balance&sort.desc=balance', (err, res, body) => {
   console.log(body);
 });
 
@@ -64,7 +64,7 @@ We **limit the output** to 10 accounts, and we want to fetch the account balance
 
 It is important that you first think about what you want to get before making a request, because it will [impact the performance](https://baking-bad.org/blog/2020/08/10/tezos-explorer-api-tzkt-request-only-what-you-need/). 
 
-You can specify `select`, and use `select.fields` or `select.values` to fetch the fields or the values.
+You can specify `select`, and use `select.fields` or `select.values` to fetch the fields or the values. As you can see in the `request`, we can also tell TzKT API to `sort` the balances. This will give us 10 richest accounts.
 
 <HighlightBox type="tip">
 
@@ -85,9 +85,11 @@ request('https://api.edo2net.tzkt.io/v1/accounts?balance.gt=10000000000000', (er
 
 This finds you an account with a balance greater than 10 million tez. 
 
-<HighlightBox type="info">
+<HighlightBox type="warn">
 
-The **amount of endpoints** TzKT offers is huge. [Each is documented](https://api.tzkt.io/), and you can find in the **QUERY PARAMETERS** filters to apply and in the **RESPONSE SCHEMA** the fields you can fetch.
+The **amount of endpoints** TzKT offers is huge. [Each is documented](https://api.tzkt.io/), and you can find in the **QUERY PARAMETERS** filters to apply and in the **RESPONSE SCHEMA** the fields you can fetch. Please take your time and have a look into the documentation, e.g. look for different query modes:
+
+![](images/queryparams.png)
 
 </HighlightBox>
 
@@ -115,6 +117,14 @@ You see that the response is a JSON, which we can parse:
    "certifier":"tz1WNmpLG56yT4XixkCFe5M5NpZ7gPgVpVqc"
 }
 ```
+
+TzKT offers [deep selection](https://baking-bad.org/blog/2021/03/03/tzkt-v14-released-with-improved-smart-contract-data-and-websocket-api/#get-specific-fields-from-the-storage), so we do not need to fetch the whole storage if we are interested to know the certifier:
+
+```
+https://api.edo2net.tzkt.io/v1/contracts/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK/storage?path=certifier
+```
+
+We do not have such a complex data structure but you could access deeper fields with `path=certifier.field` etc. if there were any. 
 
 Now the question arises: If we want to track the activity on our smart contract, [how often](https://baking-bad.org/blog/2020/07/29/tezos-explorer-api-tzkt-how-often-to-make-requests/) do we need to conduct this request?
 
@@ -185,7 +195,19 @@ You can also try the [WebSocket API JS simple client](https://api.tzkt.io/#secti
 
 </HighlightBox>
 
-Let us do something not easy to do without the TzKT API and ask for the [number of smart contracts](https://api.tzkt.io/#operation/Accounts_GetCount) in the edonet:
+We can also look for specific entrypoint calls or parameters in the transactions. Let us confirm with [filtering](https://baking-bad.org/blog/2021/03/03/tzkt-v14-released-with-improved-smart-contract-data-and-websocket-api/#filter-transactions-by-parameter-like-a-boss) that `tz1YTVs4uDn1jEQ2Z4RJyR47zAzhXv1b9Q7t` is certified by `tz1WNmpLG56yT4XixkCFe5M5NpZ7gPgVpVqc`:
+
+```
+https://api.edo2net.tzkt.io/v1/operations/transactions?target=KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK&parameter=tz1YTVs4uDn1jEQ2Z4RJyR47zAzhXv1b9Q7t&select=sender
+```
+
+which will give you:
+
+```
+[{"address":"tz1WNmpLG56yT4XixkCFe5M5NpZ7gPgVpVqc"}]
+```
+
+Let us do something else not easy to do without the TzKT API and ask for the [number of smart contracts](https://api.tzkt.io/#operation/Accounts_GetCount) in the edonet:
 
 ```
 https://api.edo2net.tzkt.io/v1/accounts/count?type=contract
