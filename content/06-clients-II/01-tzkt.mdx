@@ -22,27 +22,21 @@ You want an overview of the provided TzKT APIs and staging environments for test
 
 </HighlightBox>
 
-For Edonet we can use:
+For the mainnet we have:
+
+```
+https://api.tzkt.io/
+```
+
+and for the Edonet we can use:
 
 ```
 https://api.edo2net.tzkt.io/
 ```
 
-Because TzKT offers a **REST API**, we have different options to test it here.
-
-Let's start by [fetching accounts](https://api.tzkt.io/#tag/Accounts).
-
-We can do a request via a [browser](https://api.tzkt.io/v1/accounts) or in a terminal:
-
-```bash
-$ curl https://api.edo2net.tzkt.io/v1/accounts
-```
-
-The endpoint gives you **access** to the list of accounts in the network - The output is **limited to 100** by default. We will soon see how to adjust this limit.
-
 ## Fetching data with Node.js
 
-As you can see, we could work with any language and tool which supports HTTP requests. Here we want to continue with Node.js and [request](https://www.npmjs.com/package/request).
+Because TzKT offers a **REST API**, we could work with any language or tool which supports HTTP requests. Here we want to work with Node.js and [request](https://www.npmjs.com/package/request).
 
 Create a folder and an `index.js` in it:
 
@@ -72,12 +66,6 @@ We **limit the output** to 10 accounts, and we want to fetch the account balance
 
 It is important that you first think about what you want to get before making a request, because it will [impact the performance](https://baking-bad.org/blog/2020/08/10/tezos-explorer-api-tzkt-request-only-what-you-need/). 
 
-<HighlightBox type="tip">
-
-By default the `limit` is set to 100. You can increase it to up to 1000.
-
-</HighlightBox>
-
 You can specify `select`, and use `select.fields` or `select.values` to fetch the fields or the values.
 
 <HighlightBox type="tip">
@@ -97,7 +85,7 @@ request('https://api.edo2net.tzkt.io/v1/accounts?balance.gt=10000000000000', (er
 });
 ```
 
-This finds you an account with a balance of 10 million tez. 
+This finds you an account with a balance greater than 10 million tez. 
 
 <HighlightBox type="info">
 
@@ -138,7 +126,7 @@ It is a recommended best practice when using the TzKT API to not conduct the sam
 
 </HighlightBox>
 
-You know that each transaction needs to be included into a block. So we don't need to fetch data more often than blocks appear. For the testnet, we can assume that every **30 seconds** we will get a new block. Notice, usually you would also wait more than one block to confirm a transaction.
+You know that each transaction needs to be included into a block. So we don't need to fetch data more often than blocks appear. We can fetch the [protocol constants](https://api.edo2net.tzkt.io/v1/protocols/current) and use the **timeBetweenBlocks** value to estimate the arrival time for the next block. Notice, usually you would also wait more than one block to confirm a transaction.
 
 With [request-promise](https://github.com/request/request-promise):
 
@@ -152,32 +140,36 @@ we can do:
 
 const request = require('request-promise');
 
+const timeBetweenBlocks = () => {
+  return request("https://api.edo2net.tzkt.io/v1/protocols/current")
+    .then(body => JSON.parse(body).constants.timeBetweenBlocks);
+}
+
 const blockTime = () => {
-  let recentBlockTime = Date.now();  
-  return request('https://api.edo2net.tzkt.io/v1/head').then((body) => {
-    recentBlockTime = Date.parse(JSON.parse(body).timestamp);
-    return recentBlockTime;
-  });
+  return request('https://api.edo2net.tzkt.io/v1/head')
+    .then(body => Date.parse(JSON.parse(body).timestamp));
 }
 
 const contractStorage = (address) => {
-  let storage = null;
-  return request('https://api.edo2net.tzkt.io/v1/contracts/' + address + '/storage').then((body) => {
-      storage = JSON.parse(body);
-      return storage;
-    });
+  return request('https://api.edo2net.tzkt.io/v1/contracts/' + address + '/storage')
+    .then(body => JSON.parse(body));
 }
 
-const Sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
+const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 async function main() {
-  let nextBlockTime = await blockTime() + 30000;
+  const timeBlocks = await timeBetweenBlocks(),
+    timeRequest = 5000;
+
+  let nextBlockTime = await blockTime() + timeBlocks;
+
   while(true) {
     if(Date.now() >= nextBlockTime) {
-      nextBlockTime = await blockTime() + 30000;
+      nextBlockTime = await blockTime() + timeBlocks;
       console.log(await contractStorage("KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK"));
     }
-    await Sleep(5000);
+
+    await sleep(timeRequest);
   }
 }
 
@@ -185,7 +177,7 @@ main();
 
 ```
 
-This will wait 30 seconds from the timestamp of the last recent block before starting to fetch the timestamp of the most recent block. Also, even after the 30 seconds passed, it won't do more than one request each 5 seconds. This should be enough to have an accurate storage.
+This will wait `timeBetweenBlocks` from the timestamp of the last recent block before to fetching the timestamp of the most recent block. Also, even after the time is passed, it won't do more than one request each 5 seconds. This should be enough to have an accurate storage.
 
 Notice, we didn't catch any error above, but you should always check for the response if you work with an API.
 
@@ -250,7 +242,7 @@ So the [current protocol](https://api.edo2net.tzkt.io/v1/protocols/current) is *
 
 <HighlightBox type="tip">
 
-You can check protocol details on [tzStats](https://tzstats.com/protocols)
+You can see supported Tezos protocols on [tzkt.io](https://tzkt.io/protocols) and check the details, e.g. for the [Edonet protocol details](https://tzkt.io/PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA/constants).
 
 </HighlightBox>
 
