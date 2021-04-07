@@ -505,7 +505,7 @@ You can see that we use:
 
 Well `InMemorySigner.InMemorySigner` looks strange because of how we import `@taquito/signer`. It is not included in the `@taquito/taquito` because it is not relevant for production. 
 
-You will notice that we miss the script `signer.js`. It includes `InMemorySigner` but you can generate it with a JavaScript file like:
+You will notice that we miss the script `signer.js`. It includes `InMemorySigner` and you can generate it with a JavaScript file like:
 
 ```javascript
 const InMemorySigner = require("@taquito/signer");
@@ -519,7 +519,7 @@ and Browserify via:
 $ browserify abovescript.js -o signer.js
 ```
 
-or you can download it from the [certifier repository](https://github.com/b9lab/tezos-sample-certifier).
+or you can download it from the [certifier repository](https://github.com/b9lab/tezos-sample-certifier). You just need to open `index.html` to test the application.
 
 <ExpansionPanel title="The CSS file - In case you were wondering">
 
