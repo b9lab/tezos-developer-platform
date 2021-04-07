@@ -80,11 +80,13 @@ export default function OverviewBox(props) {
           <ImgFloating src={props.imgSrc}></ImgFloating>
           <Title>{props.title}</Title>
           {props.children}
-          <Link className="action-link" href={props.linkHref}>
-            {props.linkText}
-            <LinkImg src="/icon-arrow-right.svg">
-            </LinkImg>
-          </Link>
+          {props.linkHref && (
+            <Link className="action-link" href={props.linkHref}>
+              {props.linkText}
+              <LinkImg src="/icon-arrow-right.svg">
+              </LinkImg>
+            </Link>
+          )}
         </ContentFloating>
       </OverviewBoxWrapper>
     );
@@ -94,11 +96,13 @@ export default function OverviewBox(props) {
         <ContentLeft>
           <Title>{props.title}</Title>
           {props.children}
-          <Link className="action-link" href={props.linkHref} target={props.external ? "_blank" : ""}>
-            {props.linkText}
-            <LinkImg src="/icon-arrow-right.svg">
-            </LinkImg>
-          </Link>
+          {props.linkHref && (
+            <Link className="action-link" href={props.linkHref} target={props.external ? "_blank" : ""}>
+              {props.linkText}
+              <LinkImg src="/icon-arrow-right.svg">
+              </LinkImg>
+            </Link>
+          )}
         </ContentLeft>
         <ImgRightContainer>
           <ImgRight src={props.imgSrc}></ImgRight>
