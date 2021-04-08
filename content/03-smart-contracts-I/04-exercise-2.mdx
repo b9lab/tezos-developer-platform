@@ -80,11 +80,11 @@ Try to implement a contract, which can pass the tests above.
 As you can see, you will need to implement a class called `Crowdfunding`:
 
 - the storage will need to keep track on the fundings,
-- the contract will have an owner, who can call the pay_off function,
+- the contract will have an owner, who can call the `pay_off` function,
 - several conditions must be met for `pay_off` and `refund`.
 
 There are a few keywords that you will need but we have not seen so far:
-- `sp.amount` will give you the amount of `mutez`(microtez) in the transaction,
+- `sp.amount` will give you the amount of `mutez`(in **microtez**) in the transaction,
 - You can access the balance of the contract with `sp.balance`,
 - `sp.now` will give you the timestamp of the block with the transaction. 
 
