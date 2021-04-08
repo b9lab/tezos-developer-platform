@@ -6,7 +6,7 @@ slug: /smartpy/language
 
 import HighlightBox from "../../src/components/HighlightBox"
 
-Now, let's write a different smart contract, which sums all natural numbers from 0 to a given number: 
+Now, let's write a different smart contract. It shall sum all natural numbers from 0 to a given number: 
 
 ```python
 import smartpy as sp
@@ -125,7 +125,7 @@ def sum(self, params):
 
 This will be translated to 5 times `ADD` in the Michelson code.
 
-Remember that **computation is costly** on blockchains as each calculation costs gas and with it de facto money. A code with a **minimalistic approach**, in regard to the contract code, is therefore cheaper. It is advisable to do the least possible number of calculations on the blockchain, metaprogramming can help with that.
+Remember that **computation is costly** on blockchains as each calculation costs gas and with it de facto money. A code with a **minimalistic approach**, in regard to the contract code, is therefore cheaper. [It is advisable to do the least possible number of calculations on the blockchain](/blockchain-fundamentals/introduction-2#trusted-execution-on-chain---smart-contracts), metaprogramming can help with that.
 
 If we instead use SmartPy and write:
 
@@ -199,7 +199,7 @@ Here, we have less `ADD` instructions, which are nested in the `LOOP` instructio
             self.data.storage+= i
 ```
 
-This means that the loop as such is maintained in Michelson. In doing so, we can see and decide which calculations we want to perform on the blockchain.
+This means that the loop as such is included in Michelson. In doing so, we can see and decide which calculations we want to perform on the blockchain.
 
 ## Typing
 

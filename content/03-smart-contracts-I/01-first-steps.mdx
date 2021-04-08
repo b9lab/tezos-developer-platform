@@ -788,7 +788,7 @@ We use a **decorator to add a test**. This type of tests can be conducted with t
 
 ![](images/editor2.png)
 
-In standard view, we can display HTML on the right-side half with `setOutput`, e.g.:
+In standard view, we can display HTML on the right-side half:
 
 ```python
 import smartpy as sp
@@ -912,7 +912,7 @@ Have a look at the Michelson code and the test transaction:
 
 ![](images/editor_tx.png)
 
-There you see our repeater contract, which we already code and test in Michelson. Michelson does not have variable names, hence the compiler comments with the help of our source code.
+There you see our repeater contract, which we already coded and tested in Michelson. Michelson does not have variable names, hence the compiler comments with the help of our source code.
 
 <HighlightBox type="tip">
 
@@ -952,19 +952,17 @@ def test():
     scenario+= adderContract.add(first=2, second=3)
 ```
 
-You see that you can give multiple inputs:
+You see that you can use multiple inputs:
 
 ```python
 adderContract.add(first=2, second=3)
 ```
 
-and use access like:
+and access these like:
 
 ```python
 self.data.storage= params.first + params.second
 ```
-
-Now that we took our first steps with SmartPy, let's continue with a look at typing and conditions in the SmartPy library.
 
 <HighlightBox type="reading">
 <ul>
