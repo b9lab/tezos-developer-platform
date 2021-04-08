@@ -30,7 +30,7 @@ The Bitcoin White Paper presented a solution to the "double-spending" problem fo
 
 In the current financial system, double-spending is avoided by the involvement of centralized third parties that manage and control financial transactions. A third party such as a bank, credit card company, or payment service is used as a trusted ledger keeper. Consequently, it is generally not possible for two parties to exchange value online without involving a trusted third party to handle the settlement process and update their ledgers, as well as account balances.
 
-At a high level, Bitcoin solves the double-spending problem by replacing the trusted central ledger-keepers with a decentralised and distributed network of ledger-keepers. Each member of the network has an exact replica of the ledger. In addition, no one can update the ledger without the consensus of all other ledger-keepers to approve the changes.
+At a high level, Bitcoin solves the double-spending problem by replacing the trusted central ledger-keepers with a decentralised and distributed network of ledger-keepers. Each member of the network has an exact replica of the ledger. In addition, no one can update the ledger without the consensus of the network to approve the changes.
 
 ![The double-spending problem](images/doublespendingproblem3.png)
 
@@ -144,15 +144,11 @@ It is a **three-phase protocol**, in which the client sends a request to a so-ca
 
 **Proof-of-Work (PoW)**
 
-PoW was first introduced with Bitcoin. It presented a solution to determining **the order of transactions** in a distributed network.
-
-How does it work?
-
-A user completes a task of **arbitrary difficulty**. This is generally implemented as a search for a random number, which when combined with ordered transactions in a block yields a hash function result that matches a criteria such as minimum number of leading zeroes, i.e. the aim of the specified task. Finding such a solution is taken as evidence of considerable effort (or proof that considerable work *must* have been invested in the search).
+PoW was first introduced with Bitcoin. A user completes a task of **arbitrary difficulty**. This is generally implemented as a search for a random number, which when combined with ordered transactions in a block yields a hash function result that matches a criteria such as minimum number of leading zeroes, i.e. the aim of the specified task. Finding such a solution is taken as evidence of considerable effort (or proof that considerable work *must* have been invested in the search).
 
 `youtube: https://youtu.be/2tLfvo_f9_c`
 
-**Nodes**, also known as **miners**, conduct their searches independently. The successful node that announces a solution first receives an economic reward, i.e. the economic incentive for mining. The claim is substantiated through the arbitrary amount of work. If a node wishes to distort/influence the ledger in a PoW system, it must first acquire an **authoritative position**, i.e. overcoming the *combined problem-solving capacity* of the network and maintaining that lead over time. This known attack vector is called 51%-attack - If a single party acquires more than 51% of the total problem-solving capacity of the network, that party is theoretically able to alter the consensus.
+**Nodes**, also known as **miners**, conduct their searches independently. The successful node that announces a solution first receives an economic reward, i.e. the economic incentive for mining. The claim is substantiated through the arbitrary amount of work. If a node wishes to distort/influence the ledger in a PoW system, it must first acquire an **authoritative position**, i.e. overcoming the *combined problem-solving capacity* of the network and maintaining that lead over time. This known attack vector is called 51%-attack - If a single party acquires more than 50% of the total problem-solving capacity of the network, that party is theoretically able to alter the consensus.
 
 The control mechanism for the amount of work is called **difficulty** and it guarantees a given average block creation time. Difficulty adjusts to compensate for increasing/decreasing total network problem-solving capacity. Thus, PoW networks do not get faster as more computing capacity is added. They become more resilient by increasing difficulty, which raises the threshold a 51%-attacker will need to overcome.
 
