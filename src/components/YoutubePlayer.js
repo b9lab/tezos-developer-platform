@@ -3,7 +3,8 @@ import styled from '@emotion/styled';
 
 const YoutubePlayerWrapper = styled.div({
   position: "relative",
-  paddingTop: "56.25%"
+  paddingTop: "56.25%",
+  margin: "20px 0"
 });
 
 const YoutubePlayerContent = styled.iframe({
