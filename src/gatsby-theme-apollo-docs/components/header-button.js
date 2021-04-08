@@ -3,8 +3,9 @@ import styled from '@emotion/styled';
 import {IconProceed} from '@apollo/space-kit/icons/IconProceed';
 import {breakpoints} from 'gatsby-theme-apollo-core';
 import {colors} from '@apollo/space-kit/colors';
+import Logo from '../../gatsby-theme-apollo-core/components/logo.js'
 
-const Container = styled.div({
+const Container = styled.a({
   display: 'flex',
   flexShrink: 0,
   width: 240,
@@ -16,6 +17,11 @@ const Container = styled.div({
     display: 'none'
   }
 });
+
+const HeaderLogo = styled.img({
+  margin: 0,
+  height: 40
+})
 
 const StyledLink = styled.a({
   display: 'flex',
@@ -35,8 +41,8 @@ const StyledIcon = styled(IconProceed)({
 
 export default function HeaderButton() {
   return (
-    <Container>
-      Top Bar
+    <Container href="/">
+      <Logo />
     </Container>
   );
 }

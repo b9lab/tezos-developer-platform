@@ -1,12 +1,15 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import SiteLogo from '../../assets/b9lab-logo.svg';
+
 
 const Wrapper = styled.div({
   display: 'flex'
 });
 
 const Title = styled.div({
-	marginTop: 13,
+  fontSize: "1.2rem",
+  marginTop: 8,
   marginLeft: 17,
   textAlign: "right"
 })
@@ -14,7 +17,7 @@ const Title = styled.div({
 export default function Logo() {
   return (
     <Wrapper>
-      <img src={'/img/b9lab-logo.svg'} alt="B9lab Logo" height="42" />
+      <img src={SiteLogo} alt="B9lab Logo" height="42" />
       <Title>Tezos Developer Portal</Title>
     </Wrapper>
   );

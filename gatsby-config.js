@@ -16,6 +16,13 @@ const getSidebarConfig = () => {
 
 const sidebarConfig = getSidebarConfig();
 
+const subSites = [
+  {
+    id: "tezos-docs",
+    sidebarCategories: sidebarConfig
+  }
+]
+
 const apolloDocsOptions = {
   ...themeOptions,
   root: __dirname,
@@ -23,6 +30,7 @@ const apolloDocsOptions = {
   description: 'Tezos Developer Portal',
   siteName: 'Tezos Developer Portal',
   sidebarCategories: getSidebarConfig(),
+  subSites: subSites
 }
 
 const apolloRemarkPluginConfig = require("gatsby-theme-apollo-docs/gatsby-config.js")({
@@ -61,6 +69,20 @@ module.exports = {
   pathPrefix: pathPrefix,
   siteMetadata: {
     siteUrl: themeOptions.siteUrl,
+    topMenu: [
+      {
+        category: null,
+        name: "Developer Portal",
+        link: "/",
+        external: false
+      },
+      {
+        category: "tezos-portal",
+        name: "Developer Portal",
+        link: "/tezos",
+        external: false
+      }
+    ]
   },
   plugins: [
     {
