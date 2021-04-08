@@ -77,7 +77,7 @@ export const ExpansionPanelList = styled.ul({
   marginLeft: lineItemNumberOffset,
   borderLeft: `1px solid ${colors.primary}`,
   listStyle: 'none',
-  ">h3, >p": {
+  ">h2, >h3, >h4, >p": {
     paddingLeft: 20
   }
 });
