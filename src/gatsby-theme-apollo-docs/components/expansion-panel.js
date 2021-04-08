@@ -76,7 +76,10 @@ const ListItemNumber = styled.div(size(lineItemNumberSize), {
 export const ExpansionPanelList = styled.ul({
   marginLeft: lineItemNumberOffset,
   borderLeft: `1px solid ${colors.primary}`,
-  listStyle: 'none'
+  listStyle: 'none',
+  ">h3, >p": {
+    paddingLeft: 20
+  }
 });
 
 const StyledListItem = styled.li({
