@@ -122,7 +122,7 @@ We strongly recommend trying out the tool [utop](https://github.com/ocaml-commun
 
 OCaml uses [static typing](https://en.wikipedia.org/wiki/Type_system#Static_type_checking) and type inference to decide on the types, so we don't have to care about it much. Still, sometimes we have to indicate the type we want to use explicitly. If we use the `ocaml` top-level, OCaml will tell us the detected type.
 
-Here is an overview of the basic types, taken from the [OCaml tutorials](https://ocaml.org/learn/tutorials/basics.html):
+Here is an overview of the basic types, taken from the [OCaml tutorials](https://ocaml.org/learn/tutorials/data_types_and_matching.html):
 
 ```
 type        Range
@@ -1060,12 +1060,6 @@ We add our usual check:
 if sender =/= oldState.certifier then fail("Only certifier can call this function");
   else skip;
 ```
-
-<HighlightBox type="tip">
-
-Take a look at the [available operators](https://ligolang.org/docs/language-basics/types) in the LIGO documentation.
-
-</HighlightBox>
 
 After that, we define a new student:
 
