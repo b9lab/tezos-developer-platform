@@ -307,7 +307,7 @@ More on operations on strings? Check out: [https://tezos.gitlab.io/008/michelson
 
 Let's write a smart contract using this knowledge. We want to rewrite our certification smart contract with Michelson. 
 
-Create a new file `certify.tz` in the same folder as `alphanet.sh` and paste:
+Create a new file `certify.tz` in the same folder as `edonet.sh` and paste:
 
 ```
 parameter address;
@@ -326,7 +326,7 @@ code { DUP;
 It is important that you understand the stack. Working with Michelson means to work with a stack. What do we do in this part of the code? Let's take a look at the stack:
 
 ```
-./alphanet.sh client typecheck script container:certify.tz -details
+$ ./edonet.sh client typecheck script container:certify.tz -details
 ```
 
 This should give you the output:
@@ -428,7 +428,7 @@ PAIR };
 Let's run test smart contract:
 
 ```
-./alphanet.sh client run script container:certify.tz on storage '{}' and input '"tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' --trace-stack
+$ ./edonet.sh client run script container:certify.tz on storage '{}' and input '"tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' --trace-stack
 ```
 
 You can also deploy the contract and interact with it further. But as you can see, this contract will not check who is issuing a certificate.
@@ -482,7 +482,7 @@ at the beginning. `SENDER` will give us the address of the contract which is cal
 Let's do a typecheck:
 
 ```
-./alphanet.sh client typecheck script container:certify.tz -details
+$ ./edonet.sh client typecheck script container:certify.tz -details
 ```
 
 The output will be:
@@ -594,13 +594,13 @@ You can also use `{}` as the second branch of `IF`, or put the rest of the code 
 Now, let's test this contract:
 
 ```
-./alphanet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN
+$ ./edonet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN
 ```
 
 And let's test it with another `--source` which is not in the `storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"'`:
 
 ```
-./alphanet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a
+$ ./edonet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a
 ```
 
 This time it should fail. We can optimise our code and use the second branch of the `IF` and a `big_map` instead of a `map`: 
@@ -637,16 +637,13 @@ Note that you can only have one `big_map` in a contract. This limitation of `big
 Let's deploy this contract. Therefore, first check the address of your accounts/contracts with:
 
 ```
-$ ./alphanet.sh client list known addresses
+$ ./edonet.sh client list known addresses
 
 Warning:
   
                  This is NOT the Tezos Mainnet.
   
-     The node you are connecting to claims to be running on the
-               Tezos Alphanet DEVELOPMENT NETWORK.
-          Do NOT use your fundraiser keys on this network.
-          Alphanet is a testing network, with free tokens.
+               Do NOT use your fundraiser keys on this network.
 
 faucetWallet: tz1fM3iHj7qWUrUStFwDuhDmjPeiQCWwBDDZ (unencrypted sk known)
 myFirstKey: tz1dJbDNdzM5xFVSKkwt5NVPsdgQmWBQpfng (unencrypted sk known)
@@ -656,7 +653,7 @@ myFirstKey: tz1dJbDNdzM5xFVSKkwt5NVPsdgQmWBQpfng (unencrypted sk known)
 Then you can use one of your active accounts:
 
 ```
-./alphanet.sh client originate contract certify for faucetWallet transferring 0 from faucetWallet running container:certify.tz --init 'Pair {} "tz1fM3iHj7qWUrUStFwDuhDmjPeiQCWwBDDZ"' --burn-cap 0.5
+$ ./edonet.sh client originate contract certify for faucetWallet transferring 0 from faucetWallet running container:certify.tz --init 'Pair {} "tz1fM3iHj7qWUrUStFwDuhDmjPeiQCWwBDDZ"' --burn-cap 0.5
 ```
 
 You will receive the contract address if it is deployed:
@@ -666,7 +663,7 @@ New contract KT1MC1dAuJxNcpNu8KMZP3F5RbjryDJ2dF35 originated.
 The operation has only been included 0 blocks ago.
 ```
 
-You can check its state and script with [Better Call Dev](https://better-call.dev/alpha/KT1WVvuTvzzYPMZSbZRfEZfPGhUx9vqGDArz/script).
+You can check its state and script with [Better Call Dev](https://better-call.dev/).
 
 <ExpansionPanel title="Full grammar">
 
