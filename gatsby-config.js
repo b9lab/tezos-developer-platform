@@ -20,8 +20,8 @@ const apolloDocsOptions = {
   ...themeOptions,
   root: __dirname,
   contentDir: './content/',
-  description: 'Tezos Developer Portal Preview',
-  siteName: 'Tezos Developer Portal Preview',
+  description: 'Tezos Developer Portal',
+  siteName: 'Tezos Developer Portal',
   sidebarCategories: getSidebarConfig(),
 }
 
@@ -34,22 +34,6 @@ const apolloGatsbyRemarkPlugins = apolloRemarkPluginConfig.plugins.find(i => i.r
 
 let remarkPluginConfig = [
   {
-    resolve: "gatsby-remark-embed-video",
-    options: {
-      width: 800,
-      related: false, //Optional: Will remove related videos from the end of an embedded YouTube video.
-      noIframeBorder: true, //Optional: Disable insertion of <style> border: 0
-      urlOverrides: [
-        {
-          id: "youtube",
-          embedURL: videoId =>
-            `https://www.youtube-nocookie.com/embed/${videoId}`,
-        },
-      ], //Optional: Override URL of a service provider, e.g to enable youtube-nocookie support
-      containerClass: "embedVideo-container", //Optional: Custom CSS class for iframe container, for multiple classes separate them by space
-    },
-  },
-  {
     resolve: `gatsby-remark-katex`,
     options: {
       // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
@@ -61,7 +45,7 @@ let remarkPluginConfig = [
     options: {
       maxWidth: 736, // page max container width
       linkImagesToOriginal: false,
-      showCaptions: false,
+      showCaptions: true,
       quality: 10
     }
   },

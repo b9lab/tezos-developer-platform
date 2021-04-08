@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import {breakpoints} from 'gatsby-theme-apollo-core';
+import IconArrow from "../assets/icon-arrow-right.svg"
 
 const Card = styled.a({
   flex: "1 1 48%",
@@ -60,7 +61,7 @@ export default function ActionCard(props) {
     <Card href={props.href}>
       <ActionCardLinkText>
         {props.text}
-        <ActionCardLinkImg src="/icon-arrow-right.svg"></ActionCardLinkImg>
+        <ActionCardLinkImg src={IconArrow}></ActionCardLinkImg>
       </ActionCardLinkText>
       <ActionCardLinkDesc>{props.desc}</ActionCardLinkDesc>
     </Card>

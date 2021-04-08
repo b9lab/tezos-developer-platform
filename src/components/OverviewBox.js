@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import {breakpoints} from 'gatsby-theme-apollo-core';
+import IconArrow from "../assets/icon-arrow-right.svg"
+
 
 
 const OverviewBoxWrapper = styled.div({
@@ -83,7 +85,7 @@ export default function OverviewBox(props) {
           {props.linkHref && (
             <Link className="action-link" href={props.linkHref}>
               {props.linkText}
-              <LinkImg src="/icon-arrow-right.svg">
+              <LinkImg src={IconArrow}>
               </LinkImg>
             </Link>
           )}
@@ -99,7 +101,7 @@ export default function OverviewBox(props) {
           {props.linkHref && (
             <Link className="action-link" href={props.linkHref} target={props.external ? "_blank" : ""}>
               {props.linkText}
-              <LinkImg src="/icon-arrow-right.svg">
+              <LinkImg src={IconArrow}>
               </LinkImg>
             </Link>
           )}
