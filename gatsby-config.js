@@ -53,7 +53,7 @@ let remarkPluginConfig = [
     options: {
       maxWidth: 736, // page max container width
       linkImagesToOriginal: false,
-      showCaptions: true,
+      showCaptions: false,
       quality: 75
     }
   },
