@@ -79,12 +79,6 @@ The accuser is a daemon that monitors all blocks received. It looks for two indi
 
 Such irregularities trigger double-baking and double-endorsing operations that cause the offender to lose a portion of its stake (i.e. a security deposit).
 
-## The P2P layer
-
-The node instantiates the P2P layer which is parameterised by the type of messages exchanged over the network (to support different P2P protocol versions and extensions) and the type of metadata for each peer. The metadata is used to compute a score for each peer that reflects the level of trust in the nodes. Policies can control communication between the node and peers based on the different scores (levels of trust) in those peers.
-
-The P2P layer consists of a connections pool, the operations on those connections, and a set of workers. The worker pattern is used extensively and followed by the set of workers.
-
 ## OCaml, Michelson, SmartPy, LIGO, and other languages
 
 Tezos itself is implemented in [OCaml](https://ocaml.org/). OCaml is a functional programming language used in mission-critical industries that require formal proofs of properties of programs. There also is [Michelson](https://tezos.gitlab.io/whitedoc/michelson.html), a domain-specific language used to write smart contracts on Tezos. It is stack-based, strongly typed, and designed to facilitate formal verification so developers can more easily prove smart contract properties.
