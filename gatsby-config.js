@@ -1,5 +1,6 @@
 const themeOptions = require('./theme-options');
 const remarkTypescript = require('remark-typescript');
+const unwrapImages = require('remark-unwrap-images');
 
 const pathPrefix = "/";
 
@@ -53,7 +54,7 @@ let remarkPluginConfig = [
     options: {
       maxWidth: 736, // page max container width
       linkImagesToOriginal: false,
-      showCaptions: false,
+      showCaptions: true,
       quality: 75
     }
   },
@@ -100,6 +101,7 @@ module.exports = {
       options: {
         gatsbyRemarkPlugins: remarkPluginConfig.concat(apolloGatsbyRemarkPlugins),
         remarkPlugins: [
+          unwrapImages,
           [remarkTypescript, {wrapperComponent: 'MultiCodeBlock'}]
         ]
       }
