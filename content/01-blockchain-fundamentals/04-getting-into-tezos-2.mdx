@@ -18,6 +18,10 @@ A blockchain can be understood as a ledger. This ledger is immutable and transpa
 
 Because data is validated and stored decentralised, unless both the protocol and the data itself have some immutability property, there is no certainty that the data has not been tampered with and the protocol has not been modified to benefit any one actor disproportionately. **Immutability** is a central attribute of blockchains to ensure **trust in the system** and **integrity of the data**. There might be situations where the rule of immutability needs to be flexible, where the protocol or the data in fact do need to be changed.
 
+**Upgrades** to blockchains are particularly difficult to execute in decentralised consensus-based systems as the need for agreement among a distributed set of participants is implied and always includes an element of overturning previous agreements. It is also very difficult to remedy such a situation in an environment where change can be considered a bug and where breaking changes may harm software that is already deployed. For example, in informal terms, Ethereum does what it does the way it does it but developers have little assurance about platform invariants. Invariants are not well-defined. The same community resistance that stands as a bulwark against breaking changes is also, arguably, an impediment to progress. The same can be said of Bitcoin. Both networks, Bitcoin and Ethereum, have suffered disagreements about what is progress and what is an anti-feature. Bitter disputes have split their communities and as a result disrupted their network effects, which disrupts their value.
+
+Upgrades are especially challenging absent previously agreed governance processes that define how upgrades are to be achieved. Without clearly defined governance mechanisms, upgrades can be disorderly, inefficient, and damaging to communities. The Tezos governance process is designed to address this problem. Tezos offers a pre-defined [governance mechanism](https://medium.com/tezos/amending-tezos-b77949d97e1e) to upgrade the protocol.
+
 Tezos addresses this public blockchain dilemma by providing an **on-chain governance mechanism**, which reduces the coordination costs for upgrades immensely. Public blockchains often conduct their "governance process" off-chain. This entails coordinating communication across different platforms to make an upgrade more probable of being accepted by all network participants. The coordination required leads to high coordination costs. Additionally, on-chain governance helps avoid hard forks caused by some stakeholders objecting an upgrade and continuing on an older protocol version. Hard forks are especially painful when it comes to holding a stake in tokens - A hard fork leads to two competing states of the "true state", which makes all related to assets with financial value very complicated.
 
 <ExpansionPanel title="Types of governance in blockchain">
@@ -35,7 +39,7 @@ Tezos was envisioned to include the possibility of **upgrades** and **self-gover
 
 In addition to an on-chain governance mechanism, Tezos also has the ability to **self-amend**. Node operators of other blockchain implementations must manually upgrade the software of their nodes when conducting a network upgrade. Even if non-contentious, coordinating and executing a network upgrade can be extremely difficult and becomes increasingly difficult as a network grows and becomes more decentralised. Self-amendment in Tezos is designed to solve this coordination and execution problem of conducting upgrades in a decentralised network. If an amendment (upgrade) to Tezos is approved by its stakeholders via the governance mechanism, then all nodes are automatically upgraded, no manual intervention is needed.
 
-Both the governance mechanism and self-amendment are built in at the protocol level. Restrictions about what can and cannot be changed at the protocol level may be implemented via the governance mechanism. For example, if stakeholders wanted to cap the total supply of tez, they could do so or set a requirement stating that 90% of all stakeholders must approve such a proposal for it to be implemented. This is to ensure that more sensitive or controversial changes to the protocol require stronger consensus or must meet predefined rules before being enacted. This is a form of constitutionalism at the protocol level and can govern how future rules can be adopted.
+Both the governance mechanism and self-amendment are built in at the protocol level. Restrictions about what can and cannot be changed at the protocol level may be implemented via the governance mechanism. For example, if stakeholders wanted to cap the total supply of tez, they could do so or set a requirement stating that 80% of all stakeholders must approve such a proposal for it to be implemented. This is to ensure that more sensitive or controversial changes to the protocol require stronger consensus or must meet predefined rules before being enacted. This is a form of constitutionalism at the protocol level and can govern how future rules can be adopted.
 
 ### The Tezos amendment process
 
@@ -85,9 +89,7 @@ All the above mentioned periods lasts for **five baking cycles** - the length of
 
 <HighlightBox type="info">
 
-What is a cycle? Cycles are used as a term in Tezos to indicate **time** measurements.
-
-How do cycles relate to know time measurements? One cycle equals to a total of **4,096 blocks**. As the time between the creation of two blocks is fixed to **1 minute**, a cycle lasts approximately 4096 minutes, i.e. two days, 20 hours, and 16 minutes. Remember that the time between two blocks can vary.
+Cycles are used as a term in Tezos to indicate **time** measurements. One cycle equals to a total of **4,096 blocks**. As the time between the creation of two blocks is fixed to **1 minute**, a cycle lasts approximately 4096 minutes, i.e. two days, 20 hours, and 16 minutes. Remember that the time between two blocks can vary.
 
 </HighlightBox>
 
@@ -245,9 +247,7 @@ The last stage, the **promotion period**, began with an adjusted quorum of 81.39
 
 ## Improved PoS consensus - Liquid Proof-of-Stake
 
-Another attribute of Tezos is its consensus mechanism, **Liquid Proof-of-Stake (LPoS)**. Compared to a DPoS mechanism, LPoS prioritises security, decentralisation, and accountability in governance. Let's take a closer look at LPoS!
-
-In an LPoS-based blockchain, a **baker**, i.e. validator node, is **randomly selected** to generate blocks based on its **own funds staked** and those that are **delegated** to it by other stakeholders. Whereas, the **stake** is measured in Tezos tokens (XTZ), also called **tez**. Afterwards, randomly selected endorsers validate blocks produced by bakers.
+In an LPoS-based blockchain, a **baker**, i.e. validator node, is **randomly selected** to generate blocks based on its **own funds staked** and those that are **delegated** to it by other stakeholders. Whereas, the **stake** is measured in Tezos tokens (XTZ), also called **tez**.
 
 Block creation rights are randomly selected proportional to a baker’s stake, for performance reasons measured in "rolls". Currently, one **roll** is equal to 8,000 tez, rounded down (e.g. 15,999 tez equals one roll) - This constant may be changed via the Tezos governance mechanism. The rolls available to a baker consist of the bakers own staked tez and the delegated tez from originated accounts. Bakers are required to put up a _security deposit_ to disincentivise malicious behaviour. The size of a baker's deposit depends on the amount of blocks a baker is selected to produce and/or endorse.
 
@@ -263,11 +263,11 @@ As mentioned, stakeholders that do not bake themselves (via an implicit account)
 
 <HighlightBox type="info">
 
-At the time of writing (February 2021), there are [over 400 participants in Tezos PoS](https://tzstats.com/bakers). MyTezosBaker, a popular curation site for Tezos validators (referred to as **bakers** in Tezos), currently lists more than 100 public delegation services from over 30 countries across 6 continents. Check out this [site](https://mytezosbaker.com/). These are good indicators for the network stability and security.
+At the time of writing (February 2021), there are [over 400 participants in Tezos PoS](https://tzstats.com/bakers).
 
 </HighlightBox>
 
-As Tezos stakeholders have the ability to participate in consensus either directly themselves or to delegate their stake to other bakers. As such, Tezos consensus can be described as "proof of stake with delegation". Stakeholders can fluidly switch between participating themselves or delegating, and can also easily switch delegators. For these reasons, LPoS has gained traction when describing Tezos’ consensus mechanism.
+Tezos' consensus mechanism can be described as "proof of stake with delegation". Stakeholders can fluidly switch between participating themselves or delegating, and can also easily switch delegators. For these reasons, LPoS has gained traction when describing Tezos’ consensus mechanism.
 
 <HighlightBox type="tip">
 
@@ -281,25 +281,15 @@ Smart contract development is challenging. One main reason is that contracts are
 
 Tezos makes smart contract development safer by providing a public blockchain platform that runs smart contracts, which can be upgraded, and introducing a functional language tailored to smart contract development, Michelson.
 
-Let's explore the value added stemming from Tezos, as well as some of the known risks to keep in mind as we move towards the Tezos architecture.
-
 **Reliability** of both the network platform and the contracts that run on it is always a concern. After all, if platforms do not behave as expected, or if contracts don't behave as the authors intended, the consequences can be quite serious. Incidents of defects diminish trust in smart contracts, the system, and even cast doubt upon the very workability of smart contracts and blockchain technology in general.
 
-Tezos' design aims for reliability, security and modularity. How so? Smart contracts in Tezos are more reliable because they more easily facilitate **formal verification**.
+Tezos' design aims for reliability, security, and modularity. How so? Smart contracts in Tezos are more reliable because they more easily facilitate **formal verification**.
 
 Formal verification is a much discussed topic. There is some resistance from the developer communities; to developers who are accustomed to fast development turnaround methodologies such as [Agile](https://en.wikipedia.org/wiki/Agile_software_development), the very idea of formal verification may seem like a foreign concept. It's easy to lose sight of the existence of more disciplined approaches that are more common in mission-critical settings like nuclear and aeronautical engineering.
 
 For Tezos, more easily supporting formal verification allows one to prove smart contract code correctness, and with it make contracts more secure and reliable. The Tezos ecosystem contains a number of specialised tools focused on secure DApp development, and at the same time the opportunity to analyse smart contract code more easily.
 
-Another important design aspect with which the Tezos platform brings additional value to the blockchain ecosystem can be found in regard to its **governance mechanism**.
-
-**Upgrades** to blockchains are particularly difficult to execute in decentralised consensus-based systems as the need for agreement among a distributed set of participants is implied and always includes an element of overturning previous agreements. It is also very difficult to remedy such a situation in an environment where change can be considered a bug and where breaking changes may harm software that is already deployed. For example, in informal terms, Ethereum does what it does the way it does it but developers have little assurance about platform invariants. Invariants are not well-defined. The same community resistance that stands as a bulwark against breaking changes is also, arguably, an impediment to progress. The same can be said of Bitcoin. Both networks, Bitcoin and Ethereum, have suffered disagreements about what is progress and what is an anti-feature. Bitter disputes have split their communities and as a result disrupted their network effects, which disrupts their value.
-
-Upgrades are especially challenging absent previously agreed governance processes that define how upgrades are to be achieved. Without clearly defined governance mechanisms, upgrades can be disorderly, inefficient, and damaging to communities. The Tezos governance process is designed to address this problem. Tezos offers a pre-defined [governance mechanism](https://medium.com/tezos/amending-tezos-b77949d97e1e) to upgrade the protocol.
-
-These aspects of reliability, security, and upgradeability make Tezos an attractive public blockchain and smart contracts platform for developers to build on.
-
-**Performance** is always a challenge in public blockchains. Public permissionless smart contract platforms sacrifice transaction throughput for decentralisation. They have, however, demonstrated the need for research into the matter and Tezos is designed with new theoretical foundations in mind. While Ethereum aims to upgrade its consensus system to Proof-of-Stake (currently Proof-of-Work), such an upgrade is challenging for the reasons mentioned above, among other. Tezos uses a unique <a href="https://medium.com/tezos/liquid-proof-of-stake-aec2f7ef1da7">Proof-of-Stake process</a> that incorporates delegation (this is not the same as Delegated Proof-of-Stake systems like EOS or Tron), initially - We say "initially" because the possibility of upgrades could lead it to be amended in the future.
+These aspects of reliability and security make Tezos an attractive public blockchain and smart contracts platform for developers to build on.
 
 Even though these positive aspects add real value, the question still remains: Why not use languages based on JavaScript, Python or other popular choices? These languages can be used to write smart contracts on Tezos, however, as higher-level languages. Language choice is a Darwinian process. Consider your favourite language today. Did it exist in its present form, say, ten years ago?
 
@@ -308,15 +298,6 @@ To write smart contracts on Tezos, a domain-specific language called **Michelson
 Michelson is designed as a readable compilation target to make the **compiler's output understandable**. The idea behind it is to empower developers to **build analysis tools and compilers** by using a language that is simple enough to do so.
 
 Here it becomes evident that Michelson follows a different theoretical assumption: Instead of building on bytecode like with the EVM, which requires confidence in the program and compiler toolchain, using a human-readable bytecode allows to more easily check and verify properties of programs and their compiled outputs.
-
-<ExpansionPanel title="Why is Michelson higher-level bytecode compared to the EVM's bytecode?">
-
-Michelson has two main properties that make it a more accessible and understandable bytecode:
-
-* One of the design choices with Tezos is to allow for a language which makes the output easier to understand. Michelson does not present you with a long row of numbers, but instead offers expressions. A program written in Michelson consists of a series of instructions run in sequence;
-* Michelson includes elements like maps, lists or sets. This makes it fundamentally different from the EVM.
-
-</ExpansionPanel>
 
 The development and characteristics of Michelson follow the idea to create a simple core language, which can be amended with features as they are needed. This is different from attempting to create a more overarching language in the beginning, which then breaks backwards compatibility. The goals are to provide a platform:
 
