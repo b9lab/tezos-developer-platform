@@ -5,5 +5,6 @@ module.exports = [
   `${here}01-architecture`,
   `${here}02-testnet-1`,
   `${here}03-testnet-2`,
-  `${here}04-testnet-3`
+  `${here}04-testnet-3`,
+  `${here}05-quiz`
 ];
