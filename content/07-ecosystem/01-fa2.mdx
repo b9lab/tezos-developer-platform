@@ -170,7 +170,7 @@ as well as
                               admin = sp.address("tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr")))
 ```
 
-We have not used the metadata standard for Tezos smart contracts, [Tzip16](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-16/tzip-16.md), so far [with SmartPy](https://smartpy-io.medium.com/metadata-in-smartpy-3eb09fcd1de7). Basically some data can be stored off-chain with a link on-chain (as `big_map %metadata string bytes`) to be easier accessible. 
+We have not used the metadata standard for Tezos smart contracts, [TZIP-16](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-16/tzip-16.md), so far [with SmartPy](https://smartpy-io.medium.com/metadata-in-smartpy-3eb09fcd1de7). Basically some data can be stored off-chain with a link on-chain (as `big_map %metadata string bytes`) to be easier accessible. 
 
 You can [deploy and test such a contract](https://assets.tqtezos.com/docs/token-contracts/fa2/1-fa2-smartpy/) to play with it. Here let us have a quick look at the tests this implementation includes. Those will let you remember the FA2 definition.
 
@@ -246,5 +246,11 @@ You can see that we transfer `from_` the address `tz1Ns3YQJR6piMZ8GrD2iYu94Ybi1H
 
 * [Using FA2-SmartPy](https://assets.tqtezos.com/docs/token-contracts/fa2/1-fa2-smartpy/)
 * [Barde, Claude (2020): How to extend an FA2 contract in CameLigo](https://medium.com/coinmonks/how-to-extend-an-fa2-contract-in-cameligo-a673858cbe2b)
+* [SmartPy IDE](https://smartpy.io/ide)
+* [SmartPi.io (2020): Metadata in SmartPy](https://smartpy-io.medium.com/metadata-in-smartpy-3eb09fcd1de7)
+* [Tezos: Using FA2-SmartPy](https://assets.tqtezos.com/docs/token-contracts/fa2/1-fa2-smartpy/)
+* [TZIP-12 Proposal](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-12/tzip-12.md)
+* [TZIP-12 Proposal: Implementing FA2](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-12/implementing-fa2.md)
+* [TZIP-16 Proposal](https://gitlab.com/tzip/tzip/-/blob/master/proposals/tzip-16/tzip-16.md)
 
 </HighlightBox>
