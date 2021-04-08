@@ -44,9 +44,12 @@ const ContentRight = styled.div({
 });
 
 const Link = styled.a({
-  color: "#1348E3",
+  color: "#DD4F52",
   fontWeight: 700,
-  textDecoration: "none"
+  textDecoration: "none",
+  ":hover": {
+    opacity: 0.8
+  }
 });
 
 const LinkImg = styled.img({

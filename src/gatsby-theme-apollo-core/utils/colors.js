@@ -1,8 +1,8 @@
 const {colors} = require('@apollo/space-kit/colors');
 
 exports.colors = {
-  primary: "#2C7DF7",
-  primaryLight: colors.indigo.lighter,
+  primary: "#DD4F52",
+  primaryLight: "#DD4F52",
   secondary: colors.pink.base,
   tertiary: colors.teal.dark,
   tertiaryLight: colors.teal.base,
@@ -15,8 +15,8 @@ exports.colors = {
   text4: colors.silver.darker,
   warning: colors.yellow.base,
   shadow: colors.black.darker,
-  highlight: "#2C7DF7",
-  highlight2: colors.blue.lighter,
-  highlight3: colors.blue.lightest,
+  highlight: "#DD4F52",
+  highlight2: "#DD4F52",
+  highlight3: "#DD4F52",
   hoverOpacity: 0.8
 };

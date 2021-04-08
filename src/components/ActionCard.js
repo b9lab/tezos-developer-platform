@@ -33,7 +33,7 @@ const Card = styled.a({
 });
 
 const ActionCardLinkText = styled.div({
-  color: "#1348E3",
+  color: "#DD4F52",
 	fontWeight: "700",
 	textDecoration: "none",
   position: "relative",
