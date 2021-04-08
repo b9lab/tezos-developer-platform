@@ -6,6 +6,10 @@ slug: /tezos-basics/architecture
 
 import HighlightBox from "../../src/components/HighlightBox"
 
+![Tezos architecture overview](images/overview.png)
+
+Above, you can see a graphical representation of Tezos' architecture and the relation between its individual elements.
+
 To understand the architecture of the Tezos platform, one needs to comprehend the function of:
 
 * the endorser,
@@ -14,17 +18,13 @@ To understand the architecture of the Tezos platform, one needs to comprehend th
 * the node, and
 * the client.
 
-![Tezos architecture overview](images/overview.png)
-
-Above, you can see a graphical representation of Tezos' architecture and the relation between its individual elements.
-
 ### Node
 
 A Tezos node is the local component of the system. It manages the context, which is the local knowledge of the Tezos blockchain state, and the connection to the gossip network and other nodes.
 
 The gossip network is how Tezos nodes communicate to exchange blocks and operations with each other. The admin client, as well as the local endorser, baker, accuser, and client connect to the Tezos network through the node. The admin client can monitor peer-to-peer (P2P) connections.
 
-As well as listening for updates to the context, the node can send operations to peers when instructed to by the client or emit new blocks when instructed by the baker. Furthermore, the node can endorse blocks when instructed by the endorser or even report bad blocks when instructed by the accuser.
+As well as listening for updates to the context, the node can send operations to peers when instructed to by the client or emit new blocks when instructed by the baker. Furthermore, the node can endorse blocks when instructed by the endorser or report bad blocks when instructed by the accuser.
 
 State changing operations propagate through the network via gossip between peers until a baker includes the operation in a block. An operation can propagate across several peers before it is included in a block. New blocks are currently produced about once per minute, but this could change in the future via the Tezos governance mechanism.
 
@@ -34,7 +34,7 @@ The node also gathers metadata about peers and multiple chains that may exist so
 
 <ExpansionPanel title="The history mode - Different types of nodes">
 
-**History modes** are a _representation of different policies determining the historical/past data included in a node_. They are useful as you can select what part of the chain's history you want to store in our node setup. This helps **manage the disk storage** required.
+**History modes** are a _representation of different policies determining the historical/past data included in a node_. They are useful as you can select what part of the chain's history you want to store in your node setup. This helps **manage the disk storage** required.
 
 For nodes there are **three modes** in Tezos:
 
@@ -62,7 +62,7 @@ The Tezos client is the main interface to the node. The client can read the cont
 
 ### Baker
 
-In Tezos, validators are referred to as bakers. As the name suggests, the baker is responsible for baking (producing) new blocks. Bakers are connected to implicit accounts (more on implicit (tz1…) vs. originated (KT1…) accounts later) and compute baking rights on a per account basis based on a baker’s total stake (i.e. tokens participating in consensus). The baker is unique in that it needs direct access to the node data directory for performance reasons.
+In Tezos, block creators are referred to as bakers. As the name suggests, the baker is responsible for baking (producing) new blocks. Bakers are connected to implicit accounts (more on implicit (tz1…) vs. originated (KT1…) accounts later) and compute baking rights on a per account basis based on a baker’s total stake (i.e. tokens participating in consensus). The baker is unique in that it needs direct access to the node data directory for performance reasons.
 
 When the baker is selected to bake a block, it draws transactions from the mempool, which is the pool of operations that are known about (via gossip) but have not yet been included in a block.
 
@@ -78,12 +78,6 @@ The accuser is a daemon that monitors all blocks received. It looks for two indi
 * When an endorser injects more than one endorsement operation for the same baking slot.
 
 Such irregularities trigger double-baking and double-endorsing operations that cause the offender to lose a portion of its stake (i.e. a security deposit).
-
-## The P2P layer
-
-The node instantiates the P2P layer which is parameterised by the type of messages exchanged over the network (to support different P2P protocol versions and extensions) and the type of metadata for each peer. The metadata is used to compute a score for each peer that reflects the level of trust in the nodes. Policies can control communication between the node and peers based on the different scores (levels of trust) in those peers.
-
-The P2P layer consists of a connections pool, the operations on those connections, and a set of workers. The worker pattern is used extensively and followed by the set of workers.
 
 ## OCaml, Michelson, SmartPy, LIGO, and other languages
 
@@ -107,15 +101,7 @@ There are several other Tezos smart contracts languages. [SmartPy](https://smart
 * [Tezos StackExchange](https://tezos.stackexchange.com/)
 * [TQ Tezos Wiki](https://wiki.tezosagora.org/)
 * [Tezos Position Paper](https://tezos.com/assets/files/position-paper-00b110d6223dc6b84ac206e92171ed47.pdf)
-* [Tezos White Paper](https://tezos.com/assets/files/whitepaper-d0cd272790ed3ba5951b30d019db2013.pdf
+* [Tezos Software Architecture](https://tezos.gitlab.io/shell/the_big_picture.html)
+* [Tezos White Paper](https://tezos.com/assets/files/whitepaper-d0cd272790ed3ba5951b30d019db2013.pdf)
 
 </HighlightBox>
-
-Resources:
-
-* [Tezos Developer Documentation](https://tezos.gitlab.io/mainnet/)
-* [Tezos Developer Portal](https://developers.tezos.com/)
-* [Tezos Medium Publications](https://medium.com/tezos) 
-* [Tezos StackExchange](https://tezos.stackexchange.com/)
-* [Tezos Software Architecture](https://tezos.gitlab.io/shell/the_big_picture.html)
-* [TQ Tezos Wiki](https://wiki.tezosagora.org/)
