@@ -12,15 +12,17 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-There are many considerations when implementing a smart contract, especially one that is the basis for tokens, from which language to choose to what standard to implement. We have talked about smart contract development on Tezos and how to work with clients, let's now focus our attention on the implementation of **standardisation** when it comes to tokens.
+There are many considerations when implementing a smart contract, especially one that is the basis for tokens, from which language to choose to what standard to implement. We have talked about smart contract development on Tezos and how to work with clients, let's now focus our attention on **token standardisation**.
 
-Let's first begin with a general definition on what is meant as a token in the blockchain world:
+Let's first begin with a **general definition** on what is meant by a token in the blockchain world:
 
 > A **token** is _a digital representation of an asset or utility_.
 
-The first challenge, when it comes to creating tokens, is deciding on the **type of token**. One can differentiate between fungible (like [ERC-20 tokens](https://youtu.be/cqZhNzZoMh8)), non-fungible (e.g. [ERC-721](https://youtu.be/HTm-1JtI0fA)), and even semi-fungible tokens, also known by their abbreviation NFT. In addition, tokens can differentiate in their transferability.
+In the past, the asset represented was often a financial asset, but tokenisation isn't limited to only financial assets. Moreover, by _the digitalisation of an utility_ we mean tokens that are used for certain functionalities on-chain, so to say: The digital representation of a product and/or service for its holder.
 
-What is meant by **fungibility** when talking about tokens? Fungibility addresses if a token is **interchangeable** with other tokens or not. Non-fungible tokens are important when a token requires a certain degree of uniqueness to be valuable.
+The first challenge, when it comes to creating tokens, is deciding on the **type of token**. One can differentiate between fungible (like [ERC-20 tokens](https://youtu.be/cqZhNzZoMh8)), non-fungible (e.g. [ERC-721](https://youtu.be/HTm-1JtI0fA)) also known by their abbreviation NFT, and even semi-fungible tokens. The fungability of a token might change throughout its lifecycle. In addition, tokens can differentiate in their transferability.
+
+What is meant by **fungibility** when talking about tokens? Fungibility refers to an instance in which a token is **interchangeable** with other instances of that token or not. Non-fungible tokens are important when a token requires a certain degree of uniqueness to be valuable.
 
 Now, one could ask: Why is **standardisation** gaining track?
 
@@ -30,7 +32,7 @@ The **demand for token standards** has continuously risen, especially since the 
 
 **FA2** is a **token standard** on Tezos. The standard is based on a proposal for a unified token contract interface. It addresses two aspects of importance to token standards: **Token type and permission standardisation**.
 
-It was meant to help support **different token types**. While FA1.2 was tailored to single fungible token smart contracts, FA2 allows **single- and multi-token** smart contracts for a variety of tokens. Thus, FA2 maintains the functionalities from FA1.2 and adds NFT creation possibilities, i.e. allows for greater tokenisation on the Tezos blockchain. FA2 being applicable to different types of tokens is meant by saying: FA2 is agnostic to the token type.
+It was meant to help support **different token types**. While FA1.2 requires multiple smart contracts for multiple tokens, FA2 allows **single- and multi-token** smart contracts for a variety of tokens. Thus, FA2 maintains the functionalities from the FA1.2 standard. At the same time, the creation of NFTs was taken into consideration, i.e. a greater potential for tokenisation was added with the introdcution of the FA2 standard. FA2 is agnostic to the token type and therefore, applicable to different types.
 
 <HighlightBox type="info">
 
@@ -38,7 +40,7 @@ Take a look at the [proposal for FA2 (TZIP-12)](https://gitlab.com/tzip/tzip/-/b
 
 </HighlightBox>
 
-The **main aim** was to create standardisation that allows for a variety of implementations for different token types, while providing widely-applicable **common interface standards** to integrate wallets, exchanges, and external developers. This was especially challenging in regard to the longevity to the standard: As Tezos is a self-amending protocol with evolving functionalities, FA2 needed to cover a broad spectrum to maintain its compatibility in the long term.
+The **main aim** was to create a standard that allows for a variety of implementations for different token types, while providing widely-applicable **common interface standards** to integrate wallets, exchanges, and external developers. This was especially challenging in regard to the longevity to the standard: As Tezos is a self-amending protocol with evolving functionalities, FA2 needed to cover a broad spectrum to maintain its compatibility in the long term.
 
 When it comes to the **standardisation of permissions**, standardisation brings the benefit of increasing trust in external smart contracts and centrally managed tokens. For this reason, FA2 standardises:
 
@@ -76,11 +78,11 @@ We can differentiate three implementation patterns:
 * wrapper, and
 * transfer hook.
 
-In a **monolith smart contract implementation**, the permissions are included in the FA2 token contract. This is often considered as the most viable option for Tezos when considering gas efficiency because calls in a contract are more efficient. Monolith architectures do have disadvantages: They are less modular and permissioning is less flexible. In addition, upgrading the permissioning often requires re-deploying the smart contract or a migration. FA2 addresses this last aspect by including specifications for operators and signing-off permissions for tokens to another contract, either a generalised or application-specific permissioning contracts.
+In a **monolith smart contract implementation**, the permissions are included in the FA2 token contract. This is often considered as the most viable option for Tezos when considering gas efficiency because calls to a single contract are more efficient. Monolith architectures do have disadvantages: They are less modular and permissioning is less flexible. In addition, upgrading the permissioning often requires re-deploying the smart contract or a migration. FA2 addresses this last aspect by including specifications for operators and signing-off permissions for tokens to another contract, either a generalised or application-specific permissioning contracts.
 
-In a **wrapper implementation**, the separate wrapper contract is on-chain and applies permissions by forwarding calls to the main contract, which manages the token ledger. Wrappers allow for modularity and extending the functionalities of the main token contract. Moreover, they allow for upgrades and replacements. Thus, permissions can be changed without having to change and re-deploy the contract. Wrapper approaches can lead to fragmentation, increase complexity, and decrease the adoption of a standard due to multi-wrapper support.
+In a **wrapper implementation**, the separate wrapper contract applies permissions by forwarding calls to the main contract, which manages the token ledger. Wrappers allow for modularity and extending the functionalities of the main token contract. Moreover, they allow for easier upgrades and replacements. Wrapper approaches can lead to fragmentation and increase complexity.
 
-When using **transfer hooks**, the main token contract calls another contract, which includes the permissioning specifications, i.e. "permissioning policies". Its main benefits are a separation of concerns, granular permissioning rules, and the possibility to upgrade permissions. At the same time, transfer hooks bring gas limitation concerns, as do wrappers. Additionally, permissioning policies are more complex and the contract size increases with contract use because of increasing permissioning policies.
+When using **transfer hooks**, the main token contract calls another contract, which includes the permissioning specifications, i.e. "permissioning policies". Its main benefits are a separation of concerns, granular permissioning rules, and the possibility to upgrade permissions. At the same time, transfer hooks bring gas limitation concerns, as do wrappers. Hooks are trickier security-wise and are much more gas expensive than wrappers. Additionally, permissioning policies are more complex and the contract size increases with contract use because of increasing permissioning policies.
 
 ## FA2 entry points and data structures
 
