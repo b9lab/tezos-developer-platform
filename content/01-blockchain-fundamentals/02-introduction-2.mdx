@@ -5,6 +5,7 @@ slug: /blockchain-fundamentals/introduction-2
 ---
 
 import HighlightBox from "../../src/components/HighlightBox"
+import YoutubePlayer from "../../src/components/YoutubePlayer"
 
 import {
   ExpansionPanel,
@@ -146,7 +147,7 @@ It is a **three-phase protocol**, in which the client sends a request to a so-ca
 
 PoW was first introduced with Bitcoin. A user completes a task of **arbitrary difficulty**. This is generally implemented as a search for a random number, which when combined with ordered transactions in a block yields a hash function result that matches a criteria such as minimum number of leading zeroes, i.e. the aim of the specified task. Finding such a solution is taken as evidence of considerable effort (or proof that considerable work *must* have been invested in the search).
 
-`youtube: https://youtu.be/2tLfvo_f9_c`
+<YoutubePlayer videoId="2tLfvo_f9_c"/>
 
 **Nodes**, also known as **miners**, conduct their searches independently. The successful node that announces a solution first receives an economic reward, i.e. the economic incentive for mining. The claim is substantiated through the arbitrary amount of work. If a node wishes to distort/influence the ledger in a PoW system, it must first acquire an **authoritative position**, i.e. overcoming the *combined problem-solving capacity* of the network and maintaining that lead over time. This known attack vector is called 51%-attack - If a single party acquires more than 50% of the total problem-solving capacity of the network, that party is theoretically able to alter the consensus.
 
@@ -193,7 +194,8 @@ We will dive deeper into Tezos' consensus mechanism in the section _[Main Ideas 
 
 A contract is commonly known as a formalisation of a relationship and/or transaction. In common law a contract is understood as a “meeting of minds”. The term smart contract was first used in Nick Szabo’s 1994 article *[Formalizing and securing relationships on public networks](https://firstmonday.org/ojs/index.php/fm/article/view/548/469)*, which referred to the possibility of representing traditional contracts (from common law) in distributed protocols, especially in conjunction with digital transactions, as well as lowering transaction fees. Smart contracts combine rising technical possibilities with insights from business administration.
 
-`youtube: https://youtu.be/ymK7Ss-HBPc`
+
+<YoutubePlayer videoId="ymK7Ss-HBPc"/>
 
 In blockchain protocols, a **smart contract** represents _a computer protocol intended to provide a self-executing, self-enforcing, and self-verifying contract_. Thus, the contract itself contains the enforcement of its terms, i.e. they are **self-executing**. They facilitate the process of forming self-executing contracts through the use of protocols and user interfaces. In addition, they **reduce costs** by automating stipulated actions, i.e. being **self-enforcing**.
 
