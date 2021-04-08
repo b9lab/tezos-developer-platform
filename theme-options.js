@@ -4,14 +4,14 @@ const footerNavConfig = {
 };
 
 module.exports = {
-  siteName: 'Tezos Developer Portal Preview',
-  pageTitle: 'Tezos Developer Portal Preview',
-  menuTitle: 'Tezos Developer Portal Preview',
+  siteName: 'Tezos Developer Portal',
+  pageTitle: 'Tezos Developer Portal',
+  menuTitle: 'Tezos Developer Portal',
   gaTrackingId: '',
   algoliaApiKey: '',
   algoliaIndexName: '',
-  baseUrl: 'https://www.tezos.com',
-  twitterHandle: 'tezos',
+  baseUrl: 'https://www.tezos.b9lab.com',
+  twitterHandle: 'b9lab',
   navConfig,
   footerNavConfig
 };
