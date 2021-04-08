@@ -75,13 +75,19 @@ def successful():
     now = sp.timestamp(int(time.time())+259200))
 ```
 
-Try to implement a contract, which can pass the tests above. 
+Try to implement a contract, which can pass the tests. 
 
 As you can see, you will need to implement a class called `Crowdfunding`:
 
+<<<<<<< HEAD
 - the storage will need to keep track on the fundings,
 - the contract will have an owner, who can call the `pay_off` function,
 - several conditions must be met for `pay_off` and `refund`.
+=======
+- The storage will need to keep track on the fundings;
+- The contract will have an owner, who can call the pay_off function;
+- Several conditions must be met for `pay_off` and `refund`.
+>>>>>>> 2cc14051491508048976738adcf99e92bf204f7c
 
 There are a few keywords that you will need but we have not seen so far:
 - `sp.amount` will give you the amount of `mutez`(in **microtez**) in the transaction,
