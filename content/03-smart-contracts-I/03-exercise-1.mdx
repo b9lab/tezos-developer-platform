@@ -28,12 +28,12 @@ class Certification(sp.Contract):
 
 @sp.add_test(name = "Certify")
 def test():
-    Contract= Certification()
+    contract= Certification()
     scenario = sp.test_scenario()
 
-    scenario+=Contract
-    scenario+=Contract.certify("Anil Oener")
-    scenario+=Contract.certify("Ibo Sy")
+    scenario+=contract
+    scenario+=contract.certify("Anil Oener")
+    scenario+=contract.certify("Ibo Sy")
 ```
 
 Ok, we can see how the list is growing in the output when we add new students with the help of the "certify" function:
@@ -63,12 +63,12 @@ class Certification(sp.Contract):
 
 @sp.add_test(name = "Certify")
 def test():
-    Contract= Certification()
+    contract= Certification()
     scenario = sp.test_scenario()
 
-    scenario+=Contract
-    scenario+=Contract.certify("Anil Oener").run(sender=sp.address("tz1W4W2yFAHz7iGyQvFys4K7Df9mZL6cSKCp"))
-    scenario+=Contract.certify("Ibo Sy").run(sender=sp.address("tz1W4W2yFAHz7iGyQvFys4K7Df9mZL6cSKCp"))
+    scenario+= contract
+    scenario+= contract.certify("Anil Oener").run(sender=sp.address("tz1W4W2yFAHz7iGyQvFys4K7Df9mZL6cSKCp"))
+    scenario+= contract.certify("Ibo Sy").run(sender=sp.address("tz1W4W2yFAHz7iGyQvFys4K7Df9mZL6cSKCp"))
 ```
 
 or better testing with `test_account`:
@@ -88,16 +88,16 @@ class Certification(sp.Contract):
 
 @sp.add_test(name = "Certify")
 def test():
-    Anil = sp.test_account("Anil")
-    Ibo = sp.test_account("Ibo")
+    anil= sp.test_account("Anil")
+    ibo= sp.test_account("Ibo")
     
-    Contract= Certification(certifier=Anil)
-    scenario = sp.test_scenario()
+    contract= Certification(certifier=anil)
+    scenario= sp.test_scenario()
 
-    scenario+=Contract
+    scenario+= contract
     
-    scenario+=Contract.certify("Anil Oener").run(sender=Anil)
-    scenario+=Contract.certify("Ibo Sy").run(sender=Anil)
+    scenario+= contract.certify("Anil Oener").run(sender=anil)
+    scenario+= contract.certify("Ibo Sy").run(sender=anil)
 ```
 
 We expanded our storage and **saved an address that represents the certifier**. Now, if a different address tries to add to the list,
@@ -128,16 +128,16 @@ class Certification(sp.Contract):
 
 @sp.add_test(name = "Certify")
 def test():
-    Anil = sp.test_account("Anil")
-    Ibo = sp.test_account("Ibo")
+    anil = sp.test_account("Anil")
+    ibo = sp.test_account("Ibo")
     
-    Contract= Certification(certifier=Anil)
+    contract= Certification(certifier=anil)
     scenario = sp.test_scenario()
 
-    scenario+=Contract
+    scenario+= contract
     
-    scenario+=Contract.certify(name= Anil.seed, address= Anil.address).run(sender=Anil)
-    scenario+=Contract.certify(name= Ibo.seed, address= Ibo.address).run(sender=Anil)
+    scenario+= contract.certify(name= anil.seed, address= anil.address).run(sender=anil)
+    scenario+= contract.certify(name= ibo.seed, address= ibo.address).run(sender=anil)
 ```
 
 In other words, our storage can be described as:
@@ -163,7 +163,6 @@ and again we see how the list is growing:
 Finally, we want to use a `big_map` instead of a `map`:
 
 ```python
-
 import smartpy as sp
 
 class Certification(sp.Contract):

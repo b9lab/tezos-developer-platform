@@ -843,7 +843,7 @@ import smartpy as sp
 
 # Define Smartcontract
 
-class repeater(sp.Contract):
+class Repeater(sp.Contract):
     def __init__(self):
         # Define a value with initial integer 0
         self.init(storage=0)
@@ -855,11 +855,11 @@ class repeater(sp.Contract):
 
 @sp.add_test(name = "First_test")
 def test():
-    firstContract= repeater()
+    first_contract= Repeater()
     scenario = sp.test_scenario()
 
-    scenario.register(firstContract, show = True)
-    scenario+= firstContract.repeat(2)
+    scenario.register(first_contract, show = True)
+    scenario+= first_contract.repeat(2)
 ```
 
 We want to take a closer look at this script.
@@ -873,13 +873,13 @@ import smartpy as sp
 we can import SmartPy like a common Python module.
 
 ```python
-class repeater(sp.Contract):
+class Repeater(sp.Contract):
     def __init__(self):
         # Define a value with initial integer 0
         self.init(storage=0)
 ```
 
-Please don't let you get confused at this point. We consciously choose the name `storage` for the number that we save. Later on you can see that we can produce considerably more complicated data structures. SmartPy itself offers us `self.data`, which corresponds to the storage in Michelson. Our `class repeater` inherits the class `sp.Contract`.
+Please don't let you get confused at this point. We consciously choose the name `storage` for the number that we save. Later on you can see that we can produce considerably more complicated data structures. SmartPy itself offers us `self.data`, which corresponds to the storage in Michelson. Our `class Repeater` inherits the class `sp.Contract`.
 
 ```python
     # Define Entry Point
@@ -895,18 +895,18 @@ Afterwards, we program the test and the output:
 ```python
 @sp.add_test(name = "First_test")
 def test():
-    firstContract= repeater()
+    first_contract= Repeater()
     scenario = sp.test_scenario()
 
-    scenario.register(firstContract, show = True)
-    scenario+= firstContract.repeat(2)
+    scenario.register(first_contract, show = True)
+    scenario+= first_contract.repeat(2)
 ```
 
 This part almost looks like a normal Python program. This is the strength of SmartPy: We can use Python for [metaprogramming](https://en.wikipedia.org/wiki/Metaprogramming).
 
 ![](images/editor3.png)
 
-We use `register(firstContract, show = True)` to produce the first output. For this reason, we have access among other to the Michelson code.
+We use `register(first_contract, show = True)` to produce the first output. For this reason, we have access among other to the Michelson code.
 
 Have a look at the Michelson code and the test transaction:
 
@@ -932,7 +932,7 @@ import smartpy as sp
 
 # Define Smartcontract
 
-class adder(sp.Contract):
+class Adder(sp.Contract):
     def __init__(self):
         # Define storage with initial integer 0
         self.init(storage=0)
@@ -944,18 +944,19 @@ class adder(sp.Contract):
 
 @sp.add_test(name = "First_test")
 def test():
-    adderContract= adder()
+    adder_contract= Adder()
 
     scenario = sp.test_scenario()
-    scenario+=adderContract
+    scenario+=adder_contract
 
-    scenario+= adderContract.add(first=2, second=3)
+    scenario+= adder_contract.add(first=2, second=3)
 ```
 
 You see that you can use multiple inputs:
 
+
 ```python
-adderContract.add(first=2, second=3)
+adder_contract.add(first=2, second=3)
 ```
 
 and access these like:

@@ -18,8 +18,8 @@ For this, a public blockchain like Tezos is well-fitted. The openness of a publi
 
 Each project will be represented by an individual Tezos smart contract. The smart contract has to fulfil **three functions**:
 
-* **sendFund**: Every user with a Tezos address can use this function to participate in the crowdfund. For reasons of simplicity, each address can only make **one payment**;
-* **payOff**: The project initiator can transfer the collected funds to a different address. This can only be done if the **funding target is met**. For reasons of simplicity, the owner can call this function only after the deadline has passed;
+* **send_fund**: Every user with a Tezos address can use this function to participate in the crowdfund. For reasons of simplicity, each address can only make **one payment**;
+* **pay_off**: The project initiator can transfer the collected funds to a different address. This can only be done if the **funding target is met**. For reasons of simplicity, the owner can call this function only after the deadline has passed;
 * **refund**: In case the set funding goal is not met in a specified time frame, each participant can request a refund.
 
 Moreover, the **storage** has to contain the following **information**:
@@ -30,8 +30,6 @@ Moreover, the **storage** has to contain the following **information**:
 ## Test-driven approach
 
 Surely, you already have some ideas for the smart contract, and maybe you also started seeing possible difficulties and stumbling blocks.
-
-Let's take a **test-driven** development approach.
 
 So, we start with the test ensuring a functioning smart contracts fulfilling the requirements as specified before.
 
@@ -52,32 +50,45 @@ def successful():
     scenario = sp.test_scenario()
     scenario+= contract
 
-    scenario+= contract.sendFund().run(sender=user1, 
+    scenario+= contract.send_fund().run(sender=user1, 
     amount=sp.tez(10), now = sp.timestamp(int(time.time())+100))
 
-    scenario+= contract.sendFund().run(sender=user2, 
+    scenario+= contract.send_fund().run(sender=user2, 
     amount=sp.tez(8), now = sp.timestamp(int(time.time())+200))
 
     # will fail because user1 already sent
-    scenario += contract.sendFund().run(sender=user1, 
+    scenario += contract.send_fund().run(sender=user1, 
     amount=sp.tez(12), now = sp.timestamp(int(time.time())+300), valid = False)
 
     # will fail because 2 tez missing
-    scenario += contract.payOff().run(sender=owner, 
+    scenario += contract.pay_off().run(sender=owner, 
     now = sp.timestamp(int(time.time())+300), valid = False)
 
-    scenario += contract.sendFund().run(sender=user3, 
+    scenario += contract.send_fund().run(sender=user3, 
     amount=sp.tez(15), now = sp.timestamp(int(time.time())+400))
 
     # will fail because deadline not reached
-    scenario += contract.payOff().run(sender=owner, 
+    scenario += contract.pay_off().run(sender=owner, 
     now = sp.timestamp(int(time.time())+500), valid = False)
 
-    scenario += contract.payOff().run(sender=owner, 
+    scenario += contract.pay_off().run(sender=owner, 
     now = sp.timestamp(int(time.time())+259200))
 ```
 
-Now that we have a test, next is the contract:
+Try to implement a contract, which can pass the tests. 
+
+As you can see, you will need to implement a class called `Crowdfunding`:
+
+- The storage will need to keep track on the fundings;
+- The contract will have an owner, who can call the `pay_off` function;
+- Several conditions must be met for `pay_off` and `refund`.
+
+There are a few keywords that you will need but we have not seen so far:
+- `sp.amount` will give you the amount of `mutez`(in **microtez**) in the transaction,
+- You can access the balance of the contract with `sp.balance`,
+- `sp.now` will give you the timestamp of the block with the transaction. 
+
+At the end, such a contract will look like:
 
 ```python
 import time
@@ -88,13 +99,13 @@ class Crowdfunding(sp.Contract):
         self.init(funding=sp.map(tkey=sp.TAddress, tvalue=None), owner=owner, minAmount=minAmount, maxTime=maxTime)
 
     @sp.entry_point
-    def sendFund(self, params):
+    def send_fund(self, params):
         sp.verify(self.data.maxTime >= sp.now) 
         sp.verify(~self.data.funding.contains(sp.sender))
         self.data.funding[sp.sender]= sp.amount
 
     @sp.entry_point
-    def payOff(self, params):
+    def pay_off(self, params):
         sp.verify(self.data.owner==sp.sender)
         sp.verify(self.data.minAmount <= sp.balance)
         sp.verify(self.data.maxTime <= sp.now)
@@ -108,44 +119,9 @@ class Crowdfunding(sp.Contract):
         sp.send(sp.sender, self.data.funding[sp.sender])
         del self.data.funding[sp.sender]
 
-@sp.add_test(name = "successful Crowdfunding")
-def successful():
-
-    # dummy addresses
-    owner= sp.address("tz1xowner")
-    user1= sp.address("tz1xuser1")
-    user2= sp.address("tz1xuser2")
-    user3= sp.address("tz1xuser3")
-
-    # minAmonut= 20
-    # deadline= now + 3d
-    contract = Crowdfunding(owner, 
-    sp.tez(20), sp.timestamp(int(time.time())+259200))
-    scenario = sp.test_scenario()
-    scenario+= contract
-    scenario+= contract.sendFund().run(sender=user1, 
-    amount=sp.tez(10), now = sp.timestamp(int(time.time())+100))
-    scenario+= contract.sendFund().run(sender=user2, 
-    amount=sp.tez(8), now = sp.timestamp(int(time.time())+200))
-
-    # will fail because user1 already sent
-    scenario += contract.sendFund().run(sender=user1, 
-    amount=sp.tez(12), now = sp.timestamp(int(time.time())+300), valid = False)
-
-    # will fail because 2 tez missing
-    scenario += contract.payOff().run(sender=owner, 
-    now = sp.timestamp(int(time.time())+300), valid = False)
-    scenario += contract.sendFund().run(sender=user3, 
-    amount=sp.tez(15), now = sp.timestamp(int(time.time())+400))
-
-    # will fail because deadline not reached
-    scenario += contract.payOff().run(sender=owner, 
-    now = sp.timestamp(int(time.time())+500), valid = False)
-    scenario += contract.payOff().run(sender=owner, 
-    now = sp.timestamp(int(time.time())+259200))
 ```
 
-Thus, the smart contract allows:
+The smart contract allows:
 
 * A user with a Tezos address to send funds - Remember, a payment can only be made once;
 * To transfer the collected funds to a different address of the initiator once the funding target is met;
