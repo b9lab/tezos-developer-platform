@@ -5,11 +5,13 @@ import cn from 'classnames';
 import styled from '@emotion/styled';
 import useMount from 'react-use/lib/useMount';
 import {HEADER_HEIGHT} from '../utils';
+import {ReactComponent as SlackLogo} from '../assets/slack.svg';
 import {IconGithub} from '@apollo/space-kit/icons/IconGithub';
 import {IconStar} from '@apollo/space-kit/icons/IconStar';
 import {PageNav, breakpoints, colors} from 'gatsby-theme-apollo-core';
 import {ReactComponent as SpectrumLogo} from '../assets/spectrum.svg';
 import {withPrefix} from 'gatsby';
+import {slackLinkUrl} from '../../../theme-options'
 
 const Wrapper = styled.div({
   display: 'flex',
@@ -223,6 +225,12 @@ export default function PageContent(props) {
     </AsideLink>
   );
 
+  const slackLink = (
+    <AsideLink href={slackLinkUrl}>
+      <SlackLogo /> Discuss on Slack
+    </AsideLink>
+  );
+
   return (
     <Wrapper>
       <InnerWrapper>
@@ -234,6 +242,7 @@ export default function PageContent(props) {
         >
           {props.children}
         </BodyContent>
+        <EditLink>{slackLink}</EditLink>
         <EditLink>{editLink}</EditLink>
         <PageNav
           prevPage={props.pages[pageIndex - 1]}
@@ -251,6 +260,7 @@ export default function PageContent(props) {
           />
         </>
         )}
+        {slackLink}
       </Aside>
     </Wrapper>
   );
