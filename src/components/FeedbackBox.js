@@ -194,7 +194,7 @@ export default class FeedbackBox extends React.Component {
     return (
       <FeedbackBoxWrapper>
         Rate this Page
-        <FeedbackBoxContainer className={this.state.showFeedbackContainer ? 'visible' : ''}>
+        <FeedbackBoxContainer className={this.state.showFeedbackContainer && !this.state.showCaptcha ? 'visible' : ''}>
           <button onClick={() => this.showFeedbackForm("bad")}>
             <SmileyBox>
               <SmileyIcon src={IconBad} alt="icon frown" />
