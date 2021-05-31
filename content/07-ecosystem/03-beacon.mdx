@@ -240,7 +240,7 @@ const { BeaconWallet } = require('@taquito/beacon-wallet');
 
 function initUI() {
     updateUISetting({
-        provider: "https://edonet.smartpy.io/",
+        provider: "https://florencenet.smartpy.io/",
         contractAddress: "KT1UhNWxpfnDkxYBQz1BwXHTvhikXueFwfU3"
     });
 
@@ -289,7 +289,7 @@ function connectWallet() {
     wallet
         .requestPermissions({
             network: {
-                type: "edonet"
+                type: "florencenet"
             }
         })
         .then((_) => wallet.getPKH())
@@ -339,7 +339,7 @@ There are other [useful options](https://tezostaquito.io/docs/wallet_api/#--tzip
     wallet
         .requestPermissions({
             network: {
-                type: "edonet"
+                type: "florencenet"
             }
         })
         .then((_) => wallet.getPKH())
@@ -347,7 +347,7 @@ There are other [useful options](https://tezostaquito.io/docs/wallet_api/#--tzip
         .then(() => tezos.setWalletProvider(wallet));
 ```
 
-We first call for a `requestPermissions` for the Edonet testnet, fetch the address of the user, and print it into the console. Then we **set the wallet** as our provider.
+We first call for a `requestPermissions` for the Florencenet testnet, fetch the address of the user, and print it into the console. Then we **set the wallet** as our provider.
 
 Now the wallet will **sign our transactions**:
 
@@ -387,7 +387,7 @@ In this case, you can **setup a local secret** and you don't need a wallet to pa
 
 ![](images/beacon2.png)
 
-Now we can **set the network** to Edonet:
+Now we can **set the network** to Florencenet:
 
 ![](images/beacon3.png)
 
