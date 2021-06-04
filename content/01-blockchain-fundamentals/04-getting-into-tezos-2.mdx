@@ -46,9 +46,9 @@ Both the governance mechanism and self-amendment are built in at the protocol le
 The **Tezos amendment process** consists of **five** different stages:
 
 * the proposal period,
-* the exploration vote period or testing_vote period,
-* the testing period,
-* the promotion vote period, and
+* the exploration period,
+* the cooldown period,
+* the promotion period, and
 * the adoption period.
 
 ![The Tezos amendment process](images/process-stages.png)
@@ -65,17 +65,17 @@ The **Tezos amendment process** consists of **five** different stages:
 
 <ExpansionPanelListItem number="2">
 
-**Exploration vote period** or **testing_vote period:** Bakers have to decide on whether the proposal should be tested. This vote is also cast on-chain with the *ballot operation*, which requires a source (i.e. the baker), the voting period when it was submitted, the proposal it is addressing, and the specified ballot ("yay", "nay", or "abstain"). The bakers' votes are weighted proportionally to their staking balance's number of rolls at the start of this period. After eight cycles, the votes are counted. The proposal proceeds, if the quorum and the 80% supermajority of affirmative votes is met (80% of the total of all yes and no votes are affirmative, or `YES/(YES+NO)`). If this is not the case, another proposal period begins.
+**Exploration period:** Bakers have to decide on whether the proposal should be tested. This vote is also cast on-chain with the *ballot operation*, which requires a source (i.e. the baker), the voting period when it was submitted, the proposal it is addressing, and the specified ballot ("yay", "nay", or "abstain"). The bakers' votes are weighted proportionally to their staking balance's number of rolls at the start of this period. After eight cycles, the votes are counted. The proposal proceeds, if the quorum and the 80% supermajority of affirmative votes is met (80% of the total of all yes and no votes are affirmative, or `YES/(YES+NO)`). If this is not the case, another proposal period begins.
 </ExpansionPanelListItem>
 
 <ExpansionPanelListItem number="3">
 
-**Testing period:** A testnet fork is ran next to the Tezos main chain for 48 hours to allow the network to clearly differentiate between the main chain and the test fork. With the fork correct migration testing is possible in the given context (i.e. valid state transactions can be conducted without disruption), and it can be ensured that a proposal can become an upgrade to the protocol because the effects of migration are better assessable than in a testnet context, and test operations can be conducted with real accounts and using existing infrastructure (e.g. hardware wallets, remote signers, etc.). Using a testnet fork also means that bakers need to validate on two chains.
+**Cooldown period:** This period functions as a "cooldown" between the _exploration period_ and the _promotion period_ to allow some time to elapse between both periods. Before the Florence upgrade, a testnet fork ran for 48 hours to conduct correct migration testing. This testchain feature remained unused and complex, and was therefore removed to streamline the amendment protocol.
 </ExpansionPanelListItem>
 
 <ExpansionPanelListItem number="4">
 
-**Promotion vote period:** The network has to decide on the upgrade. Basis for the network's decision is the results of the testing period as well as the off-chain discussions of the proposal. Bakers' votes are weighed proportionally to the number of rolls in the baker's staking balance from the start of this period. Bakers can only cast one vote during the period, e.g. each baker can send one ballot operation. If the proposal is accepted with an 80% supermajority of non-abstentions and the quorum is met, the upgrade is included in the Mainnet. If one of these requirements is not fulfilled it is back to square one, the proposal period.
+**Promotion period:** The network has to decide on the upgrade. Basis for the network's decision is the results of the testing period as well as the off-chain discussions of the proposal. Bakers' votes are weighed proportionally to the number of rolls in the baker's staking balance from the start of this period. Bakers can only cast one vote during the period, e.g. each baker can send one ballot operation. If the proposal is accepted with an 80% supermajority of non-abstentions and the quorum is met, the upgrade is included in the Mainnet. If one of these requirements is not fulfilled it is back to square one, the proposal period.
 </ExpansionPanelListItem>
 
 <ExpansionPanelListItem number="4">
