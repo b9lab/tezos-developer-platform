@@ -300,6 +300,7 @@ export default function PageContent(props) {
           prevPage={props.pages[pageIndex - 1]}
           nextPage={props.pages[pageIndex + 1]}
         />
+        <FeedbackBox/>
       </InnerWrapper>
       <Aside>
         {props.headings.length > 0 && (
