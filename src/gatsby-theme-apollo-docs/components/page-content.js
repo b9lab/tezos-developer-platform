@@ -11,6 +11,7 @@ import {IconStar} from '@apollo/space-kit/icons/IconStar';
 import {PageNav, breakpoints, colors} from 'gatsby-theme-apollo-core';
 import {ReactComponent as SpectrumLogo} from '../assets/spectrum.svg';
 import {withPrefix, useStaticQuery} from 'gatsby';
+import FeedbackBox from '../../components/FeedbackBox'
 import {ReactComponent as IconClockSVG} from "../assets/fa-clock-light.svg";
 import {slackLinkUrl} from '../../../theme-options'
 
