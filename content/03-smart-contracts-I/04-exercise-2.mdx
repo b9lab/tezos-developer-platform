@@ -99,26 +99,25 @@ class Crowdfunding(sp.Contract):
         self.init(funding=sp.map(tkey=sp.TAddress, tvalue=None), owner=owner, minAmount=minAmount, maxTime=maxTime)
 
     @sp.entry_point
-    def send_fund(self, params):
+    def send_fund(self):
         sp.verify(self.data.maxTime >= sp.now) 
         sp.verify(~self.data.funding.contains(sp.sender))
         self.data.funding[sp.sender]= sp.amount
 
     @sp.entry_point
-    def pay_off(self, params):
+    def pay_off(self):
         sp.verify(self.data.owner==sp.sender)
         sp.verify(self.data.minAmount <= sp.balance)
         sp.verify(self.data.maxTime <= sp.now)
         sp.send(self.data.owner, sp.balance)
 
     @sp.entry_point
-    def refund(self, params):
+    def refund(self):
         sp.verify(self.data.funding.contains(sp.sender))
         sp.verify(self.data.maxTime < sp.now)
         sp.verify(self.data.minAmount > sp.balance)
         sp.send(sp.sender, self.data.funding[sp.sender])
         del self.data.funding[sp.sender]
-
 ```
 
 The smart contract allows:
