@@ -18,7 +18,7 @@ It is now time to participate in a Tezos network.
 
 There are currently two Tezos networks:
 
-- [Mainnet](https://tzstats.com/), has been live and open since 30 June 2018,
+- [Mainnet](https://tzstats.com/), has been live and open since 30 June 2018, and
 - [Florencenet](https://florence.tzstats.com/), a test network that runs the same protocol as the mainnet
 
 The **Mainnet** is the main Tezos blockchain, where Tezos tokens (tez) have real value - so play with it only when you are confident in what you are doing. 
@@ -59,7 +59,7 @@ Configure VM
 
 ## First steps
 
-We will begin our Tezos development on **Testnet**.
+We will begin our Tezos development on **testnet**.
 
 <HighlightBox type="tip">
 
@@ -67,7 +67,7 @@ Make sure you have installed [Docker](https://www.docker.com/get-started)!
 
 </HighlightBox>
 
-First, we are going to download the Testnet script, make it executable, and run it. Open a terminal (when you see a `$` it means it is a terminal command, do not paste the `$`) and paste the following commands:
+First, we are going to download the testnet script, make it executable, and run it. Open a terminal (when you see a `$` it means it is a terminal command, do not paste the `$`) and paste the following commands:
 
 ```sh
 $ wget -O florencenet.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
@@ -119,7 +119,7 @@ When the script is being updated, you may again need the command `chmod +x flore
 
 </HighlightBox>
 
-Wait a few minutes for the node container to start synchronising with the Testnet and then check its logs with:
+Wait a few minutes for the node container to start synchronising with the testnet and then check its logs with:
 
 ```sh
 $ docker logs florencenet_node_1 --follow
@@ -322,7 +322,7 @@ Zero tez! There is no free lunch. Because we do not even have any tez, we cannot
 
 ## Adding testnet tez (XTZ)
 
-Let's get some **testnet** tez to work with! The easiest way to get some _Testnet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also give you a brand new wallet (public-private key pair) on Florencenet, which you will have to copy into your node container.
+Let's get some **testnet** tez to work with! The easiest way to get some _testnet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also a brand new wallet (public-private key pair) on Florencenet, which you will have to copy into your node container.
 
 <HighlightBox type="info">
 
@@ -403,7 +403,7 @@ If you want to deploy a contract with this account, make sure your node is sync'
 
 If you have difficulties syncing up, you can try to **import a [snapshot](https://snapshots-tezos.giganode.io/)**.
 
-Just download a rolling or full snapshot for the Testnet, stop the node:
+Just download a rolling or full snapshot for the testnet, stop the node:
 
 ```bash
 $ ./florencenet.sh stop
