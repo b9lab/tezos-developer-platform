@@ -51,8 +51,8 @@ We will keep **all our GUI project files in a folder**. So go ahead and create a
 In addition, we can embed Taquito into a HTML page with:
 
 ```html
-<script src="https://unpkg.com/@taquito/taquito@8.0.6-beta.0/dist/taquito.min.js"
-crossorigin="anonymous" integrity="sha384-Nl9zWZPEZwA7IDtkqHP9BThh6Os+lYrN0JOM3qzCIdsQqxKChg57TaoeCIcDfwex"></script>
+<script src="https://unpkg.com/@taquito/taquito@9.1.0/dist/taquito.min.js"
+crossorigin="anonymous" integrity="sha384-/5I+hK0VgKGoDqq/Xo1aMUdCxeQwcBZyqBo0e8tXrLSqKbS1PC0DoEeexBYUTwr7"></script>
 ```
 
 The **verifier** has to fulfil a simple task: Verify the certification of a given student's address. Therefore, a single input field is sufficient. It will look like this:
@@ -75,8 +75,8 @@ Let's start with the `index.html` file:
   <link rel="stylesheet" type="text/css" href="./app.css">
   <title>Check Certification</title>
   <script src="jquery.slim.min.js"></script>
-  <script src="https://unpkg.com/@taquito/taquito@8.0.6-beta.0/dist/taquito.min.js"
-crossorigin="anonymous" integrity="sha384-Nl9zWZPEZwA7IDtkqHP9BThh6Os+lYrN0JOM3qzCIdsQqxKChg57TaoeCIcDfwex"></script>
+  <script src="https://unpkg.com/@taquito/taquito@9.1.0/dist/taquito.min.js"
+crossorigin="anonymous" integrity="sha384-/5I+hK0VgKGoDqq/Xo1aMUdCxeQwcBZyqBo0e8tXrLSqKbS1PC0DoEeexBYUTwr7"></script>
 </head>
 <body>
   <div id="app-container">
@@ -86,7 +86,7 @@ crossorigin="anonymous" integrity="sha384-Nl9zWZPEZwA7IDtkqHP9BThh6Os+lYrN0JOM3q
         <tr><td class="col-1">
           <input class="form-input" type="text" id="address" placeholder="Address"/>
         </td><td>
-          <a href="#"><div class="form-submit" onclick="getCertStatus('KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK','#address','#result-bar')">Check</div></a>
+          <a href="#"><div class="form-submit" onclick="getCertStatus('KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v','#address','#result-bar')">Check</div></a>
         </td></tr>
         <tr><td colspan="2">
           <div id="result-bar" class="result-bar"></div>
@@ -99,12 +99,12 @@ crossorigin="anonymous" integrity="sha384-Nl9zWZPEZwA7IDtkqHP9BThh6Os+lYrN0JOM3q
 </html>
 ```
 
-There you can see our contract's address: [KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK](https://better-call.dev/edo2net/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK/operations).
+There you can see our contract's address: [KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v](https://better-call.dev/florencenet/KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v/operations).
 
 You will notice that the script `verifier.js` at the end doesn't exist yet. Let's create it in the same folder:
 
 ```javascript
-const tezos = new taquito.TezosToolkit('https://edonet.smartpy.io/');
+const tezos = new taquito.TezosToolkit('https://florencenet.smartpy.io/');
 
 function updateStatusUI(status, itemSelector) {
   const bar = $(itemSelector).removeClass().addClass("result-bar");
@@ -172,7 +172,7 @@ Taquito offers [MichelsonMap](https://tezostaquito.io/docs/maps_bigmaps) for wor
 
 </HighlightBox>
 
-You can [download this DApp](https://github.com/b9lab/tezos-sample-verifier) and test it. The smart contract is hardcoded at the address `KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK`, and we added a student with the address `tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN`.
+You can [download this DApp](https://github.com/b9lab/tezos-sample-verifier) and test it. The smart contract is hardcoded at the address `KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v`, and we added a student with the address `tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a`.
 
 <ExpansionPanel title="The CSS file - In case you are curious">
 
@@ -344,8 +344,8 @@ Let's continue with the HTML code. This time, to be able to pack all the necessa
   <link rel="stylesheet" type="text/css" href="./app.css">
   <title>Issue Certificate</title>
   <script src="./jquery.slim.min.js"></script>
-  <script src="https://unpkg.com/@taquito/taquito@8.0.6-beta.0/dist/taquito.min.js"
-crossorigin="anonymous" integrity="sha384-Nl9zWZPEZwA7IDtkqHP9BThh6Os+lYrN0JOM3qzCIdsQqxKChg57TaoeCIcDfwex"></script>
+  <script src="https://unpkg.com/@taquito/taquito@9.1.0/dist/taquito.min.js"
+crossorigin="anonymous" integrity="sha384-/5I+hK0VgKGoDqq/Xo1aMUdCxeQwcBZyqBo0e8tXrLSqKbS1PC0DoEeexBYUTwr7"></script>
 
 </head>
 <body>
@@ -359,8 +359,7 @@ crossorigin="anonymous" integrity="sha384-Nl9zWZPEZwA7IDtkqHP9BThh6Os+lYrN0JOM3q
         <p class="form-title">Mnemonic</p><input type="text" id="mnemonic" class="form-input form-input-small">
         <p class="form-title">Password</p><input type="text" id="password" class="form-input form-input-small">
         <p class="form-title">Email</p><input type="text" id="email" class="form-input form-input-small">
-        <p class="form-title">Secret</p><input type="text" id="secret" class="form-input form-input-small">
-        <p class="form-title">Contract Address</p><input type="text" id="contractAddress" class="form-input form-input-small">
+        <p class="form-title">Contract Adress</p><input type="text" id="contractAddress" class="form-input form-input-small">
       </div>
   </div>
 
@@ -383,6 +382,7 @@ crossorigin="anonymous" integrity="sha384-Nl9zWZPEZwA7IDtkqHP9BThh6Os+lYrN0JOM3q
   <script src="./certifier.js"></script>
 </body>
 </html>
+
 ```
 
 And for the `certifier.js` script:
@@ -392,11 +392,11 @@ And for the `certifier.js` script:
 // You can hardcode your account settings and contract address here for local testing.
 function initUI() {
     updateUISetting({
-        provider: "https://edonet.smartpy.io/",
-        mnemonic: "pen orphan heavy bone fever reform never detail zone parade act civil bench space adapt",
-        password: "dBKYO9LP1O",
-        email: "lihaeain.eflfwsqy@tezos.example.org",
-        contractAddress: "KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK"
+        provider: "https://florencenet.smartpy.io/",
+        mnemonic: "twenty aware media quality beyond summer milk hurry library unknown hover permit conduct switch slogan",
+        password: "TUBtLEyYi5",
+        email: "hfezymib.ytwslmjd@tezos.example.org",
+        contractAddress: "KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v"
     });
 
     // setup all UI actions
@@ -434,7 +434,7 @@ function loadJsonFile() {
     reader.readAsText(file);
 }
 
-// Parses the faucet JSON file 
+// Parses the faucet json file 
 function parseFaucetJson(settingsToFillIn) {
     return function(evnt) {
         const parsed = JSON.parse(evnt.target.result);
@@ -457,7 +457,7 @@ function reportResult(result, type, itemSelector) {
             "result-load");
 }
 
-// This is the main function, interacting with the contract through Taquito
+// This is the main function, interacting with the contract through taquito
 function certify(studentAddress) {
     const accountSettings = readUISettings(),
     tezos = new taquito.TezosToolkit(accountSettings.provider);
@@ -680,7 +680,7 @@ Then create an index.js and try the [first sample](https://tezostaquito.io/docs/
 
 ```javascript
 const { TezosToolkit } = require("@taquito/taquito");
-const Tezos = new TezosToolkit('https://api.tez.ie/rpc/edonet');
+const Tezos = new TezosToolkit('https://florencenet.smartpy.io/');
 
 Tezos.tz
   .getBalance('tz1h3rQ8wBxFd8L9B3d7Jhaawu6Z568XU3xY')

@@ -26,10 +26,10 @@ For the mainnet, we have:
 https://api.tzkt.io/
 ```
 
-and for Edonet, we can use:
+and for Florencenet, we can use:
 
 ```
-https://api.edo2net.tzkt.io/
+https://api.florencenet.tzkt.io/
 ```
 
 ## Fetching data with Node.js
@@ -42,7 +42,7 @@ Create a folder and an `index.js` in it:
 
 const request = require('request');
 
-request('https://api.edo2net.tzkt.io/v1/accounts?limit=10&select=balance&sort.desc=balance', (err, res, body) => {
+request('https://api.florencenet.tzkt.io/v1/accounts?limit=10&select=balance&sort.desc=balance', (err, res, body) => {
   console.log(body);
 });
 
@@ -78,7 +78,7 @@ https://baking-bad.org/blog/2020/09/28/tezos-explorer-api-tzkt-filter-data-on-th
 ```javascript
 const request = require('request');
 
-request('https://api.edo2net.tzkt.io/v1/accounts?balance.gt=10000000000000', (err, res, body) => {
+request('https://api.florencenet.tzkt.ioo/v1/accounts?balance.gt=10000000000000', (err, res, body) => {
   console.log(body);
 });
 ```
@@ -98,7 +98,7 @@ Let's fetch the storage of our certification smart contract:
 ```javascript
 const request = require('request');
 
-request('https://api.edo2net.tzkt.io/v1/contracts/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK/storage', 
+request('https://api.florencenet.tzkt.io/v1/contracts/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK/storage', 
   (err, res, body) => {
   console.log(JSON.parse(body));
 });
@@ -121,7 +121,7 @@ You see that the response is a JSON, which we can parse:
 TzKT offers [deep selection](https://baking-bad.org/blog/2021/03/03/tzkt-v14-released-with-improved-smart-contract-data-and-websocket-api/#get-specific-fields-from-the-storage), so we don't need to fetch the whole storage if we are interested in knowing the certifier:
 
 ```
-https://api.edo2net.tzkt.io/v1/contracts/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK/storage?path=certifier
+https://api.florencenet.tzkt.io/v1/contracts/KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK/storage?path=certifier
 ```
 
 We do not have such a complex data structure but you could access deeper fields with `path=certifier.field`, etc. - if there were any. 
@@ -149,17 +149,17 @@ we can do:
 const request = require('request-promise');
 
 const timeBetweenBlocks = () => {
-  return request("https://api.edo2net.tzkt.io/v1/protocols/current")
+  return request("https://api.florencenet.tzkt.ioo/v1/protocols/current")
     .then(body => JSON.parse(body).constants.timeBetweenBlocks);
 }
 
 const blockTime = () => {
-  return request('https://api.edo2net.tzkt.io/v1/head')
+  return request('https://api.florencenet.tzkt.io/v1/head')
     .then(body => Date.parse(JSON.parse(body).timestamp));
 }
 
 const contractStorage = (address) => {
-  return request('https://api.edo2net.tzkt.io/v1/contracts/' + address + '/storage')
+  return request('https://api.florencenet.tzkt.io/v1/contracts/' + address + '/storage')
     .then(body => JSON.parse(body));
 }
 
@@ -198,7 +198,7 @@ You can also try the [WebSocket API JS simple client](https://api.tzkt.io/#secti
 We can also look for specific entry point calls or parameters in the transactions. Let's confirm with [filtering](https://baking-bad.org/blog/2021/03/03/tzkt-v14-released-with-improved-smart-contract-data-and-websocket-api/#filter-transactions-by-parameter-like-a-boss) that `tz1YTVs4uDn1jEQ2Z4RJyR47zAzhXv1b9Q7t` is certified by `tz1WNmpLG56yT4XixkCFe5M5NpZ7gPgVpVqc`:
 
 ```
-https://api.edo2net.tzkt.io/v1/operations/transactions?target=KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK&parameter=tz1YTVs4uDn1jEQ2Z4RJyR47zAzhXv1b9Q7t&select=sender
+https://api.florencenet.tzkt.io/v1/operations/transactions?target=KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK&parameter=tz1YTVs4uDn1jEQ2Z4RJyR47zAzhXv1b9Q7t&select=sender
 ```
 
 which will give you:
@@ -207,16 +207,16 @@ which will give you:
 [{"address":"tz1WNmpLG56yT4XixkCFe5M5NpZ7gPgVpVqc"}]
 ```
 
-Let's do something else not easy to do without the TzKT API and ask for the [number of smart contracts](https://api.tzkt.io/#operation/Accounts_GetCount) in Edonet:
+Let's do something else not easy to do without the TzKT API and ask for the [number of smart contracts](https://api.tzkt.io/#operation/Accounts_GetCount) in Florencenet:
 
 ```
-https://api.edo2net.tzkt.io/v1/accounts/count?type=contract
+https://api.florencenet.tzkt.io/v1/accounts/count?type=contract
 ```
 
 Another important request you will want to do is to fetch the supported protocols:
 
 ```
-https://api.edo2net.tzkt.io/v1/protocols
+https://api.florencenet.tzkt.io/v1/protocols
 ```
 
 this will give you:
@@ -243,7 +243,7 @@ this will give you:
    },
    {
       "code":1,
-      "hash":"PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA",
+      "hash":"PsFLorenaUUuikDWvMDr6fGBRG8kt3e3D3fHoXK1j1BFRxeSH4i",
       "firstLevel":2,
       "constants":{
         ...
@@ -256,13 +256,13 @@ There you see the protocol constrains in the `constants` and the regarding proto
 
 - PrihK96nBAFSxVL1GLJTVhu9YnzkMFiBeuJRPA8NwuZVZCE1L6i: Genesis block;
 - PtYuensgYBb3G3x1hLLbCmcav8ue8Kyd2khADcL5LsT5R1hcXex: Genesis protocol;
-- PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA: Edonet protocol.
+- PsFLorenaUUuikDWvMDr6fGBRG8kt3e3D3fHoXK1j1BFRxeSH4i: Florencenet protocol.
 
-So the [current protocol](https://api.edo2net.tzkt.io/v1/protocols/current) is **PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA**. 
+So the [current protocol](https://api.florencenet.tzkt.io/v1/protocols/current) is **PsFLorenaUUuikDWvMDr6fGBRG8kt3e3D3fHoXK1j1BFRxeSH4i**. 
 
 <HighlightBox type="tip">
 
-You can see supported Tezos protocols on [tzkt.io](https://tzkt.io/protocols) and check the details, e.g. for the [Edonet protocol details](https://tzkt.io/PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA/constants).
+You can see supported Tezos protocols on [tzkt.io](https://tzkt.io/protocols) and check the details, e.g. for the [Florence protocol details](https://tzkt.io/PsFLorenaUUuikDWvMDr6fGBRG8kt3e3D3fHoXK1j1BFRxeSH4i/constants).
 
 </HighlightBox>
 
