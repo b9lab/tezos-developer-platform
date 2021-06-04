@@ -128,5 +128,8 @@ module.exports = {
         routeChangeEventName: "devportal-navigate",
       },
     },
+    {
+      resolve: "gatsby-remark-reading-time"
+    }
   ]
 };
