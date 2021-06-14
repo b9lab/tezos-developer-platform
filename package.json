@@ -28,11 +28,10 @@
     "h5p-standalone": "^2.2.0",
     "jquery": "^3.5.1",
     "katex": "^0.12.0",
+    "loadjs": "^4.2.0",
     "puppeteer": "^5.5.0",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "remark-unwrap-images": "^2.0.0",
-    "loadjs": "^4.2.0",
-    "gatsby-remark-reading-time": "^1.1.0"
+    "remark-unwrap-images": "^2.0.0"
   }
 }

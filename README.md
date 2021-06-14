@@ -6,7 +6,23 @@
 This project requires [npm](https://www.npmjs.com/get-npm)
 
 ### Setup
-Run `npm install` to install the project.
+
+To clone, use:
+```sh
+git clone --recursive THIS_PROJECT
+```
+To install this project run:
+```sh
+npm install && (cd plugins/gatsby-advanced-readingtime/ && npm install)
+```
+
+Some plugins are included as submodules, if you did not clone with `-r`, you can fetch it initially with:
+
+```sh
+git submodule init
+git submodule update
+```
+
 
 ### Local development server
 Start the local server with `npm run develop` - live reload is enabled
