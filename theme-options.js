@@ -12,7 +12,7 @@ module.exports = {
   algoliaIndexName: '',
   baseUrl: 'https://www.tezos.b9lab.com',
   twitterHandle: 'b9lab',
-  slackLinkUrl: "https://join.slack.com/t/tezos-dev/shared_invite/zt-q6a6gtdy-_FJZYFianku8nW9X2G7Fcg",
+  slackLinkUrl: "https://join.slack.com/t/tezos-dev/shared_invite/zt-riofrs86-yXY2Qzdgk50boI06lHYg3Q",
   navConfig,
   footerNavConfig,
   feedbackFormId: 'xnqlpgvw',
