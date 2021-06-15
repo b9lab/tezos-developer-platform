@@ -30,8 +30,8 @@ build-code:
     - git submodule update
 
   script:
-  - npm install
   - (cd plugins/gatsby-advanced-readingtime/ && npm install)
+  - npm install
   - npm run build || true
   - npm run build
 
