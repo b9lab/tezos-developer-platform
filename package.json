@@ -32,6 +32,7 @@
     "puppeteer": "^5.5.0",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "remark-unwrap-images": "^2.0.0"
+    "remark-unwrap-images": "^2.0.0",
+    "gatsby-advanced-readingtime": "file:./plugins/gatsby-advanced-readingtime"
   }
 }
