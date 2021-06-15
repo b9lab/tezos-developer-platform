@@ -24,6 +24,10 @@ build-code:
   tags:
     - main-runner
 
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --remote --recursive
+
   script:
   - npm install
   - (cd plugins/gatsby-advanced-readingtime/ && npm install)
