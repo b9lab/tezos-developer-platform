@@ -129,7 +129,17 @@ module.exports = {
       },
     },
     {
-      resolve: "gatsby-remark-reading-time"
+      resolve: "gatsby-advanced-readingtime",
+      options: {
+        imageTime: 2,
+        codeTimePerLine: 3,
+        customComponents: [
+          {
+            name: 'ActionCard',
+            time: 1
+          }
+        ]
+      }
     }
   ]
 };
