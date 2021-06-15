@@ -1,3 +1,3 @@
 [submodule "plugins/gatsby-advanced-readingtime"]
 	path = plugins/gatsby-advanced-readingtime
-	url = ../../../internal-projects/gatsby-projects/gatsby-advanced-readingtime.git
+	url = git@git.b9lab.com:internal-projects/gatsby-projects/gatsby-advanced-readingtime.git
