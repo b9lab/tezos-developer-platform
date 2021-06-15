@@ -25,9 +25,9 @@ build-code:
   tags:
     - main-runner
 
-  #before_script:
-  #  - git submodule init plugins
-  #  - git submodule update
+  before_script:
+    - git submodule init plugins
+    - git submodule update
 
   script:
   - npm install
