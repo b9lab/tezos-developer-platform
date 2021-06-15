@@ -26,8 +26,8 @@ build-code:
     - main-runner
 
   before_script:
-    - git submodule init plugins
-    - git submodule update
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
 
   script:
   - (cd plugins/gatsby-advanced-readingtime/ && npm install)
