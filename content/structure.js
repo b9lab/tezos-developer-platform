@@ -4,5 +4,6 @@ module.exports = {
   "Writing Smart Contracts": require("./03-smart-contracts-I/structure.js"),
   "More Smart Contract Development": require("./04-smart-contracts-II/structure.js"),
   "Developing Clients": require("./05-clients-I/structure.js"),
-  "Tezos Ecosystem": require("./07-ecosystem/structure.js")
+  "Tezos Ecosystem": require("./07-ecosystem/structure.js"),
+  "CSO Sample Application": require("./08-cso-project/structure.js")
 };
