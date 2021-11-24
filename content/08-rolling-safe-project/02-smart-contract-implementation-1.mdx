@@ -3,3 +3,186 @@ title: Smart Contract Implementation I
 description: 
 slug: /cso-smart-contract-implementation-part-1
 ---
+
+We are going to implement our Smart Contract in SmartPy. To keep things simple, we will represent the tokens as a simple map.
+
+Let us start by understanding the entrypoints we are going to need. 
+
+We will basicly implement two entrypoints:
+
+- `buy`, and
+- `sell`.
+
+In this section, we will begin with an explanation of the `buy` function. Afterwards, in the [next section](...), we will talk about the `sell` function and the closing (`close` function). For the sake of simplicity, we will not implement an entrypoint for `burn` and `pay`. 
+
+<HighlightBox type="tip">
+
+You can find the contract in the [project repository](...).
+
+</HighlightBox>
+
+We start our contract by importing the Python library `datetime, timedelta`. As you already know about SmartPy, at the ende we will create a contract object, which will be used by a scneario.
+
+<HighlightBox type="info">
+
+If you want to extend this smart contract to fullfil the FA2 standart, you will need to implement additional entry points. You can find more information in the [FA2](...) section.
+
+</HighlightBox>
+
+# Buy function
+
+`buy` will calculate the number of tokens for the sent amount of tez and it will mint these tokens. In addition, it should sent back the excess amount.
+
+There are two phases:
+
+1. "Initial Phase": before the minimal funding goal (MFG)) is reached, the buyprice is constant; 
+2. "Slopy Phase": once the MFG is reached, the buy price will increase for each issued token.
+
+As mentioned before, we have diffrent phases. So, let us begin by **creating a function for the initial phase**:
+
+```python
+    # initial phase, the price is fix
+    def buy_initial(self, amount):
+        # calculate amount of tokens from sp.amount and the price
+        token_amount = sp.local(
+            "token_amount", 
+            sp.ediv(
+                amount, 
+                self.data.price
+                ).open_some("Fatal Error: Price is zero")
+            )
+```
+
+For the initial phase, the calculation is `token_amount = amount/self.data.price`, where `amount` represents the number of tokens (in tez) sent with the transaction and `self.data.price` is the current price of the token.
+
+After the calculation, we first check if any tokens can be issued. Then we add the calculated number of tokens to the ledger linking them to the transaction sender. In case no record of the user exists, we create an entry. The comments in the code should be sufficient as an explanation:
+
+```python
+        # fail if no tokens can be issued with this amount of tez
+        sp.if sp.fst(token_amount.value) == sp.as_nat(0):
+            sp.failwith("No token can be issued, please send more tez")
+            
+        # check if the address owns tokens
+        sp.if self.data.ledger.contains(sp.sender):
+            # add amount of the tokens into the ledger
+            self.data.ledger[sp.sender] += sp.fst(token_amount.value)
+        sp.else:
+            # put amount of the tokens into the ledger
+            self.data.ledger[sp.sender] = sp.fst(token_amount.value)
+            
+        # increase total amount of the tokens
+        self.data.total_tokens += sp.fst(token_amount.value)
+
+        # keep received funds in this contract as buyback reserve
+        # but send back the excess
+        sp.if sp.utils.mutez_to_nat(sp.snd(token_amount.value)) > 0:
+            sp.send(sp.sender, sp.snd(token_amount.value))
+
+        # track how much is invested
+        self.data.total_investment = self.data.total_investment + amount - sp.snd(token_amount.value)
+```
+
+Before calculating the recent value of the total investments, we send back the excess sent by the user.
+
+Now, let us have a look at the "slopy phase" of the buy function:
+
+```python
+    # after initial phase, the price will increase
+    def buy_slope(self):
+        # calculate amount of tokens from sp.amount
+        # see https://github.com/C-ORG/whitepaper#buy-calculus
+
+        token_amount = sp.local(
+            "token_amount", 
+            self.square_root(
+                2 * sp.utils.mutez_to_nat(sp.amount) /self.data.b + 
+                self.data.total_tokens * self.data.total_tokens
+                ) - self.data.total_tokens
+            )
+
+        tez_amount = sp.local(
+            "tez_amount",
+            sp.as_nat(token_amount.value) * self.data.total_tokens * self.data.b   /2 + 
+            (sp.as_nat(token_amount.value) + self.data.total_tokens) * sp.as_nat(token_amount.value) * self.data.b/2
+            )
+
+        send_back = sp.local(
+            "send_back",
+            sp.amount - sp.utils.nat_to_mutez(tez_amount.value)
+            )
+```
+
+This time the calculation for the `token_amount` is more complex. Because of the linear price increases, we have to calculate the [area of the triangle](https://github.com/C-ORG/whitepaper#buy-calculus) under the price function. 
+
+![](/images/buy-calculus.png)
+
+You can find the same calculation in the [Javascript code](...).
+
+We do a reserve calculation to determine the amount of the excess, which we send back in the next lines:
+
+```python
+        # send tez that is too much
+        sp.if sp.utils.mutez_to_nat(send_back.value) > 0:
+            sp.send(sp.sender, send_back.value)
+
+        # track how much is invested
+        self.data.total_investment += sp.utils.nat_to_mutez(tez_amount.value)
+
+        # fail if no tokens can be issued with this amount of tez
+        sp.if sp.as_nat(token_amount.value) == sp.as_nat(0):
+            sp.failwith("No token can be issued, please send more tez")
+            
+        # calculate buyback reserve from sp.amount I*sp.amount/100
+        buyback_reserve = sp.local(
+            "buyback_reserve", 
+            sp.utils.nat_to_mutez(self.data.I * tez_amount.value / sp.as_nat(100))
+            )
+        
+        company_pay = sp.local(
+            "company_pay",
+            sp.amount - buyback_reserve.value
+            )
+
+        # send (100-I) * sp.amount/100 of the received tez to the organization
+        sp.send(self.data.organization, company_pay.value)
+        # this will keep I * sp.amount/100 in this contract as buyback reserve
+            
+        # check if the address owns tokens
+        sp.if self.data.ledger.contains(sp.sender):
+            self.data.ledger[sp.sender] += sp.as_nat(token_amount.value)
+        sp.else:
+            self.data.ledger[sp.sender] = sp.as_nat(token_amount.value)
+                 
+        # increase total amount of the tokens
+        self.data.total_tokens += sp.as_nat(token_amount.value)
+```
+
+Each time someone buys a token, a part of the tez amonunt in the transaction will be kept for the buy back reserve. In the contract code, you can find additional lines, which modify the sell slope.
+
+<HighlightBox type="info">
+
+This is something we address in the [next section](...).
+
+</HighlightBox>
+
+Now, we can create our entrypoint and define the conditions for calling the initial or slope buy function.
+
+```python
+    # buy some tokens with sender's tez
+    @sp.entry_point
+    def buy(self):
+    #check the phase, dont sell or buy if closed
+        sp.if self.data.phase != 2:
+            # if token in intialization phase, the price is fixed and all funds are escrowed
+            sp.if self.data.total_investment < self.data.MFG:
+                # check the excess above MFG and send back
+                sp.if sp.utils.mutez_to_nat(self.data.MFG - sp.amount - self.data.total_investment) < 0:
+                    sp.send(sp.sender, sp.amount - self.data.MFG + self.data.total_investment)
+                    self.buy_initial(self.data.MFG - self.data.total_investment)
+                sp.else:
+                    self.buy_initial(sp.amount)
+            # if initialization phase is past
+            sp.else:
+                self.data.phase = 1
+                self.buy_slope()
+ ```

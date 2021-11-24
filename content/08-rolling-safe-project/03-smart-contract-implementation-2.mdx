@@ -3,3 +3,116 @@ title: Smart Contract Implementation II
 description: 
 slug: /cso-smart-contract-implementation-part-2
 ---
+
+# Sell function
+
+Now let us talk about the [sell function](https://github.com/C-ORG/whitepaper#sell-calculus). 
+
+![](/images/sell-calculus.png)
+
+<HighlightBox type="info">
+As you can see, the sell price will be under the buy price. So make sure you understand the basics in the into section.
+</HighlightBox>
+
+This time the calculation gets a bit more complex because we do not have a linear price function for the sell price. The sell slope will change over the time:
+
+```python
+    # s calculus after each transaction
+    def modify_sell_slope(self, send_back):
+        sp.if self.data.total_tokens != 0:
+           self.data.s = 2 * sp.utils.mutez_to_nat(sp.balance - send_back) / (self.data.total_tokens * self.data.total_tokens)
+```
+
+The value of `sp.balance` is the balance of the contract after we receive the transaction but before we send any tezos back to the user. So the helper function needs the information about the amount of the tezos sent back. The sell slope depends on the reserve which is represented by the contract balance:
+
+![](images/sell-calculus-formula-3)
+
+where `a` represents the amont of the total tokens issued.
+
+We said we are not going to implement `burn`but because burning is a part of the selling process, we will define an internal function for it:
+
+```python          
+    # internal burn function will be called by the entry points burn and sell
+    def burn_intern(self, amount):
+        # check if the address owns tokens
+        sp.if self.data.ledger.contains(sp.sender):
+            # check if the address owns enough tokens
+            sp.if self.data.ledger[sp.sender] >= sp.as_nat(amount):
+                # "burn"
+                self.data.ledger[sp.sender] = sp.as_nat(self.data.ledger[sp.sender] - sp.as_nat(amount))
+                self.data.burned_tokens += sp.as_nat(amount)
+```
+
+Now we can implement our sell entrypoint. There is no selling in the initial phase, so we need one function:
+
+```python
+    @sp.entry_point
+    def sell(self, params):
+        # check that the initial phase is over but not closed
+        sp.verify(self.data.phase == 1)
+        # check if the address owns tokens
+        sp.if self.data.ledger.contains(sp.sender):
+        # check if the address owns enough tokens
+            sp.if self.data.ledger[sp.sender] >= sp.as_nat(params.amount):
+                # calculate the amount of tez to send
+                # see https://github.com/C-ORG/whitepaper#-investments---sell
+                pay_amount = sp.local(
+                    "pay_amount", 
+                    sp.as_nat(
+                        self.data.total_tokens * sp.as_nat(params.amount) * self.data.s - 
+                        sp.as_nat(params.amount * params.amount) * self.data.s / 2 
+                        ) + 
+                        self.data.s * sp.as_nat(params.amount) * 
+                        self.data.burned_tokens * self.data.burned_tokens /
+                        sp.as_nat(2 * (self.data.total_tokens - self.data.burned_tokens) )
+                )
+                # burn the amount of tokens selled
+                self.burn_intern(params.amount)
+                # send pay_amount tez to the sender of the transaction
+                sp.send(sp.sender, sp.utils.nat_to_mutez(pay_amount.value))
+                self.modify_sell_slope(sp.utils.nat_to_mutez(pay_amount.value))
+```
+
+The calculation of `pay_amount` looks a bit messy because it depends on the `total_tokens`, `self.data.s`(sell slope), `params.amount`(tezos sent with the transaction) as well as on the `self.data.burned_tokens`:
+
+![](images/sell-calculus-formula-7.png)
+
+where our `pay_amount` represents the `M` in the formula and `x` is the amount of tezos sent with the transaction.
+
+# Closing
+
+If the closing phase is triggered, the contract will buy each token for the price of the last buy price and pay the token owners.
+
+![](/images/exit_fee.png)
+
+```python
+    @sp.entry_point
+    def close(self):
+        # check that the initial phase is over but not closed
+        sp.verify(self.data.phase == 1)
+
+        # verify this is called by the org
+        sp.verify(sp.sender == self.data.organization)
+
+        # check the correct amount of tez is sent
+        closing_sell_price= sp.local(
+            "closing_sell_price",
+            self.data.b * self.data.total_tokens
+            )
+
+        closing_sell_amount= sp.local(
+            "closing_sell_amount",
+            closing_sell_price.value * sp.as_nat(self.data.total_tokens - self.data.burned_tokens)
+            )
+
+        sp.if sp.balance < sp.utils.nat_to_mutez(closing_sell_amount.value):
+            sp.failwith("Please send more tez for the closing")
+
+        sp.for account in self.data.ledger.items():
+            sp.send(account.key, sp.utils.nat_to_mutez(account.value * closing_sell_price.value))
+        
+        self.data.phase = 2
+
+```
+
+The sum of those payments is the exit fee. Only the contract owner can call `close` and need to send the exit fee to be the transaction successful. 
