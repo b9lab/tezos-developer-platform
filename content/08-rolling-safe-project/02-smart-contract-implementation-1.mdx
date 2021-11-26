@@ -6,38 +6,54 @@ slug: /cso-smart-contract-implementation-part-1
 
 <HighlightBox type="info">
 
-Before working on this section, please read the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper) by Thibauld Favre. In this section we will show the implementation of the ideas in the whitepaper. Please visit [TZMINT](https://tzmint.b9lab.com/) which is hosted by us and runs the implementation presented here. It is better to first try out the platform before coming back here. 
+Before working on this section, please read the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper) by Thibauld Favre. In this section, we will present an implementation of the ideas in the whitepaper, our TZMINT project.
+
+B9lab's sample project is an implementation of a contnious programmable equity offering also known as a Rolling SAFE. For more details on this novel funding mechanism, take a look at the [previous section](...).
+
+To see the implementation in action, please visit the [TZMINT platform](https://tzmint.b9lab.com/), which is hosted by [B9lab](https://b9lab.com/). It is better to first try out the platform before taking a closer look at the implementation description in this course. 
 
 </HighlightBox>
 
-We did implement our Smart Contract in SmartPy. To keep things simple, the tokens are represented as a simple map.
-
-The contract will have three entrypoints:
-
-- `buy`
-- `sell`
-- `close`
-
-In this section, we will begin with an explanation of the `buy` function. Afterwards, in the [next section](...), we will talk about the `sell` function and the `close` (closing function). For the sake of simplicity, we will not implement the entrypoints for `burn` and `pay`. 
+We implemented our smart contract in [SmartPy](https://smartpy.io/). To keep things simple, the tokens are represented as a simple map.
 
 <HighlightBox type="tip">
 
-You can find the contract in the [project repository](...).
-
-If you want to extend this smart contract to fullfil the FA2 standart, you will need to implement additional entry points. You can find more information in the [FA2](...) section.
+Need a recap on SmartPy? No worries! We recommend a look at the chapter [Writing Smart Contracts](./smart-contracts).
 
 </HighlightBox>
 
-# Buy function
+The contract has **three entrypoints**:
+
+* `buy`,
+* `sell`, and
+* `close`.
+
+In this section, we will begin with an explanation of the `buy` function. Afterwards, in the [next section](...), we will talk about the `sell` and `close` functions (closing function). For the sake of simplicity, we will not implement the entrypoints for `burn` and `pay`.
+
+<HighlightBox type="tip">
+
+You can find the smart contract in the [project repository](...).
+
+If you want to extend this smart contract to, for example, fullfil the FA2 token standard, you will need to implement additional entrypoints. You can find more information regarding the token standard in the [FA2](...) section.
+
+</HighlightBox>
+
+# The `buy` function
 
 `buy` will calculate the number of tokens for the sent amount of tez and it will mint these tokens. In addition, it should sent back the excess amount.
 
-There are two phases:
+There are **two phases** in the offering regarding the buy price:
 
-1. "Initial Phase": before the minimal funding goal (MFG)) is reached, the buyprice is constant; 
-2. "Slopy Phase": once the MFG is reached, the buy price will increase for each issued token.
+1. The **initial phase**: Before the minimum funding goal (MFG) is reached, the buy price is constant; 
+2. The **slopy phase**: Once the MFG is reached, the buy price will increase for each issued token.
 
-For the initial phase, you will find following lines in the contract code:
+<HighlightBox type="tip">
+
+If this phases do not sound familiar, take another look at the [past section](...), especially _Stages in a Rolling SAFE_.
+
+</HighlightBox>
+
+The buy price is determined during the **initial phase** by the following lines in the contract code:
 
 ```python
     # initial phase, the price is fix
@@ -52,9 +68,9 @@ For the initial phase, you will find following lines in the contract code:
             )
 ```
 
-In this phase the calculation is `token_amount = amount/self.data.price`, where `amount` represents the number of tokens (in tez) sent with the transaction and `self.data.price` is the current price of the token.
+In this phase, the calculation is `token_amount = amount/self.data.price`, where `amount` represents the number of tokens (in tez) sent with the transaction and `self.data.price` is the current price of the token.
 
-After the calculation,`buy_initial` will check if any tokens can be issued. Then it will add the calculated number of tokens to the ledger linking them to the transaction sender. In case no record of the user exists, it will create an entry. The comments in the code should be sufficient as an explanation:
+After the calculation, `buy_initial` will check if any tokens can be issued. Then it will add the calculated number of tokens to the ledger linking them to the transaction sender. In case no record of the user exists, it will create an entry. The comments in the code should be sufficient as an explanation:
 
 ```python
         # fail if no tokens can be issued with this amount of tez
@@ -81,9 +97,9 @@ After the calculation,`buy_initial` will check if any tokens can be issued. Then
         self.data.total_investment = self.data.total_investment + amount - sp.snd(token_amount.value)
 ```
 
-Before calculating the recent value of the total investments, the excess is calculated sent back to the user.
+Before calculating the recent value of the total investments, the excess is calculated and sent back to the user.
 
-Now, let us have a look at the "slopy phase" for the buy function:
+Now, let us have a look at the **slopy phase** for the `buy` function:
 
 ```python
     # after initial phase, the price will increase
@@ -111,13 +127,13 @@ Now, let us have a look at the "slopy phase" for the buy function:
             )
 ```
 
-This time the calculation for the `token_amount` is more complex. Because of the linear price increase. We have to calculate the [area of the triangle](https://github.com/C-ORG/whitepaper#buy-calculus) under the price function. 
+This time the calculation for the `token_amount` is more complex because of the linear price increase. We have to calculate the [area of the triangle](https://github.com/C-ORG/whitepaper#buy-calculus) under the price function.
 
-![](/images/buy-calculus.png)
+![Calculating the buy price post-MFG](/images/buy-calculus.png)
 
 You can find the same calculation in the [Javascript code](...) too.
 
-Next it will do a reserve-calculation to determine the amount of the excess, which we send back in the next lines:
+Next, the contract does a **reserve-calculation** to determine the amount of the excess, which we send back in the next lines:
 
 ```python
         # send tez that is too much
@@ -156,15 +172,15 @@ Next it will do a reserve-calculation to determine the amount of the excess, whi
         self.data.total_tokens += sp.as_nat(token_amount.value)
 ```
 
-Each time someone buys a token, a part of the tez amonunt in the transaction will be kept for the buy back reserve. 
+Each time someone buys a token, a part of the tez amount in the transaction will be kept for the buyback reserve.
 
 <HighlightBox type="info">
 
-At the end of a `buy_slope` call, the contract will update the sell slope. This is something we address in the [next section](...).
+At the end of a `buy_slope` call, the contract updates the sell slope. This is something we address in the [next section](...).
 
 </HighlightBox>
 
-Now, we can look at the `buy` entrypoint and understand the conditions for calling the initial or slope buy function.
+Now we can look at the `buy` entrypoint and understand the conditions for calling the initial or slope buy function:
 
 ```python
     # buy some tokens with sender's tez
@@ -186,4 +202,9 @@ Now, we can look at the `buy` entrypoint and understand the conditions for calli
                 self.buy_slope()
  ```
 
-You can see, that we do not allow any action after the closing phase. Another thing is that we do an additional check for the excess, which we send back. The point is that the excess in `buy` functionn is a diffrent one than the excess in the `buy_initial` and `buy_slope` functions. We basicly do not want the user mix the initial and the slopy phase so the contract will allow to buy tokens till the MFG and the user will need another call to continue to buy in the slopy phase. 
+You can see, that we do not allow any action to take place after the closing phase.
+
+Moreover, we do an additional check for the **excess**, which gets send back. The excess in the `buy` function is a different one than the excess in the `buy_initial` and `buy_slope` functions.
+
+Imagine a scenario We basically do not want to mix the initial and the slopy phase so the contract will allow to buy tokens till the MFG and the user will need another call to continue to buy in the slopy phase.
+
