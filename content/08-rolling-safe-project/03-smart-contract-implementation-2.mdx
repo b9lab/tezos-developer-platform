@@ -1,22 +1,32 @@
 ---
 title: Smart Contract Implementation II
-description: 
+description: Implementing the sell function
 slug: /cso-smart-contract-implementation-part-2
 ---
 
-# Sell function
+Now, let us talk about the [`sell` function](https://github.com/C-ORG/whitepaper#sell-calculus)!
 
-Now let us talk about the [sell function](https://github.com/C-ORG/whitepaper#sell-calculus). 
+As with the buy price, the `sell` function determines the sell price after the MFG is reached. `sell` will calculate the amount of tez for the sent number of tokens when a user wants to sell the offering's tokens.
 
-![](/images/sell-calculus.png)
+There are not two phases, but only one when it comes to the sell price: the **slopy phase**. Once the MFG is reached, the sell price will increase based on how the cash reserve develops.
 
-<HighlightBox type="info">
+<HighlightBox type="tip">
 
-As you can see, the sell price will be under the buy price. So make sure you understand the basics in the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper).
+If this phase does not sound familiar, take another look at the [introduction section](...), especially _Stages in a Rolling SAFE_.
 
 </HighlightBox>
 
-This time the calculation gets a bit more complex because we do not have a linear price function for the sell price. The sell slope will change over the time(this function is also called by `buy_slope`):
+![Calculating the sell price post-MFG](/images/sell-calculus.png)
+
+The sell price is lower than the buy price.
+
+<HighlightBox type="info">
+
+If you are wondering why the sell price is lower than the buy price, make sure to go through the basics in the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper).
+
+</HighlightBox>
+
+Compared to the buy price calculation, this time it is a bit more complex because we do not have a linear price function for the sell price. The sell slope will change over time - this function is also called by `buy_slope`:
 
 ```python
     # s calculus after each transaction
@@ -25,13 +35,15 @@ This time the calculation gets a bit more complex because we do not have a linea
            self.data.s = 2 * sp.utils.mutez_to_nat(sp.balance - send_back) / (self.data.total_tokens * self.data.total_tokens)
 ```
 
-The value of `sp.balance` is the balance of the contract __after we receive the transaction but before we send any tezos back to the user__. So the helper function needs the information about the amount of the tezos sent back. The sell slope depends on the reserve which is represented by the contract balance:
+The value of `sp.balance` is the balance of the contract __after we receive the transaction but before we send any tez back to the user__. So the helper function needs to know the amount of tez sent back.
 
-![](images/sell-calculus-formula-3)
+The sell slope depends on the reserve, which is represented by the contract balance:
 
-where `a` represents the amont of the total tokens issued.
+![The formula to calculate the sell price](images/sell-calculus-formula-3)
 
-We said we are not going to implement `burn` but because burning is a part of the selling process, we will define an internal function for burning tokens:
+where `a` represents the total amount of tokens issued.
+
+We were not going to implement `burn`, but because burning is a part of the selling process, we will define an internal function to burn tokens:
 
 ```python          
     # internal burn function will be called by the entry points burn and sell
@@ -45,9 +57,15 @@ We said we are not going to implement `burn` but because burning is a part of th
                 self.data.burned_tokens += sp.as_nat(amount)
 ```
 
-Important thing above is that we do not modify the total amount of tokens issued if we burn a token. This means the buy price will be not affected. 
+<HighlightBox type="info">
 
-It is time to have a look at the `sell` entrypoint. There is no selling in the initial phase, so no internal function is needed and the entrypoint can be implemented directly: 
+What is understood by **burning** tokens? When a token should be removed from circulation, one can "burn" them. Often, burning is done by sending tokens to an unusable wallet address, a so-called burn address. Tokens can then no longer be accessed or assigned to an address.
+
+</HighlightBox>
+
+An important thing in the above code to notice is that we do not modify the total amount of tokens issued if we burn a token. Thus, the buy price is not affected.
+
+It is time to have a look at the `sell` **entrypoint**. There is no selling in the initial phase, so no internal function is needed and the entrypoint can be implemented directly:
 
 ```python
     @sp.entry_point
@@ -77,21 +95,27 @@ It is time to have a look at the `sell` entrypoint. There is no selling in the i
                 self.modify_sell_slope(sp.utils.nat_to_mutez(pay_amount.value))
 ```
 
-The calculation of `pay_amount` looks a bit messy because it depends on the `total_tokens`, `self.data.s`(sell slope), `params.amount`(tezos sent with the transaction) as well as on the `self.data.burned_tokens`:
+The calculation of `pay_amount` looks a bit messy because it depends on `total_tokens`, `self.data.s`(sell slope), `params.amount` (tez sent with the transaction), and `self.data.burned_tokens`:
 
-![](images/sell-calculus-formula-7.png)
+![The formula to calculate the `pay_amount`](images/sell-calculus-formula-7.png)
 
-where our `pay_amount` represents the `M` in the formula and `x` is the amount of tezos sent with the transaction.
+Where our `pay_amount` represents `M` in the formula and `x` is the amount of tez sent with the transaction.
 
-As you can see, the sell slope will increase if tokens are burned but the buy slope is always constant. This means that the entrypoint `burn`, if it were implemented, would allow the organisation to increase the sell price.
+As you can see, the sell slope will increase if tokens are burned but the buy slope is always constant. This means that the entrypoint `burn`, if it were implemented, would allow the organization to increase the sell price.
 
-Anyway there is another mechanism to gain profit from buying tokens: __closing__.
+Anyway, there is another mechanism where users/investors can gain profits from buying tokens: __closing__.
 
-# Closing
+## The closing phase
 
-If the [closing phase](https://github.com/C-ORG/whitepaper#closing) is triggered, the contract will buy each token for the price of the last buy price and pay the token owners.
+<HighlightBox type="tip">
 
-![](/images/exit_fee.png)
+If you want to take a look at the closing phase again, the [introduction section of this chapter](...) includes a section on _Stages in a Rolling SAFE_.
+
+</HighlightBox>
+
+![Price calculation and the exit fee](/images/exit_fee.png)
+
+If the [closing phase](https://github.com/C-ORG/whitepaper#closing) is triggered, the contract will buy back each token for the price of the last buy price and pay the token owners their part of the exit fee:
 
 ```python
     @sp.entry_point
@@ -126,4 +150,6 @@ If the [closing phase](https://github.com/C-ORG/whitepaper#closing) is triggered
 
 ```
 
-The sum of those payments is the exit fee. Only the contract owner can call `close` and need to send the exit fee to be the transaction successful. Note that minimum period of time(MPT) must be reached if the organisation triggers the closing.
+So, the sum of the payments is the exit fee.
+
+Only the contract owner can call `close`. For the `close` transaction to be successful, the contract owner needs to send the exit fee. Note that the minimum period of time (MPT) must be reached if the organization wants to trigger the closing.
