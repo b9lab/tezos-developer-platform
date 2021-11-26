@@ -11,10 +11,12 @@ Now let us talk about the [sell function](https://github.com/C-ORG/whitepaper#se
 ![](/images/sell-calculus.png)
 
 <HighlightBox type="info">
-As you can see, the sell price will be under the buy price. So make sure you understand the basics in the into section.
+
+As you can see, the sell price will be under the buy price. So make sure you understand the basics in the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper).
+
 </HighlightBox>
 
-This time the calculation gets a bit more complex because we do not have a linear price function for the sell price. The sell slope will change over the time:
+This time the calculation gets a bit more complex because we do not have a linear price function for the sell price. The sell slope will change over the time(this function is also called by `buy_slope`):
 
 ```python
     # s calculus after each transaction
@@ -23,13 +25,13 @@ This time the calculation gets a bit more complex because we do not have a linea
            self.data.s = 2 * sp.utils.mutez_to_nat(sp.balance - send_back) / (self.data.total_tokens * self.data.total_tokens)
 ```
 
-The value of `sp.balance` is the balance of the contract after we receive the transaction but before we send any tezos back to the user. So the helper function needs the information about the amount of the tezos sent back. The sell slope depends on the reserve which is represented by the contract balance:
+The value of `sp.balance` is the balance of the contract __after we receive the transaction but before we send any tezos back to the user__. So the helper function needs the information about the amount of the tezos sent back. The sell slope depends on the reserve which is represented by the contract balance:
 
 ![](images/sell-calculus-formula-3)
 
 where `a` represents the amont of the total tokens issued.
 
-We said we are not going to implement `burn`but because burning is a part of the selling process, we will define an internal function for it:
+We said we are not going to implement `burn` but because burning is a part of the selling process, we will define an internal function for burning tokens:
 
 ```python          
     # internal burn function will be called by the entry points burn and sell
@@ -43,7 +45,9 @@ We said we are not going to implement `burn`but because burning is a part of the
                 self.data.burned_tokens += sp.as_nat(amount)
 ```
 
-Now we can implement our sell entrypoint. There is no selling in the initial phase, so we need one function:
+Important thing above is that we do not modify the total amount of tokens issued if we burn a token. This means the buy price will be not affected. 
+
+It is time to have a look at the `sell` entrypoint. There is no selling in the initial phase, so no internal function is needed and the entrypoint can be implemented directly: 
 
 ```python
     @sp.entry_point
@@ -79,15 +83,22 @@ The calculation of `pay_amount` looks a bit messy because it depends on the `tot
 
 where our `pay_amount` represents the `M` in the formula and `x` is the amount of tezos sent with the transaction.
 
+As you can see, the sell slope will increase if tokens are burned but the buy slope is always constant. This means that the entrypoint `burn`, if it were implemented, would allow the organisation to increase the sell price.
+
+Anyway there is another mechanism to gain profit from buying tokens: __closing__.
+
 # Closing
 
-If the closing phase is triggered, the contract will buy each token for the price of the last buy price and pay the token owners.
+If the [closing phase](https://github.com/C-ORG/whitepaper#closing) is triggered, the contract will buy each token for the price of the last buy price and pay the token owners.
 
 ![](/images/exit_fee.png)
 
 ```python
     @sp.entry_point
     def close(self):
+        # check if MPT is reached
+        sp.verify(sp.now - self.data.MPT >= 0)
+
         # check that the initial phase is over but not closed
         sp.verify(self.data.phase == 1)
 
@@ -115,4 +126,4 @@ If the closing phase is triggered, the contract will buy each token for the pric
 
 ```
 
-The sum of those payments is the exit fee. Only the contract owner can call `close` and need to send the exit fee to be the transaction successful. 
+The sum of those payments is the exit fee. Only the contract owner can call `close` and need to send the exit fee to be the transaction successful. Note that minimum period of time(MPT) must be reached if the organisation triggers the closing.
