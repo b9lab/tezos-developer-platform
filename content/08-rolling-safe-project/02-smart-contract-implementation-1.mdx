@@ -204,7 +204,21 @@ Now we can look at the `buy` entrypoint and understand the conditions for callin
 
 You can see, that we do not allow any action to take place after the closing phase.
 
-Moreover, we do an additional check for the **excess**, which gets send back. The excess in the `buy` function is a different one than the excess in the `buy_initial` and `buy_slope` functions.
+Moreover, we do an additional check for the **excess**, which gets sent back. The excess in the `buy` function is a different one than the excess in the `buy_initial` and `buy_slope` functions.
 
-Imagine a scenario We basically do not want to mix the initial and the slopy phase so the contract will allow to buy tokens till the MFG and the user will need another call to continue to buy in the slopy phase.
+We check for excess in two different instances:
 
+* The excess in the `buy` function;
+* The excess in the `buy_initial` and `buy_slope` function.
+
+The excess check in the `buy` function makes sure one buy transaction does not surpass the MFG. The excess in the `buy_initial` and `buy_slope` function calculates the excess amount of tez after a buy transaction, so to say, your change.
+
+_Why do we differentiate when it comes to excesses?_
+
+Imagine a scenario where a user (investor) commits a large amount to buy tokens. Due to the investment being very large the MFG is technically reached and surpassed with the investor's one transaction. How should the contract react?
+
+To avoid this issue, the contract checks in which phase the buy transaction falls. In the above-described scenario, it would not accept the transaction for the whole investment amount. Instead, the investor receives all tokens that can be bought for the initial-phase price and an excess return, with which more tokens can be bought but at the price determined by the `buy` function.
+
+We basically want to differentiate between the initial and the slopy phase, so that the contract only allows to buy tokens at the initial price until the MFG is reached. The user will need another call to continue to buy but at the slopy-phase price.
+
+Let us now take a look at the `sell` function.
