@@ -4,11 +4,26 @@ description:
 slug: /cso-platform-tests
 ---
 
-# SmartPy Testing in the IDE
+import HighlightBox from "../../src/components/HighlightBox"
 
-We test our platform on diffrent levels with diffrent tools. 
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
 
-We can use the SmartPy IDE for testing. Let us define our scenario:
+In this section, we will take a closer look at testing, more specifically:
+
+* testing with the SmartPy IDE, and
+* unit tests for the wrapper.
+
+<!-- Please expand the introduction. -->
+
+## SmartPy testing in the IDE
+
+We test our platform on different levels with different tools. 
+
+Let us use the SmartPy IDE for testing. First, we need to **define our scenario**:
 
 ```python
 @sp.add_test(name= "Initialization")
@@ -41,7 +56,9 @@ def initialization():
     scenario += contract
 ```
 
-The test starts by initialisation of the `contract`. Most of those initial parameters are arbitrary. Now we can do some test for `buy`: 
+The test starts with the initialization of the `contract`. Most of the initial parameters are arbitrary.
+
+Now we can do some **testing for `buy`**:
 
 ```python
     # buy some tokens till reaching MFG check the price is fix
@@ -51,7 +68,9 @@ The test starts by initialisation of the `contract`. Most of those initial param
     scenario += contract.sell(amount=1).run(sender = buyer1, valid=False)
 ```
 
-Note that we expect the `sell` call to fail before MFG phase is over. We can do a few more `buy` calls:
+Remember that we expect the `sell` call to fail before the MFG phase is over.
+
+Why not do a few more **`buy` calls**:
 
 ```python
     scenario += contract.buy().run(sender = buyer2, amount = sp.mutez(200003000))
@@ -59,7 +78,7 @@ Note that we expect the `sell` call to fail before MFG phase is over. We can do 
     scenario.verify(contract.data.price == sp.tez(1))
 ```
 
-In addition we check that the price does not change in the MFG phase. This will be different after MFG is reached:
+In addition, we check that the **price does not change** in the MFG phase - This will be different after the MFG is reached:
 
 ```python
     # now MFG is reached, buy more and see price increasing
@@ -69,7 +88,9 @@ In addition we check that the price does not change in the MFG phase. This will 
     scenario.verify(contract.data.price > sp.tez(1))
 ```
 
-We expect the price to increase after some `buy` calls. We can also sell some tokens:
+We expect the price to increase after some `buy` calls took place.
+
+Why not also **sell some tokens**:
 
 ```python
     scenario += contract.buy().run(sender = buyer1, amount = sp.mutez(51245389))
@@ -80,7 +101,7 @@ We expect the price to increase after some `buy` calls. We can also sell some to
 
 ```
 
-As you know, SmartPy will show detailed information of the transactions. So we can make a few more calls to see the price changing over time:
+As you know, SmartPy provides detailed information on the transactions. So, we can make a few more calls to **observe the price changing over time**:
 
 ```python
     # and see how the price changes if you buy again
@@ -90,16 +111,20 @@ As you know, SmartPy will show detailed information of the transactions. So we c
     scenario += contract.buy().run(sender = buyer1, amount = sp.tez(50))
 ```
 
-You can also check the price of a token with the output of:
+You can also check the **price of a token** with the output of:
 
 ```python
     # Check price for selling 1 token
     scenario += contract.sell(amount=1).run(sender = buyer1)
 ```
 
-in the right panel of the IDE.
+in the right panel of the IDE:
 
-Least thing to test is the the closing and the permissions for calling it:
+![Test output](./images/test-output.png)
+
+As you can see, the seller (i.e. previous buyer) receives 2.460328 tez for one token.
+
+The last thing to test is the **closing** and the permissions for calling it:
 
 ```python
     # Check closing before MPT
@@ -112,9 +137,11 @@ Least thing to test is the the closing and the permissions for calling it:
     scenario += contract.close().run(sender = organization, amount = sp.tez(2400), now= sp.timestamp_from_utc_now().add_days(365))
 ```
 
-# Unit Tests for the Wrapper
+## Unit tests for the wrapper
 
-We use [Chai](https://www.chaijs.com/) for unit tests and we have different unit tests for each wrapper. The `walletWrapper` is very small, so there is not much to test besides `callCount`s of the inner functions. This applies also to the unit tests for the `contractWrapper`.
+We use [Chai](https://www.chaijs.com/) for unit tests. There are different unit tests for each wrapper.
+
+The `walletWrapper` is very small, so there is not much to test besides `callCount`s of the inner functions.
 
 ```javascript
         it("should call only buy in the contract if buy is called", async function() {
@@ -125,6 +152,7 @@ We use [Chai](https://www.chaijs.com/) for unit tests and we have different unit
             expect(sell.callCount).to.equal(0);
         });
 ```
+This applies also to the unit tests for the `contractWrapper`.
 
 The `chainWrapper` is more complex. We want to make sure it offers the functions the `DataHandler` needs, so we use `to.have.property` to make sure:
 
@@ -137,7 +165,7 @@ The `chainWrapper` is more complex. We want to make sure it offers the functions
     ...
 ```
 
-In addition we have the possibility to pass the real network configuration and test the return types:
+In addition, we can to pass the real network configuration and test the return types:
 
 ```javascript
     ...
@@ -157,4 +185,4 @@ In addition we have the possibility to pass the real network configuration and t
     ...
 ```
 
-Integration Tests for the `walletWrapper` and the `contractWrapper` are need annother approch because of the browser extentions which are needed to use a wallet.
+Integration tests for the `walletWrapper` and the `contractWrapper` require a different appraoch because of the browser extensions needed to use a wallet.
