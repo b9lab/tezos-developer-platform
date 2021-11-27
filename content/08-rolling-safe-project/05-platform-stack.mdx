@@ -4,13 +4,15 @@ description:
 slug: /cso-platform-stack
 ---
 
-We have two different kind of interactions with the blockchain: __transactions__ and __queries__
+<!-- Add description and intro once complete -->
 
-As you learned in the previous modules, we need to sign a transaction and send it to a node. Queries have a different nature, we are not forced to communicate with a Tezos node directly and we do not need any signatures. 
+We have two different types of interactions with the blockchain: __transactions__ and __queries__.
 
-# Transactions
+As you learned in the previous modules of this course, we need to sign a transaction and send it to a node to perform it. Queries have a different nature. For queries, we are not forced to communicate with a Tezos node directly and we do not need any signatures.
 
-We call the entrypoints like you learned in the [Taquito Section](./taquito). You will see in the [contractWrapper](...):
+## Transactions
+
+We call the entrypoints like you learned to do so in the [Taquito section](./taquito). You can see in the [contract wrapper](...):
 
 ```javascript
     return {
@@ -29,7 +31,7 @@ We call the entrypoints like you learned in the [Taquito Section](./taquito). Yo
     };
 ```
 
-`contract` is basicly `tezos.wallet.at(contractAddress)`, so the transactions are signed by a wallet:
+`contract` is basically `tezos.wallet.at(contractAddress)`, so transactions are signed by a wallet:
 
 ```javascript
         wallet = new options.SDK(walletOptions),
@@ -51,19 +53,25 @@ We call the entrypoints like you learned in the [Taquito Section](./taquito). Yo
         };
 ```
 
-We use `BeaconWallet`; Please check the [Beacon Section](./beacon), if you are not familiar with it.
-
-# Queries
-
-TzKT API is used to fetch information from the Tezos blockhain. You can find the methods the platform implements in the [chainWrapper](...) code.
+We use `BeaconWallet`.
 
 <HighlightBox type="tip">
 
-You can find the [TzKT Section](./tzkt) in the Clients Module
+Please take a look at the [Beacon section](./beacon) if you are not familiar with it.
 
 </HighlightBox>
 
-We will need different endpoints of the API to fetch all the information you can see at the [TZMINT](https://tzmint.b9lab.com/) platform. It makes sense to have a function for each of the endpoints we want to use:
+## Queries
+
+TzKT API is used to fetch information from the Tezos blockchain. You can find the methods the platform implements in the [chainWrapper](...) code.
+
+<HighlightBox type="tip">
+
+As a refresher, we recommend a recap of the [TzKT section](./tzkt) in the _Developing Clients_ chapter.
+
+</HighlightBox>
+
+We need different API endpoints to fetch all the information displayed in the [TZMINT platform](https://tzmint.b9lab.com/). It makes sense to have a function for each of the endpoints we want to use:
 
 ```javascript
 /* eslint-disable max-lines */
@@ -97,7 +105,9 @@ We will need different endpoints of the API to fetch all the information you can
         ...
 ```
 
-`chainWrapper` uses [axios](https://github.com/axios/axios) as HTTP client for the queries. The endpoint to get the storage of a contract is `/contracts/${contractAddress}/storage`. We include a `level` and `levelRequest` because we will also fetch the storage for a given block level. In additionn we want to be able to fetch the changes in the storage, so there is  a `requestStorageHistory` method. 
+`chainWrapper` uses [axios](https://github.com/axios/axios) as HTTP client for the queries.
+
+The endpoint to get the storage of a contract is `/contracts/${contractAddress}/storage`. We include a `level` and `levelRequest` because we also want to fetch the storage for a given block level. In addition, we want to be able to fetch the changes in the storage, so there is a `requestStorageHistory` method.
 
 Let us check other methods for the endpoints:
 
@@ -141,7 +151,7 @@ Let us check other methods for the endpoints:
         }
 ```
 
-so we need some transaction details and account balances. Least we have a helper function, which is used to avoid unnecessary queries:
+Now, we need some transaction details and account balances. Fortunately, we have a helper function, which is used to avoid unnecessary queries:
 
 ```javascript
         cashedData = (cashedStorage, storageFunction, functionToCash) => {
@@ -152,7 +162,7 @@ so we need some transaction details and account balances. Least we have a helper
         };
 ```
 
-First you will see a lot of information we fetch from the storage and we do not expect always such a value to be changed:
+First, we can see a lot of from the storage fetched information and we do not always expect such a value to change:
 
 ```javascript
     return {
@@ -193,8 +203,7 @@ First you will see a lot of information we fetch from the storage and we do not 
         },
 ```
 
-
-We cannot easly fetch the sell and the buy price. So in the `buyPrice` we do a calculation for a given number of tokens and return the estimated price. This is also true for the `sellPrice`:
+We cannot easily fetch the sell and buy price. So for the `buyPrice`, we do a calculation for a given number of tokens and return the estimated price. This is also true for the `sellPrice`:
 
 ```javascript
         "buyPrice": (storageData, tokens) => {
@@ -236,12 +245,13 @@ We cannot easly fetch the sell and the buy price. So in the `buyPrice` we do a c
         },
 ```
 
-<HighlightBox>
-    If you want to understand the calculations, please have a look at the Smart Contract Implementation [I](./cso-smart-contract-implementation-part-1) and [II](./cso-smart-contract-implementation-part-2). 
+<HighlightBox type="tip">
+
+If you want to understand the calculations, please have a look at the [Smart Contract Implementation I section](./cso-smart-contract-implementation-part-1) and the [Smart Contract Implementation II section](./cso-smart-contract-implementation-part-2).
+
 </HighlightBox>
 
-
-It will also apper in you project, that for a certain information you will need to fetch multiple API endpoints like the `bought` function:
+In your own project, you will also be face the moment when you will need to fetch multiple API endpoints to get certain information. Like in the case of the `bought` function:
 
 ```javascript
 const bought = () => {
@@ -270,4 +280,4 @@ const bought = () => {
     }
 ```
 
-to fetch user interaction, we need to fetch the transactions with `transactions` first and then the storage with `requestStorage`, because we need information about the change in the ledger and the tezos amount sent in the transaction.
+To fetch user interaction, we need to first fetch the transactions with `transactions` and then the storage with `requestStorage` to get information on the ledger change and the tez amount sent in the transaction.
