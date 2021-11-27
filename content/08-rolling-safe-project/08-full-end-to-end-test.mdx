@@ -1,50 +1,52 @@
 ---
-title: "More Testing - Full End-to-End Test Setup"
+title: More Testing - A Full End-to-End Test Setup
 description: 
 slug: /cso-tezos-full-end-to-end-test
 ---
 
+<!-- Need intro sentence and description-->
+
 ## Test network
 
-We use [Docker Compose] to create a network composed by:
+We use [Docker Compose](https://docs.docker.com/compose/) to create a network composed by:
 
-- three TzKT container
-- a container with the Flextesa sandbox
-- a container for the TZMINT platform
+* Three TzKT containers,
+* A container with the Flextesa sandbox, and
+* A container for the TZMINT platform.
 
 ![Stack in the docker dashboard!](./images/stack-docker-dashboard.png)
 
-## Flextesa Sandbox
+## Flextesa sandbox
 
-We use the [Flextesa image](https://hub.docker.com/r/tqtezos/flextesa/tags?page=1&ordering=last_updated) to create a sandbox environment. After the sandbox starts and the node responses, the bootstrap process starts:
+We use the [Flextesa image](https://hub.docker.com/r/tqtezos/flextesa/tags?page=1&ordering=last_updated) to create a sandbox environment. After the sandbox starts and the node responds, the bootstrap process starts:
 
-- the Tezos Client will be configured,
-- Alice and Bob's secret keys will be imported,
-- the contract will be deployed and the address will be aviable,
-- another test account will be created and funded which will be used to sign `buy` and `sell` transactions.
+* The Tezos Client is configured,
+* Alice and Bob's secret keys are imported,
+* The contract is deployed and the address becomes available,
+* Another test account is created and funded, used to sign `buy` and `sell` transactions.
 
 ## TzKT
 
-A TzKT indexer(tzkt-sync) will be configured to extract data from the node in the sandbox.  In addition a TzKT API container will expose data to the platform.
+A TzKT indexer (tzkt-sync) is configured to extract data from the node in the sandbox. In addition, a TzKT API container exposes data to the platform.
 
 ## Database
 
 The database container uses PostgreSQL to store the fetched data. It contains a database for the platform and a database for the TzKT indexer.
 
-## Browser Interaction
+## Browser interaction
 
-If you visit and test the TZMINT platform, you will see that a wallet popup will apper for confirmation each time if you want to sign and send a transaction. For automation, we use [Cypress.io](https://github.com/cypress-io/cypress) to visit and test the site and [Puppeteer](https://github.com/puppeteer/puppeteer) to interact with the wallet extensions.
+If you visit and test the TZMINT platform, you can see that a wallet pop-up appears asking for confirmation each time you want to sign and send a transaction. For automation purposes, we use [Cypress.io](https://github.com/cypress-io/cypress) to visit and test the site and [Puppeteer](https://github.com/puppeteer/puppeteer) to interact with the wallet extensions.
 
-The Puppeteer switches between wallet popup and Cypress windows in order to sequentially interact with the site and the wallet. This allows us to perform actions like submitting a transaction or confirming an address.
+Puppeteer switches between wallet pop-up and Cypress Windows to sequentially interact with the site and the wallet. This allows us to perform actions like submitting a transaction or confirming an address.
 
-At the beginning of a test Cypress opens a Chrome instance loading a previously downloaded version of the wallet extension. When the test requires to interact with the wallet, it will import the account via mnemonic and configure the settings for the custom created network.
+At the beginning of a test, Cypress opens a Google Chrome instance loading a previously downloaded version of the wallet extension. When the test requires to interact with the wallet, it will import the account via a mnemonic and configure the settings for the custom-created network.
 
-The TZMINT platform container(app) pulls the Cypress browser image and loads the platform volume.
+The TZMINT platform container (app) pulls the Cypress browser image and loads the platform volume.
 
-Once the sandbox is bootstrapped it does a fresh install of the dependencies, then it prepares the environment used during the tests:
+Once the sandbox is bootstrapped it does a fresh install of the dependencies. Then it prepares the environment used during the tests by:
 
-- reads contract address from a helper file written by the sandbox container after the contract deployment
-- defines test account mnemonic and address
-- configures the API endpoint and the RPC node endpoint
+* Reading the contract address from a helper file written by the sandbox container after the contract deployment,
+* Defining the test account mnemonic and address, and
+* Configuring the API endpoint and the RPC node endpoint.
 
-Then the unit and the end-to-end tests will be executed.
+Then the unit and the end-to-end tests are executed.
