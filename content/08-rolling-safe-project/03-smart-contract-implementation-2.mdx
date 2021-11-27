@@ -12,7 +12,9 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-Now, let us talk about the [`sell` function](https://github.com/C-ORG/whitepaper#sell-calculus)!
+Now let us talk about the [`sell` function](https://github.com/C-ORG/whitepaper#sell-calculus).
+
+## The `sell` function
 
 As with the buy price, the `sell` function determines the sell price after the MFG is reached. `sell` will calculate the amount of tez for the sent number of tokens when a user wants to sell the offering's tokens.
 
@@ -34,6 +36,8 @@ If you are wondering why the sell price is lower than the buy price, make sure t
 
 </HighlightBox>
 
+## Calculating the sell price
+
 Compared to the buy price calculation, this time it is a bit more complex because we do not have a linear price function for the sell price. The sell slope will change over time - this function is also called by `buy_slope`:
 
 ```python
@@ -50,6 +54,8 @@ The sell slope depends on the reserve, which is represented by the contract bala
 ![The formula to calculate the sell price](images/sell-calculus-formula-3.png)
 
 where `a` represents the total amount of tokens issued.
+
+## Burning tokens
 
 We were not going to implement `burn`, but because burning is a part of the selling process, we will define an internal function to burn tokens:
 
@@ -72,6 +78,8 @@ What is understood by **burning** tokens? When a token should be removed from ci
 </HighlightBox>
 
 An important thing in the above code to notice is that we do not modify the total amount of tokens issued if we burn a token. Thus, the buy price is not affected.
+
+## Entrypoints
 
 It is time to have a look at the `sell` **entrypoint**. There is no selling in the initial phase, so no internal function is needed and the entrypoint can be implemented directly:
 
@@ -103,9 +111,11 @@ It is time to have a look at the `sell` **entrypoint**. There is no selling in t
                 self.modify_sell_slope(sp.utils.nat_to_mutez(pay_amount.value))
 ```
 
+## Calculating the pay amount
+
 The calculation of `pay_amount` looks a bit messy because it depends on `total_tokens`, `self.data.s`(sell slope), `params.amount` (tez sent with the transaction), and `self.data.burned_tokens`:
 
-![The formula to calculate the `pay_amount`](images/sell-calculus-formula-7.png)
+![The formula to calculate the pay amount](images/sell-calculus-formula-7.png)
 
 Where our `pay_amount` represents `M` in the formula and `x` is the amount of tez sent with the transaction.
 
