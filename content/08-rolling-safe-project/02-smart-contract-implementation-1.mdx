@@ -12,13 +12,13 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-<HighlightBox type="info">
-
 B9lab's sample project is an implementation of a contnious programmable equity offering also known as a Rolling SAFE. To see the implementation in action, please visit the [TZMINT platform](https://tzmint.b9lab.com/), which is hosted by [B9lab](https://b9lab.com/). It is better to first try out the platform before taking a closer look at the implementation description in this course.
+
+<HighlightBox type="info">
 
 Before working on this section, make sure to go through the [introduction section](./what-is-a-cso) to understand the underlying mechanisms of this novel funding instrument.
 
-For a close look at the formulas for calculation, we recommend consulting the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper) by Thibauld Favre. In this section, we will present an implementation of the ideas in the whitepaper, our TZMINT project.
+For a close look at the formulas for calculation, we recommend consulting the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper#annex) by Thibauld Favre. In this section, we will present an implementation of the ideas in the whitepaper, our TZMINT project.
 
 </HighlightBox>
 
@@ -29,6 +29,8 @@ We implemented our smart contract in [SmartPy](https://smartpy.io/). To keep thi
 Need a recap on SmartPy? No worries! We recommend a look at the chapter [Writing Smart Contracts](./smart-contracts).
 
 </HighlightBox>
+
+## Contract entrypoints
 
 The contract has **three entrypoints**:
 
@@ -60,6 +62,8 @@ There are **two phases** in the offering regarding the buy price:
 If this phases do not sound familiar, take another look at the [introduction section](./what-is-a-cso), especially _Stages in a Rolling SAFE_.
 
 </HighlightBox>
+
+## The buy price
 
 The buy price is determined during the **initial phase** by the following lines in the contract code:
 
@@ -188,6 +192,8 @@ At the end of a `buy_slope` call, the contract updates the sell slope. This is s
 
 </HighlightBox>
 
+## Entrypoints
+
 Now we can look at the `buy` entrypoint and understand the conditions for calling the initial or slope buy function:
 
 ```python
@@ -212,7 +218,9 @@ Now we can look at the `buy` entrypoint and understand the conditions for callin
 
 You can see, that we do not allow any action to take place after the closing phase.
 
-Moreover, we do an additional check for the **excess**, which gets sent back. The excess in the `buy` function is a different one than the excess in the `buy_initial` and `buy_slope` functions.
+## Handling excess in the buy function
+
+We do an additional check for the **excess**, which gets sent back. The excess in the `buy` function is a different one than the excess in the `buy_initial` and `buy_slope` functions.
 
 We check for excess in two different instances:
 
