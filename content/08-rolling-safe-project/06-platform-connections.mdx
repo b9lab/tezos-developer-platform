@@ -4,12 +4,12 @@ description:
 slug: /cso-platform-connections
 ---
 
-![](./images/systemcomponents.png)
+![System components](./images/systemcomponents.png)
 
-The wrapper are used to fetch contract and transaction data and to call the contract:
+The wrappers are used to fetch contract and transaction data and to call the contract. The following wrappers were used:
 
-- `chainWrapper`: uses TzKT API to fetch blockchain data and formats, cashes and calculates values,
-- `walletWrapper`: uses BeaconSDK to sign the transactions,
-- `contractWrapper`: uses `walletWrapper` to sign the transactions and Taquito to send transactions to the Tezos Node.
+* `chainWrapper`: Uses the TzKT API to fetch blockchain data, formats, and cashes and to calculate values;
+* `walletWrapper`: Uses the Beacon SDK to sign the transactions;
+* `contractWrapper`: Uses `walletWrapper` to sign the transactions and Taquito to send transactions to the Tezos node.
 
-The component that brings the platform and the Tezos blockchain together is the `DataHandler`. It requests the data the platform needs with `chainWrapper` and it uses the `contractWrapper` to buy and sell tokens. 
+The component that brings the platform and the Tezos blockchain together is the `DataHandler`. It requests the data the platform needs with `chainWrapper` and uses the `contractWrapper` to buy and sell tokens. 
