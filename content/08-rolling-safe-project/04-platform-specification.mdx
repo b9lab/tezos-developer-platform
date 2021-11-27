@@ -3,3 +3,81 @@ title: Platform Specification - Planning & Workflows
 description: 
 slug: /cso-platform-specification
 ---
+
+import HighlightBox from "../../src/components/HighlightBox"
+
+
+Due to the size of this project, we need to do some planning before we can start to code. We will showcase our (b9lab's) actual approach for the implementation of this whole project, and share our considerations and learnings.
+
+On the top level, we have divided the project into two separate parts:
+* The user-facing web application, **TZMINT platform**)
+* The smart contract, and **wrapper functions** to interact with it.
+
+This division allowed us to develop both parts in parallel, while decreasing the complexity on each side. To ensure both parts are fitting together in the end, we draw a hard line between these two parts, only connected through one interface: The **DataHandler**.
+
+![System split](./images/system-split-l.png)
+
+The DataHander is written in JavaScript, and exposes all functions for the platform to interact with the blockchain on a high level (both read and write). For the developer working on the platform implementation, this handler allows all interaction and does not require them to know the actual smart contract implementation. On the other side, the DataHandler directly calls the wrapper functions, implemented by the smart contract team, who does not need to know about the processing of this data in the platform past the wrapper functions. They also implemented the call to the wrapper functions in the DataHandler, so we really drew the line _through_ it.
+
+With this setup, the team working on the platform does not need to be fully knowledgeable about all blockchain details, while the smart contract team just needs normal JavaScript/TypeScript to implement the wrappers, without knowledge about both frontend and backend frameworks (React, Next, Express). Not everyone needs to be a full-stack developer.
+
+After a quick general project intro, explanation of the Rolling SAFE, and the development of the base user stories, both teams worked together on the specification of the function signatures and return data for the DataHandler on a basic level.
+
+```javascript
+@return Promise.resolve(number totalInvestors) or Promise.reject(error)
+chainWrapper.totalInvestors()
+
+@return Promise.resolve(number totalInvestments) or Promise.reject(error)
+chainWrapper.totalInvestments()
+
+@return Promise.resolve(number companyValuation) or Promise.reject(error)
+chainWrapper.companyValuation()
+```
+
+You can take a look at the [full (original) specification document](https://docs.google.com/document/d/1_7sPfupI5JVjYDt1_PoFcq1q-QQoLq1SNBt3kfY2M4U) to get a feel for our first approach - please note that this document was our very first specification document. After we had created this document, we began to implement the DataHandler with stubs, which then became our new specification file.
+
+
+Example stub for the `getInvestmentNumbers()` function in the [very first version](https://github.com/b9lab/tezos-cso-project/blob/72ce67a34d8aa99e38895595033900e00d4f7b70/src/services/DataHandler.ts#L46):
+
+```javascript
+// General Investment Info
+
+getInvestmentNumbers(): Promise<InvestmentNumbersDto> {
+    return new Promise((resolve, reject) => {
+        const data: InvestmentNumbersDto = {
+            totalInvestment: '$2,000',
+            investorsCount: 238,
+            tokensCount: 37,
+            unlockingDate: new Date("2021-07-30 12:05:33.574+00")
+        };
+
+        resolve(data);
+    });
+}
+
+```
+
+On the Platform side, this common DataHandler with stubs allows to immediately start with the implemention of the scenarios with their views and flows. For the smart contract development, this is a perfect blueprint to be used as expected values in unit tests, allowing to start with Test Driven Development right away.
+
+# Workflows
+
+Not everything can be perfectly defined in the beginning. For example, the [getUserTransactionData](https://github.com/b9lab/tezos-cso-project/blob/72ce67a34d8aa99e38895595033900e00d4f7b70/src/services/DataHandler.ts#L129) function was originally planned to return one list with all user transactions. But after multiple evolutions, it [ended up](https://github.com/b9lab/tezos-cso-project/blob/main/src/services/DataHandler.ts#L356) returning two separate lists for funding and withdrawal transactions with an updated format.
+
+<HighlightBox type="tip">
+
+Even with the best planning, it is natural that you will need to update this file at some point during the project, as some details evolve during the course of the project. Plan in both **time** and **processes**, to keep this common interface in sync on both sides.
+
+</HighlightBox>
+
+
+## Two parts - two repositories
+
+To further untangle these two main parts, we also use two separate repositories:
+* [Platform repository](https://github.com/b9lab/tezos-cso-project).
+* [Smart contract and wrapper repository](https://github.com/b9lab/tezos-app-project).
+
+The smart contract repository is integrated in the platform repository as [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). This split into two repositories allows for separate ci/cd workflows and less friction on Pull Request review, all helping to speed up the development when working in a team.
+
+When a change on the smart contract functions is requested from the platform team, we first adjusted the unit tests in the smart contract repository, then sync these to the DataHandler stubs and only then begin implementing the changes on both sides.
+
+During the initial development, with this split up it was also very easy to update the stubbed functions once the smart contract and wrapper functions were ready, as the smart contract team could easily replace the stubbed data fields with the wrapper calls and push this update to the platform team to connect their functions.
