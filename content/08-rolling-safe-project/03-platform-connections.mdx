@@ -1,5 +1,5 @@
 ---
-title: Platform - Connecting Systems
+title: Web Application - Connecting Systems
 description: 
 slug: /cso-platform-connections
 ---
@@ -20,4 +20,4 @@ The wrappers are used to fetch contract and transaction data and to call the con
 * `walletWrapper`: Uses the Beacon SDK to sign the transactions;
 * `contractWrapper`: Uses `walletWrapper` to sign the transactions and Taquito to send transactions to the Tezos node.
 
-The component that brings the platform and the Tezos blockchain together is the `DataHandler`. It requests the data the platform needs with `chainWrapper` and uses the `contractWrapper` to buy and sell tokens. 
+The component that brings the TZMINT web application and the Tezos blockchain together is the `DataHandler`. It requests the data the web application needs with `chainWrapper` and uses the `contractWrapper` to buy and sell tokens. 
