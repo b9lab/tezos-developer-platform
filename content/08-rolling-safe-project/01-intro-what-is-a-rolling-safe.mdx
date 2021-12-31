@@ -97,8 +97,7 @@ Preferred stock has characteristics of both bonds and common stock. As with bond
 
 </ExpansionPanel>
 
-A new promising form of financial instruments is the **Rolling Simple Agreement for Future Equity (Rolling SAFE)**. Startups issue Rolling SAFEs to raise funds from investors using a smart contract. In its **initial phase**, the terms of the offering are set.
-Then before reaching the minimum funding goal (MFG) set during the initial phase, the **pre-MFG phase**, investors buy tokens through a smart contract called a Decentralized Autonomous Trust (DAT) at a set fixed price. The funds collected are put in escrow. Once the **MFG is reached**, the smart contract moves a portion of the funds into a reserve and sends the rest to the issuing organization to fund its operations. The reserve helps make sure investors can sell tokens back to the DAT at any time. During the **post-MFG phase**, a pre-defined share of the revenues of the issuing organization is added to the reserve annually. As the funds in the reserve increase, the buying and selling price of the tokens increase as well, and new tokens are issued based on predetermined formulas. **Termination** results from a triggering event such as an IPO or a liquidation. During the **termination phase**, the smart contract buys back all the tokens still in circulation, and investors receive equity proportionally to the number of tokens held.
+A new promising form of financial instruments is the **Rolling Simple Agreement for Future Equity (Rolling SAFE)**. Startups issue Rolling SAFEs to raise funds from investors using a smart contract. In its **initial phase**, the terms of the offering are set. Then before reaching the minimum funding goal (MFG) set during the initial phase, the **pre-MFG phase**, investors buy tokens through a smart contract called a Decentralized Autonomous Trust (DAT) at a set fixed price. The funds collected are put in escrow. Once the **MFG is reached**, the smart contract moves a portion of the funds into a reserve and sends the rest to the issuing organization to fund its operations. The reserve helps make sure investors can sell tokens back to the DAT at any time. During the **post-MFG phase**, a pre-defined share of the revenues of the issuing organization is added to the reserve annually. As the funds in the reserve increase, the buying and selling price of the tokens increase as well, and new tokens are issued based on predetermined formulas. **Termination** results from a triggering event such as an IPO or a liquidation. During the **termination phase**, the smart contract buys back all the tokens still in circulation, and investors receive equity proportionally to the number of tokens held.
 
 Let's dive into the specifics of a Rolling SAFE by taking a look at its predecessor, the SAFE.
 
@@ -186,9 +185,9 @@ When keeping the valuation cap constant, the less the SAFE raises (the lower the
 
 ## What is a Rolling SAFE?
 
-Generally speaking, a Rolling Simple Agreement for Future Equity (Rolling SAFE) is a continuous and flexible fundraising mechanism. It consists of a security token offering that represents a proportional share of the future equity of a company. The token does not represent a percentual share of the ownership of the company, as in the case of traditional shares, but rather a claim on expected future equity. The promise of a Rolling SAFE is based on a company's current business performance and on the capability of a company to translate its business success into fundraising success.
+As a reaction to start-ups frequently increasing the target amount of funding for early investment instruments like SAFEs, convertible notes, and seed rounds as well as focusing on early investment instruments as a primary funding source without planning and performing follow-up investment rounds, so-called rolling simple agreement for future equity (Rolling SAFEs) were developed as continuous offerings.
 
-
+Generally speaking, a Rolling SAFE is a continuous and flexible fundraising mechanism. It consists of a security token offering that represents a proportional share of the future equity of a company. The token does not represent a percentual share of the ownership of the company, as in the case of traditional shares, but rather a claim on expected future equity. The promise of a Rolling SAFE is based on a company's current business performance and on the capability of a company to translate its business success into fundraising success.
 
 Rolling SAFEs are blockchain-enabled **continuous** offerings of a **programmable equity**. The future equity claims are backed by a reserve and securitized in a certain token amount. The issuance, distribution, price calculation, and even buyback of tokens are automated and programmed. Equity becomes programmable through automatable and scalable mechanisms implemented in a smart contract.
 
@@ -208,7 +207,13 @@ In addition, Rolling SAFEs allow founders to maintain long-term control and owne
 
 Market psychological group dynamics are less strong for Rolling SAFEs because investors are individually incentivized to align their interests with the company's interest of being a successful business. In addition, investors are incentivized to invest early and not take a "wait-and-see" approach to decide on when to invest. The return on investment (ROI) is higher the earlier an investor buys tokens.
 
-Rolling SAFEs open up new liquidity markets for start-ups and present a new investment opportunity to a wider investor base - They are not bound to a specific market environment and usually do not present with access barriers, so to say, everyone can buy a Rolling SAFE token. Rolling SAFEs give investors improved access to benefit from the financial success of a company.
+SAFEs and Rolling SAFEs share similarities conceptually but are two different investment instruments. As with SAFEs, Rolling SAFEs do not have a maturity date or accuring interests. One of the most essential differences is that a SAFE indirectly represents a claim of ownership as investors convert SAFEs to equity stake, while a Rolling SAFE token only represents a claim for future revenues of the company (i.e. when a company creates profit and with it internal equity). The focus moves from equity stake/shares to the future performance of a company. With this change the incentivization for investors changes too. A Rolling SAFE is seen as a mechanism assisting with aligning investor interests with those of the company. At the same time, the instrument is tailored to early investors.
+
+Additionally, Rolling SAFEs can be set to not rely on further investment/equity rounds as it can run as a continous offering for as long as intended by the company. Whereas, investors can drop out and redeem their investment if they want to pull out. It is envisioned to be more than "just" an early investment instrument. For this reason it is also suited for large target funding amounts.
+
+The degree of assessable risk also increases in Rolling SAFEs: Founders do not have to fear equity dilution (i.e. their ownership being diluted) and investors can easier calculate margins and gains, as well as diution due to an increase in transparency and the programmability of this form of equity funding. The backing by reserves managed by a smart contract adds additional investor security when it comes to buybacks but also the value development of the security.
+
+Rolling SAFEs open up new liquidity markets for start-ups and present a new investment opportunity to a wider investor base - They are not bound to a specific market environment and usually do not present with access barriers, so to say, everyone can buy a Rolling SAFE token. Rolling SAFEs give investors improved access to benefit from the financial success of a company, while providing young businesses with a possibility to have a running continuous security offering providing funding.
 
 ## Stages in a Rolling SAFE
 
@@ -284,6 +289,39 @@ A Rolling SAFE is terminated once:
 * All investors can receive equity in return for their tokens, e.g. all outstanding tokens are bought back with the funds held in the reserve and coming from the exit fee.
 
 The termination of a Rolling SAFE resembles a traditional buyback of shares. All tokens are bought back at the same price.
+
+Before diving into more details on how Rolling SAFEs present an investment instrument with fixed dilution, let us take a closer look at how a company can "manipulate" the price of a Rolling SAFE token.
+
+## Rolling SAFE functions: Influencing the token price
+
+Once the offering is launched, the price is automated and non-negotiable. The initial price is based on the valuation of the company. After an initial period when the minimum funding goal is met, the price is based on a function of the number of issued tokens and the number of tokens bought (the invested amount).
+
+**The more tokens issued, the higher the price.** The earlier an investment takes place the more tokens the investor receives, as the price per token rises with the increasing number of tokens. Whereby, the **amount of capital** is per se unlimited. The equity allocation of the continuous Rolling SAFE offering can be increased but never decreased.
+
+The **buy price** is determined by the number of tokens, as the buy function implements a linear relationship between the buy price and the number of tokens. The **sell price** is influenced by the reserve. To control the sell price, the company (issuer) can use **`pay()` and `burn()` functions** to influence the reserve and with it **control the sell price**.
+
+There are mainly **four functions** in a Rolling SAFE:
+
+* **`sell()` function**,
+* **`pay()` function**,
+* **`buy()` function**, and
+* **`burn()` function**.
+
+The **`sell()` function** is called by investors to sell their tokens for the base currency. Technically, the function is part of the smart contract, which receives the tokens, burns them, and sends back the correct amount of base currency (i.e. the currency against which the exchange rate is quoted) to the investor from the smart contract's cash reserve - unaffecting the issuer's treasury.
+
+The **`pay()` function** calculates the current average selling price of a Rolling SAFE token. The `pay()` function is called to send funds to the issuer via the smart contract and send the correct amount of tokens to investors in return as the function also triggers the issuance of new tokens. The funds are transferrred to the issuer but a part of it is retained by the smart contract and used to issue new tokens, which are sent to the issuer or the investor. Calling the `pay()` function leads to an increase in the cash reserve of the smart contract, which leads to an increased value of tokens.
+
+The **`buy()` function** calculates the average price of a Rolling SAFE token in the base currency. Technically, the `buy()` function is called to send base currency to the issuer via the smart contract, which then issues new tokens in relation to the investment amount that are sent to the issuer. All funds are transferred using the smart contract's cash reserve. When an investor sends funds in base currency to the smart contract (i.e. the DAT receives a payment), a portion of the funds is sent to the **cash reserve** managed by the contract and another part goes into the **issuers/companies wallet**.
+
+The **`burn()` function** assists with "burning" tokens, i.e. taking them out of circulation. This does not technically destroy tokens, but as they become unusuable the marginal value of the tokens (the lowest value of the burnt tokens) is redistributed among the remaining tokenholders via the `sell()` function.
+
+<HighlightBox type="info">
+
+In blockchain, coin or token burning is not an unusual thing. Burning is done to take tokens out of circulation. Often this happens by sending a token intentionally to an unusuable wallet address (burn address). The address is unusuable because it cannot be accessed by or assigned to anyone.
+
+</HighlightBox>
+
+The Rolling SAFE's issuing organization can use the `burn()` function to either burn tokens that are not being used or more importantly, burn tokens to increase the overall value of all tokens. The latter takes place because when a token is burnt its value is redistributed to all tokenholders. When a tokenholder sells tokens, it receives a part from the cash reserve equal to the number of tokens being sold and on top, a portion of the value of burnt tokens is also allocated to the selling tokenholder. Through this mechanism value is never locked in the cash reserve; when all tokens are bought back by the issuer, the complete funds held by the cash reserve are depleted.
 
 ## Fixed dilution
 
