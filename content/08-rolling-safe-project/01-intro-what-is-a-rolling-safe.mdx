@@ -244,23 +244,35 @@ The reserve allows for the bonding curve to act as an automated market maker. Be
 
 </ExpansionPanel>
 
-The running time can be indefinite and always be increased, but never decreased. The annual amount committed to the reserve helps decrease the risk for investors, as the reserve is used to finance token buys and the buyback at termination. The higher the annual amount is, the less risky the offerings are for investors because the buyback at termination (i.e. when the tokens convert to equity) is ensured. Then the issuer only has to deploy a smart contract for the Rolling SAFE to begin.
+The running time can be indefinite and always be increased, but never decreased. The annual amount committed to the reserve helps decrease the risk for investors, as the reserve is used to finance token buys and the buyback at termination.
+
+<HighlightBox type="tip">
+
+Check out the *Termination* stage description for more details on the buyback.
+
+For a closer look at the different functions used in a Rolling SAFE and how they relate to price, token amount, and the reserve, as well as at how the issuer can influence the price, just scroll down to *Rolling SAFE functions: Influencing the token price* at the end of this section.
+
+</HighlightBox>
+
+The higher the annual amount is, the less risky the offerings are for investors because the buyback at termination (i.e. when the tokens convert to equity) is ensured. Then the issuer only has to deploy a smart contract for the Rolling SAFE to begin.
 
 In a Rolling SAFE, a **smart contract** issues the tokenized security handles sales and buybacks, and assists with funneling the annually committed revenue. This smart contract is often called the **decentralized autonomous trust (DAT)**.
 
 ![The relationship between investor, DAT, and issuer](images/DAT.png)
 
-The DAT issues token proportionally to the amount invested. The DAT tokens represent a claim on the DAT-managed cash reserve.
+The DAT issues tokens proportionally to the amount invested. The DAT tokens represent a claim on the DAT-managed cash reserve.
 
 ### Pre-MFG
 
-The issuer sets a target amount of investment, the so-called **minimum funding goal (MFG)**. As long as the MFG is not met, so to say **pre-MFG**, tokens are minted proportionally to the amount held by the reserve. All tokens are offered at a fixed price and all funds received through token sales are escrowed by the DAT.
+The issuer sets a target amount of investment, the so-called **minimum funding goal (MFG)**. As long as the MFG is not met and the offering is in a so-called **pre-MFG** stage, tokens are minted proportionally to the amount held by the reserve. All tokens are offered at a fixed price and all funds received through token sales are escrowed by the DAT.
 
 The initial, fixed price gives investors a threshold under which the price will never fall and helps reward early investors over those investing at a later time. Investors can withdraw their investment and receive 100% of it back, e.g. tokens can be redeemed and are then taken out of circulation. Thus, the MFG increases investor protection. In addition, the offering can be canceled by the issuer during this phase.
 
 ### Post-MFG
 
-Once the MFG is reached, the offering can no longer be canceled, only closed, i.e. terminated. It remains active at a minimum for as long as the running time was set. Also, a large part of the MFG funds moves into the cash reserve and the other part goes to the issuer. Investor funding is no longer escrowed by the DAT in the reserve, as it was during the pre-MFG phase. Instead, a portion of the revenue of the issuer is moved into the cash reserve as determined by the annual amount set during initialization.
+Once the MFG is reached, the offering can no longer be canceled, only closed, i.e. terminated. It remains active at a minimum for as long as the running time was set. A large part of the MFG funds moves into the cash reserve and the other part goes to the issuer.
+
+Investor funding is no longer escrowed fully by the DAT in its reserve, as it was during the pre-MFG phase. Instead, a portion of the revenue of the issuer is moved into the cash reserve as determined by the annual amount set during initialization.
 
 **Post-MFG**, the smart contract (i.e. DAT), manages the token issuance and the reserve reflecting the amount allocated by the issuer to the cash reserve. When the issuer generates revenues, part of it goes into the reserve to finance the buyback at termination. This creates an incentive for investors to at least hold on to their tokens for as long as the issuer has not begun to generate revenue because the token price begins to increase with generated revenue. Ideally, investors hold on to their tokens until the offering is closed - when they can expect the highest ROI. Whereas, the bonding curve acts as an automated market maker so that tokens can be sold at a calculated price at any point in time. The cash reserve ensures this by holding enough funds to buy back tokens.
 
