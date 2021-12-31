@@ -234,6 +234,16 @@ During the **initialization**, the issuer (i.e. a company) decides on the terms 
 * Determining the company valuation, and
 * Setting a minimum threshold for the funding and running time of the offering.
 
+<ExpansionPanel title="What is the reserve in a Rolling SAFE?">
+
+Once the MFG is met, the bonding curve begins its work. The smart contract issues tokens, which represent a financial right (claim) on the cash reserve. This reserve is managed by the smart contract and reflects the organization's revenues. So to say, the token represents a claim on the equity of the organization.
+
+When the organization begins to generate revenue, part of the revenue goes into the buyback reserve. In addition, the revenue begins to drive the price of the token. This mechanism creates a clear incentive for investors to hold on to their tokens until the organization begins to generate revenues and the price begins to rise.
+
+The reserve allows for the bonding curve to act as an automated market maker. Because of the bonding curve, tokens can be bought or sold at any point in time, as the reserve holds enough funds to buy the tokens back.
+
+</ExpansionPanel>
+
 The running time can be indefinite and always be increased, but never decreased. The annual amount committed to the reserve helps decrease the risk for investors, as the reserve is used to finance token buys and the buyback at termination. The higher the annual amount is, the less risky the offerings are for investors because the buyback at termination (i.e. when the tokens convert to equity) is ensured. Then the issuer only has to deploy a smart contract for the Rolling SAFE to begin.
 
 In a Rolling SAFE, a **smart contract** issues the tokenized security handles sales and buybacks, and assists with funneling the annually committed revenue. This smart contract is often called the **decentralized autonomous trust (DAT)**.
