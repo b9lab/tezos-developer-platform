@@ -20,7 +20,7 @@ We use [Docker Compose](https://docs.docker.com/compose/) to create a network co
 
 * Three TzKT containers,
 * A container with the Flextesa sandbox, and
-* A container for the TZMINT platform.
+* A container for the TZMINT web application.
 
 ![Stack in the docker dashboard!](./images/stack-docker-dashboard.png)
 
@@ -28,28 +28,28 @@ We use [Docker Compose](https://docs.docker.com/compose/) to create a network co
 
 We use the [Flextesa image](https://hub.docker.com/r/tqtezos/flextesa/tags?page=1&ordering=last_updated) to create a sandbox environment. After the sandbox starts and the node responds, the bootstrap process starts:
 
-* The Tezos Client is configured,
-* Alice and Bob's secret keys are imported,
-* The contract is deployed and the address becomes available,
+* The Tezos client is configured;
+* Alice and Bob's secret keys are imported;
+* The contract is deployed and the address becomes available;
 * Another test account is created and funded, used to sign `buy` and `sell` transactions.
 
 ## TzKT
 
-A TzKT indexer (tzkt-sync) is configured to extract data from the node in the sandbox. In addition, a TzKT API container exposes data to the platform.
+A TzKT indexer (tzkt-sync) is configured to extract data from the node in the sandbox. In addition, a TzKT API container exposes data to the TZMINT web application.
 
 ## Database
 
-The database container uses PostgreSQL to store the fetched data. It contains a database for the platform and a database for the TzKT indexer.
+The database container uses PostgreSQL to store the fetched data. It contains a database for the web application and a database for the TzKT indexer.
 
 ## Browser interaction
 
-If you visit and test the TZMINT platform, you can see that a wallet pop-up appears asking for confirmation each time you want to sign and send a transaction. For automation purposes, we use [Cypress.io](https://github.com/cypress-io/cypress) to visit and test the site and [Puppeteer](https://github.com/puppeteer/puppeteer) to interact with the wallet extensions.
+If you visit and test the TZMINT web application, you can see that a wallet pop-up appears asking for confirmation each time you want to sign and send a transaction. For automation purposes, we use [Cypress.io](https://github.com/cypress-io/cypress) to visit and test the site and [Puppeteer](https://github.com/puppeteer/puppeteer) to interact with the wallet extensions.
 
 Puppeteer switches between wallet pop-up and Cypress Windows to sequentially interact with the site and the wallet. This allows us to perform actions like submitting a transaction or confirming an address.
 
 At the beginning of a test, Cypress opens a Google Chrome instance loading a previously downloaded version of the wallet extension. When the test requires to interact with the wallet, it will import the account via a mnemonic and configure the settings for the custom-created network.
 
-The TZMINT platform container (app) pulls the Cypress browser image and loads the platform volume.
+The TZMINT web application container (app) pulls the Cypress browser image and loads the web application volume.
 
 Once the sandbox is bootstrapped it does a fresh install of the dependencies. Then it prepares the environment used during the tests by:
 

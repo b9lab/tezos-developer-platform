@@ -1,5 +1,5 @@
 ---
-title: Platform Stack
+title: Web Application Stack
 description: 
 slug: /cso-platform-stack
 ---
@@ -71,15 +71,15 @@ Please take a look at the [Beacon section](./beacon) if you are not familiar wit
 
 ## Queries
 
-TzKT API is used to fetch information from the Tezos blockchain. You can find the methods the platform implements in the [chainWrapper](https://github.com/b9lab/tezos-cso-project) code.
+TzKT API is used to fetch information from the Tezos blockchain. You can find the methods the TZMINT web application implements in the [chainWrapper](https://github.com/b9lab/tezos-cso-project) code.
 
 <HighlightBox type="tip">
 
-As a refresher, we recommend a recap of the [TzKT section](./tzkt) in the _Developing Clients_ chapter.
+As a refresher, we recommend a recap of the [TzKT API section](./tzkt) in the _Developing Clients_ chapter.
 
 </HighlightBox>
 
-We need different API endpoints to fetch all the information displayed in the [TZMINT platform](https://tzmint.b9lab.com/). It makes sense to have a function for each of the endpoints we want to use:
+We need different API endpoints to fetch all the information displayed in the [TZMINT web application](https://tzmint.b9lab.com/). It makes sense to have a function for each of the endpoints we want to use:
 
 ```javascript
 /* eslint-disable max-lines */

@@ -14,14 +14,14 @@ import {
 
 In this section, we will take a closer look at testing, more specifically:
 
-* testing with the SmartPy IDE, and
-* unit tests for the wrapper.
+* Testing with the SmartPy IDE, and
+* Unit tests for the wrapper.
 
 <!-- Please expand the introduction. -->
 
 ## SmartPy testing in the IDE
 
-We test our platform on different levels with different tools. 
+We test our TZMINT web application on different levels with different tools.
 
 Let us use the SmartPy IDE for testing. First, we need to **define our scenario**:
 
@@ -68,9 +68,9 @@ Now we can do some **testing for `buy`**:
     scenario += contract.sell(amount=1).run(sender = buyer1, valid=False)
 ```
 
-Remember that we expect the `sell` call to fail before the MFG phase is over.
+Remember that we expect the `sell` call to fail before the minimum funding goal (MFG) phase is over.
 
-Why not do a few more **`buy` calls**:
+Why not do a few more **`buy` calls**?
 
 ```python
     scenario += contract.buy().run(sender = buyer2, amount = sp.mutez(200003000))
@@ -118,7 +118,7 @@ You can also check the **price of a token** with the output of:
     scenario += contract.sell(amount=1).run(sender = buyer1)
 ```
 
-in the right panel of the IDE:
+In the right panel of the IDE:
 
 ![Test output](./images/test-output.png)
 
@@ -141,7 +141,7 @@ The last thing to test is the **closing** and the permissions for calling it:
 
 We use [Chai](https://www.chaijs.com/) for unit tests. There are different unit tests for each wrapper.
 
-The `walletWrapper` is very small, so there is not much to test besides `callCount`s of the inner functions.
+The `walletWrapper` is very small, so there is not much to test besides `callCount`s of the inner functions:
 
 ```javascript
         it("should call only buy in the contract if buy is called", async function() {
@@ -152,6 +152,7 @@ The `walletWrapper` is very small, so there is not much to test besides `callCou
             expect(sell.callCount).to.equal(0);
         });
 ```
+
 This applies also to the unit tests for the `contractWrapper`.
 
 The `chainWrapper` is more complex. We want to make sure it offers the functions the `DataHandler` needs, so we use `to.have.property` to make sure:

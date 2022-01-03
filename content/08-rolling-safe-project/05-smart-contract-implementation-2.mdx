@@ -75,6 +75,8 @@ We were not going to implement `burn`, but because burning is a part of the sell
 
 What is understood by **burning** tokens? When a token should be removed from circulation, one can "burn" them. Often, burning is done by sending tokens to an unusable wallet address, a so-called burn address. Tokens can then no longer be accessed or assigned to an address.
 
+This is the case when working with tez. Since in the TZMINT web application the issuer mints its own tokens, there is no need for a burn address.
+
 </HighlightBox>
 
 An important thing in the above code to notice is that we do not modify the total amount of tokens issued if we burn a token. Thus, the buy price is not affected.
