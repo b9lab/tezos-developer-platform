@@ -57,7 +57,7 @@ If you want to extend this smart contract to, for example, fullfil the FA2 token
 There are **two phases** in the offering regarding the buy price:
 
 1. The **initial phase**: Before the minimum funding goal (MFG) is reached, the buy price is constant; 
-2. The **slopy phase**: Once the MFG is reached, the buy price will increase for each issued token.
+2. The **slopy phase** (i.e. post-MFG phase): Once the MFG is reached, the buy price will increase for each issued token.
 
 <HighlightBox type="tip">
 
@@ -113,7 +113,7 @@ After the calculation, `buy_initial` will check if any tokens can be issued. The
 
 Before calculating the recent value of the total investments, the excess is calculated and sent back to the user.
 
-Now, let us have a look at the **slopy phase** for the `buy` function:
+Now, let us have a look at the **post-MFG phase**, so to say the "slopy phase" for the `buy` function:
 
 ```python
     # after initial phase, the price will increase
@@ -237,6 +237,6 @@ Imagine a scenario where a user (investor) commits a large amount to buy tokens.
 
 To avoid this issue, the contract checks in which phase the buy transaction falls. In the above-described scenario, it would not accept the transaction for the whole investment amount. Instead, the investor receives all tokens that can be bought for the initial-phase price and an excess return, with which more tokens can be bought but at the price determined by the `buy` function.
 
-We basically want to differentiate between the initial and the slopy phase, so that the contract only allows to buy tokens at the initial price until the MFG is reached. The user will need another call to continue to buy but at the slopy-phase price.
+We basically want to differentiate between the initial and the post-MFG phase, so that the contract only allows to buy tokens at the initial price until the MFG is reached. The user will need another call to continue to buy but at the post-MFG phase price.
 
 Let us now take a look at the `sell` function.
