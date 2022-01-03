@@ -20,9 +20,11 @@ This section addresses system components of the TZMINT web application. The appl
 * [Taquito](./taquito), and
 * [TzKT](./tzkt).
 
-[Beacon](https://www.walletbeacon.io/) offers an interface to connect browser, mobile, desktop, web, and/or hardware wallets with an application. Several wallets are supported by the Beacon SDK: [AirGap](https://airgap.it/), [Galleon](https://github.com/Cryptonomic/Deployments/wiki/Galleon:-Releases), [Kukai](https://wallet.kukai.app/), [Temple](https://templewallet.com/), and [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn). Thus, we used Beacon for the communication between a number of wallets and the TZMINT web application.
+**[Beacon](https://www.walletbeacon.io/)** offers an interface to connect browser, mobile, desktop, web, and/or hardware wallets with an application. Several wallets are supported by the Beacon SDK: [AirGap](https://airgap.it/), [Galleon](https://github.com/Cryptonomic/Deployments/wiki/Galleon:-Releases), [Kukai](https://wallet.kukai.app/), [Temple](https://templewallet.com/), and [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn). Thus, we use Beacon for the communication between a number of wallets and the TZMINT web application.
 
+**[Taquito](https://tezostaquito.io/)** is a Tezos TypeScript library that is designed for JavaScript projects and offers an API. Taquito assists us with the client development so that average users can interact with the smart contract managing the token offering through the TZMINT web application: Taquito helps send transactions to the Tezos node.
 
+**[TzKT](https://github.com/baking-bad/tzkt)** is a Tezos blockchain indexer, which reduces the time it takes to fetch and process data from the blockchain. Additionally, with TzKT high-level functionalities (e.g. filtering, sorting, and calculating historical data), that go beyond the Tezos JSON/RPC interface, become available. TzKT comes with an advanced API to facilitate data access and subscribing to blockchain data. The TZMINT web application relies on TzKT to ensure proper fetching of blockchain data.
 
 </ExpansionPanel>
 
