@@ -347,7 +347,7 @@ The **`pay()` function** calculates the current average selling price of a Rolli
 
 The **`buy()` function** calculates the average price of a Rolling SAFE token in the base currency. Technically, the `buy()` function is called to send base currency to the issuer via the smart contract, which then issues new tokens in relation to the investment amount that are sent to the issuer. All funds are transferred using the smart contract's cash reserve. When an investor sends funds in base currency to the smart contract (i.e. the DAT receives a payment), a portion of the funds is sent to the **cash reserve** managed by the contract and another part goes into the **issuers/companies wallet**.
 
-The **`burn()` function** assists with "burning" tokens, i.e. taking them out of circulation. This does not technically destroy tokens, but as they become unusable the marginal value of the tokens (the lowest value of the burnt tokens) is redistributed among the remaining tokenholders via the `sell()` function.
+The **`burn()` function** assists with "burning" tokens, i.e. taking them out of circulation. This does not technically destroy tokens, but as they become unusable the marginal value of the tokens (the lowest value of the burnt tokens) is redistributed among the remaining tokenholders via the `sell()` function. As burning tokens does technically not destroy them, the total amount of tokens issued is not affected. Thus, burning tokens can be used to influence the sell price but not the buy price.
 
 <HighlightBox type="info">
 
@@ -355,7 +355,7 @@ In blockchain, coin or token burning is not an unusual thing. Burning is done to
 
 </HighlightBox>
 
-The Rolling SAFE's issuing organization can use the `burn()` function to either burn tokens that are not being used or more importantly, burn tokens to increase the overall value of all tokens. The latter takes place because when a token is burnt its value is redistributed to all tokenholders. When a tokenholder sells tokens, it receives apart from the cash reserve equal to the number of tokens being sold and on top, a portion of the value of burnt tokens is also allocated to the selling tokenholder. Through this mechanism value is never locked in the cash reserve; when all tokens are bought back by the issuer, the complete funds held by the cash reserve are depleted.
+The Rolling SAFE's issuing organization can use the `burn()` function to either burn tokens that are not being used or more importantly, burn tokens to increase the overall value of all tokens. The latter takes place because when a token is burnt its value is redistributed to all tokenholders. When a tokenholder sells tokens, it receives apart from the cash reserve equal to the number of tokens being sold and on top, a portion of the value of burnt tokens is also allocated to the selling tokenholder. Therefore, the issuer can influence the sell price with the `burn()` function. The sell price is not affected as the total amount of issued tokens remains the same regardless of the burning of tokens. Through this mechanism value is never locked in the cash reserve; when all tokens are bought back by the issuer, the complete funds held by the cash reserve are depleted.
 
 ## Fixed dilution
 
