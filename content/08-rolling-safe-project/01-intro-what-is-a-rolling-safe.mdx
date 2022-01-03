@@ -353,6 +353,8 @@ The **`burn()` function** assists with "burning" tokens, i.e. taking them out of
 
 In blockchain, coin or token burning is not an unusual thing. Burning is done to take tokens out of circulation. Often this happens by sending a token intentionally to an unusable wallet address (burn address). The address is unusable because it cannot be accessed by or assigned to anyone.
 
+This is the case when working with tez. Since in the TZMINT web application the issuer mints its own tokens, there is no need for a burn address.
+
 </HighlightBox>
 
 The Rolling SAFE's issuing organization can use the `burn()` function to either burn tokens that are not being used or more importantly, burn tokens to increase the overall value of all tokens. The latter takes place because when a token is burnt its value is redistributed to all tokenholders. When a tokenholder sells tokens, it receives apart from the cash reserve equal to the number of tokens being sold and on top, a portion of the value of burnt tokens is also allocated to the selling tokenholder. Therefore, the issuer can influence the sell price with the `burn()` function. The sell price is not affected as the total amount of issued tokens remains the same regardless of the burning of tokens. Through this mechanism value is never locked in the cash reserve; when all tokens are bought back by the issuer, the complete funds held by the cash reserve are depleted.
