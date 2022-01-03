@@ -270,24 +270,28 @@ The initial, fixed price gives investors a threshold under which the price will 
 
 ### Post-MFG
 
-Once the MFG is reached, the offering can no longer be canceled, only closed, i.e. terminated. It remains active at a minimum for as long as the running time was set. A large part of the MFG funds moves into the cash reserve and the other part goes to the issuer.
+Once the MFG is reached, the offering can no longer be canceled, only closed, i.e. terminated. It remains active at a minimum for as long as the running time was set. A large part of the MFG funds moves into the cash reserve and the other part goes to the issuer company. The portion of the revenue moved into the cash reserve is determined by the reserve percentage set during initialization. Investor funding is no longer escrowed in the DAT reserve, as during the pre-MFG phase - Investors no longer withdraw and then receive 100% of their investment back, but instead can sell their tokens at the price determined by the bonding curve.
 
-Investor funding is no longer escrowed fully by the DAT in its reserve, as it was during the pre-MFG phase. Instead, a portion of the revenue of the issuer is moved into the cash reserve as determined by the annual amount set during initialization.
-
-**Post-MFG**, the smart contract (i.e. DAT), manages the token issuance and the reserve reflecting the amount allocated by the issuer to the cash reserve. When the issuer generates revenues, part of it goes into the reserve to finance the buyback at termination. This creates an incentive for investors to at least hold on to their tokens for as long as the issuer has not begun to generate revenue because the token price begins to increase with generated revenue. Ideally, investors hold on to their tokens until the offering is closed - when they can expect the highest ROI. Whereas, the bonding curve acts as an automated market maker so that tokens can be sold at a calculated price at any point in time. The cash reserve ensures this by holding enough funds to buy back tokens.
+**Post-MFG**, the smart contract/DAT manages the token issuance and the reserve reflecting the amount allocated by the issuer to the cash reserve. When the issuer generates revenues, part of it goes into the reserve to finance the buyback at termination. This creates an incentive for investors to at least hold on to their tokens for as long as the issuer has not begun to generate revenue because the token price begins to increase with generated revenue. Ideally, investors hold on to their tokens until the offering is closed - when they can expect the highest ROI. Whereas, the bonding curve acts as an automated market maker so that tokens can be sold and bought at a calculated price at any point in time. The cash reserve ensures this by holding enough funds to buy back tokens.
 
 The price of tokens is determined by a **bonding curve**. It creates a mathematically-based way to enable coordination and incentivization of investors. The bonding curve consists of a **buy and sell curve**, both determined by two functions. At this point, the price for buying back tokens is determined by the bonding curve. Thus, investors can no longer withdraw their investment and receive 100% of it back, i.e. sell their tokens for the same price they bought them.
 
 ![Buy and sell function](images/price-function.png)
 
-The price of the tokens is automated and non-negotiable. The **initial price**, pre-MFG, was based on the company valuation and size of the reserve and is calculated by an algorithm. The **post-MFG price** is based on a function of the number of tokens issued and sold. The higher the token amount, the higher the price. Moreover, the implied valuation is that of one growing over time with more funds being raised. Being an early investor does have value, as the price per token rises with the overall amount of tokens. For example, compare the price per token an early investor pays pre-MFG with the price per token after the MFG is met.
+The price of the tokens is automated and non-negotiable. The **initial price**, pre-MFG, was based on the company valuation and is calculated by an algorithm. The **post-MFG price** is based on a function of the number of tokens issued and sold. The higher the token amount, the higher the price. Moreover, the implied valuation is that of one growing over time with more funds being raised. Being an early investor does have value, as the price per token rises with the overall amount of tokens. For example, compare the price per token an early investor pays pre-MFG with the price per token after the MFG is met.
 
 ![Buy price development over time](images/price-time.png)
 
-How is the price determined? And how are buy and sell prices different from each other?
+How is the price determined post-MFG? And how are buy and sell prices different from each other?
 
 * The **buy function** implements a linear relationship between the buy price and the number of tokens.
-* The **sell function** is influenced by the cash reserve. To control the sell price, the issuer can use pay and burn functions to influence the reserve and with it control the sell price.
+* The **sell function** is influenced by the cash reserve. To control the sell price, the issuer can use `pay()` and `burn()` functions to influence the reserve and with it control the sell price.
+
+<HighlightBox type="tip">
+
+Want to know more about `pay()` and `burn()` functions, as well as how the price can be influenced by the issuer? Check out *Rolling SAFE functions: Influencing the token price* on this page.
+
+</HighlightBox>
 
 While the offering is active, tokens are issued proportionally to the amount in the reserve, so token holders can buy and sell tokens for market prices or sell them directly back to the reserve (i.e. tokens can be redeemed).
 
@@ -300,15 +304,23 @@ Rolling SAFEs are envisioned to be closed in two different ways:
 * Closure due to liquidity or dissolution events, or
 * Termination at the end of the running time.
 
-When the company, for example, is sold or an IPO is conducted, the triggering event leads to the offering ending and investors being entitled to receive equity concerning their investment (i.e. number of tokens). Thus, a conversion to equity before the termination of the offering is conducted.
+When the company, for example, is sold or an IPO is conducted, the triggering event leads to the offering ending and investors being entitled to receive equity in proportion to their investment (i.e. number of tokens). Thus, a conversion to equity before the termination of the offering is conducted.
 
 Concerning the termination, the issuer could let the offering run indefinitely, but usually, a running time is set and at the end of it the offering is terminated. Termination is possible as soon as a minimum period of time, as defined during initialization, has passed. The defined minimum period of time gives investors more transparency on the offering.
 
 A Rolling SAFE is terminated once:
 
-* The issuer pays the **exit fee**, the current issuance price of tokens multiplied with the number of outstanding tokens (tokens held by investors),
+* The issuer pays an **exit fee** to the smart contract to buy back all tokens from investors - The fee equals the current issuance price of tokens multiplied with the number of outstanding tokens (tokens held by investors),
 * The offering is closed, and
-* All investors can receive equity in return for their tokens, e.g. all outstanding tokens are bought back with the funds held in the reserve and coming from the exit fee.
+* All investors receive a payment in return for their tokens, e.g. all outstanding tokens are bought back with the funds held in the reserve and coming from the exit fee.
+
+<HighlightBox type="info">
+
+Why is the exit fee a fee? A fee per se is defined as *a fixed price paid for services or rights*. Fees are common in business transactions.
+
+In the case of a Rolling SAFE, the exit fee is the fee the issuer pays to buy back tokens, i.e. get back all issued tokens by buying them back from tokenholders to terminate the offering. It can be considered a fee as the issuer is required to buy back **all** tokens that are still in circulation at the same time. So to say, the issuer pays a fixed price to terminate the offering.
+
+</HighlightBox>
 
 The termination of a Rolling SAFE resembles a traditional buyback of shares. All tokens are bought back at the same price.
 
@@ -347,7 +359,7 @@ The Rolling SAFE's issuing organization can use the `burn()` function to either 
 
 ## Fixed dilution
 
-The fixed target equity percentage allocation of Rolling SAFEs leads to a fixed dilution. Fixed dilution is ensured because of the percentage dedicated to the reserve. Unlike a traditional additional issuance of shares, the token issuance and their value is fixed by the parameters of the offering's smart contract. The value an investor holds is not reduced by the issuance of further tokens. There is no dilution from equity financing. This reduces the risk for an investor and makes dilutions a fixed and pre-determined factor.
+In Rolling SAFEs, fixed dilution is ensured with the fix retained revenue percentage dedicated to the reserve. Unlike a traditional additional issuance of shares, the token issuance and their value is fixed by the parameters of the offering's smart contract. The value an investor holds is not reduced by the issuance of further tokens. There is no dilution from equity financing. This reduces the risk for an investor and makes dilutions a fixed and pre-determined factor.
 
 Independently of the equity raised by the issuer, all investor claims remain collectively the same. There is a certain degree of dilution each investor has to live with due to each token issuance contributing to dilution. The dilution remains predictable and therefore, reduces the amount of unknown and uncalculated risk from equity dilutions known from other financial instruments.
 
