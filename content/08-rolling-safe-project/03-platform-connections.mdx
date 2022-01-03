@@ -12,6 +12,20 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
+<ExpansionPanel title="Prerequisit - Building a web application with the Tezos ecosystem">
+
+This section addresses system components of the TZMINT web application. The application builds, among others, on:
+
+* [Beacon](/beacon),
+* [Taquito](./taquito), and
+* [TzKT](./tzkt).
+
+[Beacon](https://www.walletbeacon.io/) offers an interface to connect browser, mobile, desktop, web, and/or hardware wallets with an application. Several wallets are supported by the Beacon SDK: [AirGap](https://airgap.it/), [Galleon](https://github.com/Cryptonomic/Deployments/wiki/Galleon:-Releases), [Kukai](https://wallet.kukai.app/), [Temple](https://templewallet.com/), and [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn). Thus, we used Beacon for the communication between a number of wallets and the TZMINT web application.
+
+
+
+</ExpansionPanel>
+
 ![System components](./images/systemcomponents.png)
 
 The wrappers are used to fetch contract and transaction data and to call the contract. The following wrappers were used:
