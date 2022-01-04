@@ -30,7 +30,7 @@ A code in Python has a **very clear visual structure based on its semantic struc
 
 **Indentation increases** are included to **define boundaries of statements**, whereas **decreased indentation signals the end of a block**. This is suspended within brackets though, where the closing bracket denotes the end of the block.
 
-_Our Python elaborations in this section refer to **Python 3** because SmartPy uses an interpreter for Python 3. Are you still on Python 2.x, circumventing an update so far? Go look at a [version comparison article](https://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html) to understand the differences - you really just have to keep in mind little (though important!) things._
+_Our Python elaborations in this section refer to **Python 3** because SmartPy uses an interpreter for Python 3. Are you still on Python 2.x, circumventing an update so far? Go look at a [version comparison article](https://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html) to understand the differences - you just have to keep in mind little (though important!) things._
 
 
 **Play along**
@@ -39,11 +39,11 @@ If you don't have a Python environment at hand for testing, you can use one of t
 
 On documents, the standard reference is:
 
-* [the Python Tutorial](https://docs.python.org/3/tutorial/),
-* [the Python Documentation](https://docs.python.org/3/reference/index.html), and
+* [The Python Tutorial](https://docs.python.org/3/tutorial/),
+* [The Python Documentation](https://docs.python.org/3/reference/index.html), and
 * [Python HOWTOs](https://docs.python.org/3/howto/index.html).
 
-We have written this refresher to give you a quick reference on the most important topics. **It is not complete though**. If you want deeper understanding of a specific topic, you should look into the Python Documentation linked above.
+We have written this refresher to give you a quick reference on the most important topics. **It is not complete though**. If you want a deeper understanding of a specific topic, you should look into the Python Documentation linked above.
 
 
 **Types in Python**
@@ -57,11 +57,11 @@ This is an overview of the general data types, which we will use
 <tr><td>complex</td><td>&nbsp;</td><td>&nbsp;</td><td>Range</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 </table>
 
-**  - Objects**
+**- Objects**
 
 Almost everything in Python is an **Object** - including simple and complex types, as well as functions. 
 
-**  - Numerics in Python**
+**- Numerics in Python**
 
 **Integers** are the usual basic number datatype. They can store a signed number with a variable size - Once you reach the maximum storage size, Python will transparently switch to a larger internal datatype, like long.
 
@@ -71,7 +71,7 @@ my_int = int(5)
 my_int = int('5')
 ```
 
-**Floats** are [floating point numbers](https://en.wikipedia.org/wiki/IEEE_754), allowing storage a number with a decimal point.
+**Floats** are [floating point numbers](https://en.wikipedia.org/wiki/IEEE_754), allowing storage of a number with a decimal point.
 
 ```python
 my_float = 2.3
@@ -89,7 +89,7 @@ my_complex = complex('2+3j')
 **Be aware!**
 **There has been an important change from Python 2.x to 3.x on implicit type conversion for integer:** Previously in 2.x (and in many other languages), when writing an expression like <code class='hljs hl-inline'>x = 3/2</code>, the arithmetic operation was returning the same datatype as the input, in this case int. Therefore, the result is <code class='hljs hl-inline'>1</code>. In Python 3.x however, the datatype is automatically (implicitly) converted to float - so the result is <code class='hljs hl-inline'>1.5</code>! If you want to force and int result, you can use an explicit conversion use this syntax: <code class='hljs hl-inline'>x = 3//2</code>
 
-Floating point numbers offer limited precision, based on the way the number is actually stored internally.
+Floating-point numbers offer limited precision, based on the way the number is stored internally.
 The important part: **Never use floats for**:
 <ul>
   <li>Money related values, like an account balance, or factors used in a balance calculation,</li>
@@ -99,9 +99,9 @@ The important part: **Never use floats for**:
 
 The usual solution is to either use an int if you have a fixed decimal (money), or an accurate decimal data type. For more information, further read on the <a href="https://en.wikipedia.org/wiki/IEEE_754">IEEE 754 specification</a> and <a href="https://en.wikipedia.org/wiki/Machine_epsilon">Machine epsilon</a> is recommended. Also, do not forget that the precision can vary, depending on the actual numbers used. E.g. <code class='hljs hl-inline'>1.78 - 0.7 = 1.08</code>, but <code class='hljs hl-inline'>0.78 - 0.7 = 0.08000000000000007</code>.
 
-**  - Text in Python**
+**- Text in Python**
 
-**String** literals are enclosed between `"` or `'`. You can explicitly convert a different data type into string using `str()`.
+**String** literals are enclosed between `"` or `'`. You can explicitly convert a different data type into a string using `str()`.
 
 ```python
 my_string = "Hello Python"
@@ -121,25 +121,25 @@ string_b = "Hello {} {} (not {:.2f})".format(language, version, pi)
 # Hello Python 3 (not 3.17)
 ```
 
-The format() method is quite extensive and powerful - and it also helps writing more readable code. If you need a refresher, we recommend to take a look at:
+The format() method is quite extensive and powerful - and it also helps write more readable code. If you need a refresher, we recommend taking a look at:
 
 <ul>
 <li><a href="https://docs.python.org/3/library/string.html#format-specification-mini-language">the Python documentation</a>, and</li>
 <li><a href="https://pyformat.info/">the Python formatting tutorial</a>.</li>
 </ul>
 
-**  - Binary**
+**- Binary**
 
-**Bytes** is an immutable sequence of single bytes - therefore it is quite similar to a string (every ASCII character in 8-bit encoding can be stored in byte). They are not interchangable with strings though. A bytes sequence can be defined from a string literal by prefixin it with a `b`:
+**Bytes** is an immutable sequence of single bytes - therefore it is quite similar to a string (every ASCII character in 8-bit encoding can be stored in byte). They are not interchangeable with strings though. A bytes sequence can be defined from a string literal by prefixing it with a `b`:
 
 ```python
 my_bytes_sequence = b'This is a literal'
 ```
 
-Using the `bytes()` constructor, you can also an empty bytes sequence with a fixed length (`bytes(32)`), predefined from an iterable of integers (`bytes(range(20))`) or by copying it from another object (`bytes(bytes_sequence)`).
+Using the `bytes()` constructor, you can also an empty bytes sequence with a fixed-length (`bytes(32)`), predefined from an iterable of integers (`bytes(range(20))`) or by copying it from another object (`bytes(bytes_sequence)`).
 
 **Be aware!**
-When creating a byte sequence from a string literal, each character must be in the standard ASCII characterset (x &lt;= 127). Values above 127 must be entered using an espace sequence. When creating from ints, they accepts numbers &lt; 256.
+When creating a byte sequence from a string literal, each character must be in the standard ASCII character set (x &lt;= 127). Values above 127 must be entered using an escape sequence. When creating from ints, they accept numbers &lt; 256.
 
 *Bytearrays* are exactly like the previous bytes, with one difference: They are mutable. They can also be created using the constructor from the same objects as the bytes sequence, e.g.:
 
@@ -151,9 +151,9 @@ my_byte_array = bytearray(b'This is a literal')
 <code class='hljs hl-inline'>bytes()</code> and <code class='hljs hl-inline'>bytearray()</code> do not accept a string, but only a binary string as parameter. This is also true for their methods.
 
 
-**  - Sequence**
+**- Sequence**
 
-**List** is a datatype very common to an array. However, the datatype is not enforced - you could mix different types in list. They are mutable sequences of objects.
+**List** is a datatype very common to an array. However, the datatype is not enforced - you could mix different types in the list. They are mutable sequences of objects.
 A list can be constructed using square brackets, like this:
 
 ```python
@@ -161,7 +161,7 @@ my_list = [1, 2, 5, 7]
 my_mixed_list = [1, 2, 'three', 4]
 ```
 
-It is also possible to construct a list from a list comprehension, or from an iterable.
+It is also possible to construct a list from a list comprehension or an iterable.
 
 **Tuples** are immutable sequences, which are usually used to store heterogeneous data (this is not enforced). They are created using parentheses instead of brackets:
 
@@ -181,7 +181,7 @@ my_number_list = list(range(0,16,2))
 
 Note that a range does not include the stop number. Therefore, `range(5)` equals `[0,1,2,3,4]`.
 
-**  - Mapping**
+**- Mapping**
 
 **Dicts** are lists of key-value pairs, where the key must be a hashable object. They can be created using curly brackets:
 
@@ -198,17 +198,17 @@ print(my_dict.get['carol']) # None
 print(my_dict.get['carol'], '') # empty string
 ```
 
-You can also create a dict from another dict, or an iterable. When creating from an interable, each item must be an iterable itself with exactly two items.
+You can also create a dict from another dict, or an iterable. When creating from an iterable, each item must be an iterable itself with exactly two items.
 
 ```
 dict2 = dict(((1, "one"), (2, "two"), (3, "three")))
 dict3 = dict(dict2)
 ```
-**  - Set**
+**- Set**
 
-**Sets** are unordered collections of distinct items, which must be hashable. They are mutable, but do not allow for index or slice operations, as they are unordered.
+**Sets** are unordered collections of distinct items, which must be hashable. They are mutable but do not allow for index or slice operations, as they are unordered.
 
-**Frozenset** is an immutable set. Due to it's immutability, it is hashable and can therefore be used as a dictionary key.
+**Frozenset** is an immutable set. Due to its immutability, it is hashable and can therefore be used as a dictionary key.
 
 Both allow construction from an interable, a set can also be created from a list of objects in curly brackets:
 
@@ -220,11 +220,11 @@ my_set = {1,2,3,4,5,6}
 
 **Mutability**
 
-**Mutability** is the ability of an object to be changed after creation. In the previously introduced datatypes for Sets, we saw that a `set` is mutable, while a `frozenset` is not. Actually, most datatypes in Python are immutable, except for `dict`, `list`, `set` and `bytearray`. All basic types (including numbers) are immutable.
+**Mutability** is the ability of an object to be changed after creation. In the previously introduced datatypes for Sets, we saw that a `set` is mutable, while a `frozenset` is not. Most data types in Python are immutable, except for `dict`, `list`, `set`, and `bytearray`. All basic types (including numbers) are immutable.
 
 ![Mutability and immutability](images/data-mutability.png)
 
-Do not mix up mutability with assignment. We can not change an int, but we can create and assign a *new object instance*:
+Do not mix up mutability with an assignment. We can not change an int, but we can create and assign a *new object instance*:
 
 ```python
 x = 5
@@ -238,7 +238,7 @@ x = int(5)
 x = int(7)
 ```
 
-When you need to add an object to an immutable sequence, you need to create a new sequence based on the existing (probably with a mutable type do perform your operations):
+When you need to add an object to an immutable sequence, you need to create a new sequence based on the existing (probably with a mutable type to perform your operations):
 
 ```python
 my_tuple = (1,2,3)
@@ -254,15 +254,15 @@ print(my_tuple)   # output (1,2,3,4)
 
 **Operators**
 
-**  - Truthness**
+**- Truthness**
 
-Any object can be tested for truthness, and will return `True` unless:
+Any object can be tested for truthness and will return `True` unless:
 
 * It has a `__bool__()` method, which returns `False`;
 * It has a `len()` method, which returns 0;
 * It is a numeric type with a value of 0.
 
-**  - Boolean**
+**- Boolean**
 
 Python supports three boolean operations, in the following priority order:
 
@@ -272,13 +272,13 @@ Python supports three boolean operations, in the following priority order:
 
 They are similar to `&&` operators in other languages: The second argument is only evaluated if necessary.
 
-**  - Comparison**
+**- Comparison**
 
-Python supports the usual comparison operations: `<, <=, >, >=, == and !=`. They all have the same priority, which is higher than the priority of Boolean Operations. Furthermore, you can compare object identity with `is` and it's negated form `is not`.
+Python supports the usual comparison operations: `<, <=, >, >=, == and !=`. They all have the same priority, which is higher than the priority of Boolean Operations. Furthermore, you can compare object identity with `is` and its negated form `is not`.
 
 When comparing objects of different type, the result will always be unequal, except for numeric types. For more information on comparing complex types (like class instances), refer to the [comparisons section](https://docs.python.org/3.7/library/stdtypes.html#comparisons) in the Python documentation.
 
-**  - Bitwise Operators**
+**- Bitwise Operators**
 
 Available bitwise operators:
 
@@ -291,14 +291,14 @@ Available bitwise operators:
 <tr><td>SHIFT</td><td>&lt;&lt;, &gt;&gt;</td></tr>
 </table>
 
-**  - Assignment**
+**- Assignment**
 
 Next to an assignment using `=`, Python also supports the shortcut operators `+=, -=, *=, /= and %=`, as well as shortcut assignments for all bitwise operators. Furthermore, you can use:
 
 * `**=` for an exponential calculation, and
 * `//=` for a floor division.
 
-**  - Membership**
+**- Membership**
 
 The operators `in` and `not in` are used to determine the membership (presence) of an item in a sequence.
 
@@ -309,10 +309,9 @@ a = 2 in my_list # True
 b = 3 in my_list # False
 ```
 
-
 **Control Flow**
 
-**  - Indentation**
+**- Indentation**
 
 First a quick reminder: In Python, blocks are defined by indentation and usually start after a colon (`:`), where many other languages use curly brackets. For example, the following javascript code:
 
@@ -337,9 +336,9 @@ else:
 
 ```
 
-You should use one tab *or* two spaces as indentation and keep it consistent accross all your files. When in doubt about the correct formatting of a file, you can use a quick online tool like the [Python Formatter](https://pythoniter.appspot.com/) to check your formatting.
+You should use one tab *or* two spaces as indentation and keep it consistent across all your files. When in doubt about the correct formatting of a file, you can use a quick online tool like the [Python Formatter](https://pythoniter.appspot.com/) to check your formatting.
 
-**  - If**
+**- If**
 
 If statements in Python support `if, elif` and `else`:
 
@@ -357,7 +356,7 @@ else:
 
 ```
 
-**  - For**
+**- For**
 
 Unlike in most other languages, a for loop in Python always iterates over a sequence of items. To iterate over numbers, you can use a `range`:
 
@@ -367,7 +366,7 @@ for i in range(10):
   print(i)
 ```
 
-**  - While**
+**- While**
 
 The while loop is similar to other languages though, requiring a loop condition:
 
@@ -379,7 +378,7 @@ while x < 5:
 ```
 
 
-**  - Break, Continue, and Else**
+**- Break, Continue, and Else**
 
 You can break out of a for or while loop using the `break` statement. When encapsulating multiple loops into each other, it breaks the innermost one. `continue` is used to jump to the next loop iteration. When using `break`, you can also define an `else` statement on a loop, which runs if no break occurs. A little example:
 
@@ -410,9 +409,9 @@ As seen on the previous Control Flow elements, the function body is in a block, 
 A function *call*, as we have seen for the print function, is done using the function name and parenthesis. You must add the parenthesis, even if you are not passing any arguments, to distinguish the function call from variable access.
 
 
-**  - More parameters**
+**- More parameters**
 
-Parameters of a function are _named_, this means we can rearrange the order of parameters when calling a function, by writing them out. Imagine a logging function:
+Parameters of a function are _named_, which means we can rearrange the order of parameters when calling a function, by writing them out. Imagine a logging function:
 
 ```python
 def log_message(msg, level):
@@ -421,7 +420,7 @@ def log_message(msg, level):
 
 This could be called with `log_message("my message", "debug")`, but also with `log_message(level="debug", msg="my message")`, which results in the same function call.
 
-Then, Python supports both default values and parameter lists for function parameters. Default parameters are directly assigned in the function signature:
+Then, Python supports both the default values and parameter lists for function parameters. Default parameters are directly assigned in the function signature:
 
 ```python
 def log_message(msg, level="debug"):
@@ -431,9 +430,9 @@ def log_message(msg, level="debug"):
 Combined with the ability to pass params in any order when assigning them to the proper parameter name in the call, this allows for very short function calls where you just need to pass the required objects if you are fine with the default values.
 
 **Be aware!**
-Note: You can assign an expression as default parameter, which is very powerful - but can also lead to trouble! The expression is only evaluated once, when the function is defined. So be careful when changing this object inside your function.
+Note: You can assign an expression as default parameter, which is very powerful - but can also lead to trouble! The expression is only evaluated once when the function is defined. So be careful when changing this object inside your function.
 
-Furthermore, you can accept an arbitrary list of parameters (similar to `ARGV` in C or `args` in Java) by prefixing the last parameter name with an asterix (`*`). This automatically creates a tuple with any excess parameters, which we can immediately use to iterate over the parameters:
+Furthermore, you can accept an arbitrary list of parameters (similar to `ARGV` in C or `args` in Java) by prefixing the last parameter name with an asterisk (`*`). This automatically creates a tuple with any excess parameters, which we can immediately use to iterate over the parameters:
 
 ```python
 def sum_numbers(*numbers):
@@ -445,7 +444,7 @@ def sum_numbers(*numbers):
   return sum
 ```
 
-Alternatively, you can use two asterix to receive a mapping (`dict`) with pairs of parameter name -> parameter value. This only works when calling the function with named parameters! Quick example:
+Alternatively, you can use two asterisk to receive a mapping (`dict`) with pairs of parameter name -> parameter value. This only works when calling the function with named parameters! Quick example:
 
 ```python
 def generate_book_index(**sections):
@@ -458,9 +457,9 @@ generate_book_index(intro="The Introduction", mid="Main story", end="Twisted end
 
 Calling this without named parameters will throw a SyntaxError.
 
-**  - Return value**
+**- Return value**
 
-Function can return a value, using the `return` keyword:
+The function can return a value, using the `return` keyword:
 
 ```python
 def get_bigger_number(num):
@@ -469,7 +468,7 @@ def get_bigger_number(num):
 x = get_bigger_nummber(5)
 ```
 
-You can also define functions inside functions and return them - the following code is demonstrates this.
+You can also define functions inside functions and return them - the following code demonstrates this:
 
 ```python
 def get_func():
@@ -495,18 +494,18 @@ Instead, you must first declare the function and then assign it, as shown in the
 
 There are a few more features for functions in Python (annotations, anonymous functions, decorators) - please refer to the [official documentation](https://docs.python.org/3/reference/compound_stmts.html#function-definitions) for more information and a full overview of all keywords.
 
-**  - Complex return values**
+**- Complex return values**
 
 It is also possible to return multiple values, by wrapping them in one object:
 
-* When using a class (see below), you can wrap the result in membervariables of the class and return the whole class;
+* When using a class (see below), you can wrap the result in member variables of the class and return the whole class;
 * Return in a tuple `return (a,b,c)`, a list `return [a, b, c]` or a dict `return {'a': a, 'b': b}`.
 
 **Classes**
 
 Classes: You have come a long way, now we can finally have some fun!
 
-Classes define class objects, that means they are a blueprint for object instances (as in all other languages). They can have member variables and member functions. Python also supports inheritance. And if you want to go crazy, you can use [Metaclasses](https://docs.python.org/3/reference/datamodel.html#metaclasses) to create and change new classes in runtime. But let's start with the basics:
+Classes define class objects, which means they are a blueprint for object instances (as in all other languages). They can have member variables and member functions. Python also supports inheritance. And if you want to go crazy, you can use [Metaclasses](https://docs.python.org/3/reference/datamodel.html#metaclasses) to create and change new classes in runtime. But let us start with the basics:
 
 ```python
 class Point:
@@ -526,21 +525,21 @@ b.print_position() # output: Position x: 2 y: 5
 
 First of all, we use the `class` keyword to define a new class, followed by the class name.
 
-**  - Member functions**
+**- Member functions**
 
-Member functions are added the same way as defining them on File level, by using the keyword `def`. Every memberfunction should have `self` as the first parameter, allowing access to the class instance (other languages do this implicitly and offer access through the keyword `this`).
+Member functions are added the same way as defining them on the file level, by using the keyword `def`. Every memberfunction should have `self` as the first parameter, allowing access to the class instance (other languages do this implicitly and offer access through the keyword `this`).
 
-**  - Constructor**
+**- Constructor**
 
-In the second line, you can see the class constructor `def __init__(self, x=0, y=0):`. This has a few specialities:
+In the second line, you can see the class constructor `def __init__(self, x=0, y=0):`. This has a few specialties:
 
 * The constructor name must be `__init__`;
 * The first parameter must always be `self`;
 * You don't have to declare member variables before using them, but you must access them with `self.`, which points to the class instance.
 
-We use a default parameter value for x and y, to make it optional to set an initial position. It is convention to start a classname with an uppercase letter, to easliy distinguish them from instances or other variables in the code.
+We use a default parameter value for x and y, to make it optional to set an initial position. It is a convention to start a classname with an uppercase letter, to easily distinguish them from instances or other variables in the code.
 
-**  - Class and Instance variables**
+**- Class and Instance variables**
 
 A class variable is like a static (or shared) variable, which is shared between all class instances. It is defined in the class body:
 
@@ -563,9 +562,9 @@ print(b.count) # output: 2
 
 Be careful not to use a class variable accidentally! If you would put `x` and `y` as class variables in this example, each new `Point` created would overwrite the existing point data, resulting in all points being at the same position.
 
-**  - Overrides**
+**- Overrides**
 
-We have already used an override for the constructor, named `__init__`. System default functions which can be overridden all follow this naming scheme `__NAME__` and offer customization of create, delete, formatting and comparing behaviour. A full list is available in the [Python documentation](https://docs.python.org/3/reference/datamodel.html#customization).
+We have already used an override for the constructor, named `__init__`. System default functions that can be overridden all follow this naming scheme `__NAME__` and offer customization of creating, deleting, formatting, and comparing behavior. A full list is available in the [Python documentation](https://docs.python.org/3/reference/datamodel.html#customization).
 
 The string function is another function we should look at. It is called when using `str()` on a class (which is used when printing it with `print`). It is comparable to Java's `toString()`. In our previous sample, the `print_position` function should be changed to do so:
 
@@ -579,7 +578,7 @@ class Point:
     print("Point (x: {} y: {})".format(self.x,self.y))
 ```
 
-**  - Inheritance**
+**- Inheritance**
 
 A class can inherit another class (it is derived from another class) using the following syntax:
 
@@ -593,19 +592,19 @@ It is also possible to inherit multiple classes: `class DerivedClass(BaseClass, 
 A BaseClass can also be derived from another BaseClass (inheritance chain). When overwriting methods, the **method resolution order** becomes important to determine which function is called. The order with multiple inherited classes is:
 
 * First look in the DerivedClass for the method;
-* If not found, recursively go through the BaseClass (and it's BaseClass);
+* If not found, recursively go through the BaseClass (and its BaseClass);
 * If not found, start with the next inherited class (`BaseClass2`) and go through it recursively.
 
-This allows for complex inheritance structures (like diamonds), where Python is able to optimize call paths. You can find more on this in the document on [Method Resolution Order](https://www.python.org/download/releases/2.3/mro/).
+This allows for complex inheritance structures (like diamonds), where Python can optimize call paths. You can find more on this in the document on [Method Resolution Order](https://www.python.org/download/releases/2.3/mro/).
 
-**  - super() and other calls to parent**
+**- super() and other calls to parent**
 
-When inheriting a class in Python, you can access the functions of the base class through two ways:
+When inheriting a class in Python, you can access the functions of the base class in two ways:
 
 * `super().function_name` is used to call a function in all base classes, without knowing the class name;
-* When you know the class name (or want to access a specific function), you can also directy call it using `BaseClass.function_name()`.
+* When you know the class name (or want to access a specific function), you can also directly call it using `BaseClass.function_name()`.
 
-Let's take a look at a quick sample. We will reuse our existing `Point` class (not listed again in the following code) and create a `Shape` class, from which we derive a `Triangle` class.
+Let us take a look at a quick sample. We will reuse our existing `Point` class (not listed again in the following code) and create a `Shape` class, from which we derive a `Triangle` class.
 
 ```python
 class Shape:
@@ -645,17 +644,17 @@ A few remarks:
 * (1) We use a list to store the points of the shape. If no points are passed to the constructor, an empty list is created;
 * (2) Instead of accessing the members directly from outside, we offer a function `add_point` to add a new point to the list of points;
 * (3) A triangle always has three points, therefore we do not want the constructor to take an arbitrary list of points. We could add a parameter for a list with exactly three Points. For simplicity, we just set three default points when creating a new triangle;
-* (4) From the Triangle's constructor, we call the constructor of the base class (`Shape`), to setup the points and color. We are using the Triangle's constructor to predefine values and setup objects in regards to the Triangle, then pass this with the other arguments to the base class. Instead of `super`, we could have used `Shape.__init__()`. **Note** when calling `super`, you do not pass `self`, but you need to do so when calling the `BaseClass()` function;
+* (4) From the Triangle's constructor, we call the constructor of the base class (`Shape`), to set up the points and color. We are using the Triangle's constructor to predefine values and set up objects in regards to the Triangle, then pass this with the other arguments to the base class. Instead of `super`, we could have used `Shape.__init__()`. **Note** when calling `super`, you do not pass `self`, but you need to do so when calling the `BaseClass()` function;
 * (5+6) We do not want to allow adding points to a triangle, therefore we overwrite the function and print a message when somebody tries to use it. This is for demonstration only, in real life you probably want to throw an error;
 * (7) The `set_color` function is not overridden, therefore it will call `Shape.set_color()`.
 
-**  - Private variables**
+**- Private variables**
 
-There are no _real_ private variables or functions in Python. However, the previous sample shows that sometimes, you might want to allow access to some members, and avoid name clashed when deriving classes. Look at the color member: When setting the color on a `Triangle` instance, it will pass the value to the inherited `Shape` class. But maybe, you want the `Triangle` to have it's own color member, which is different from the color of the `Shape` (e.g. line color and fill color). For this, in Python there is a concept called **name mangling**:
+There are no _real_ private variables or functions in Python. However, the previous sample shows that sometimes, you might want to allow access to some members and avoid name clashes when deriving classes. Look at the color member: When setting the color on a `Triangle` instance, it will pass the value to the inherited `Shape` class. But maybe, you want the `Triangle` to have its own color member, which is different from the color of the `Shape` (e.g. line color and fill color). For this, in Python there is a concept called **name mangling**:
 
-When prefixing a class member (variable or function) with at least two leading underscores and at most one trailing underscore, it is considered a private class member (e.g. `__color`). When you derive from a class with private members, the member name is being replaced automatically with `_Classname__membername`. In above example, if `Shape` would define `__color`, it would be derived in `Triangle` as `_Shape__color` (mind the uppercase start!). This is useful when working with multiple inheritance, when you want to preserve the base class members for intra-class access.
+When prefixing a class member (variable or function) with at least two leading underscores and at most one trailing underscore, it is considered a private class member (e.g. `__color`). When you derive from a class with private members, the member name is being replaced automatically with `_Classname__membername`. In the above example, if `Shape` would define `__color`, it would be derived in `Triangle` as `_Shape__color` (mind the uppercase start!). This is useful when working with multiple inheritances when you want to preserve the base class members for intra-class access.
 
-**  - Empty classes**
+**- Empty classes**
 
 You can also use empty classes, to which you can add arbitrary data _on the fly_. You can define an empty class with the following syntax:
 
@@ -674,10 +673,9 @@ wrapper.someVal = 5
 wrapper.otherVal = "Hello Python"
 ```
 
-
 **Modules**
 
-At some point, you want to split up your code into multiple files and probably order them by categories, functions or similar. In Python, you call these modules. A module can contain executable statements and function definitions. Statements are run once, when the module is imported and are used for initialization purposes. When importing a module, you can define whether you want to only import a specific function or the whole module, and whether to import it into a namespace (in context of your file you are importing into), or at top level. To give a quick example, imagine we put the `Shape` and `Triangle` class from the previous sample in a new file, called _geometry.py_. In a second file (within the same folder), we want to use them. We could write:
+At some point, you want to split up your code into multiple files and probably order them by categories, functions, or similar. In Python, you call these modules. A module can contain executable statements and function definitions. Statements are run once when the module is imported and are used for initialization purposes. When importing a module, you can define whether you want to only import a specific function or the whole module, and whether to import it into a namespace (in the context of your file you are importing into), or at the top level. To give a quick example, imagine we put the `Shape` and `Triangle` class from the previous sample in a new file, called _geometry.py_. In a second file (within the same folder), we want to use them. We could write:
 
 ```
 import geometry
@@ -741,7 +739,7 @@ The **SmartPy library**  is used to access **SmartML** definitions; We can get a
 
 ![SmartPy - Smart ML - Michelson](images/smartml.png)
 
-## SmartPy Editor
+## SmartPy editor
 
 We can work with an [online editor](https://smartpy.io/ide) that gives us an **integrated development environment**.
 
@@ -749,7 +747,7 @@ You can access the online editor by going to: [https://smartpy.io](https://smart
 
 ![](images/editor1a.png)
 
-where you can go to the IDE, or access information regarding the SmartPy CLI, articles and guides, blog posts, etc.. 
+where you can go to the IDE, or access information regarding the SmartPy CLI, articles and guides, blog posts, etc.
 
 Or go directly to the IDE at [https://smartpy.io/ide](https://smartpy.io/ide).
 
@@ -761,7 +759,7 @@ In the IDE, you can find a number of helpful tabs in the upper left corner.
 
 **Templates** helps you load one of the available templates.
 
-A very nice feature is **Share**, because you can share your embedded code with a link or with IPFS:
+A very nice feature is **Share** because you can share your embedded code with a link or with IPFS:
 
 ![](images/editor1d.png)
 
@@ -773,7 +771,7 @@ The SmartPy Explorer, a very helpful tool, looks like this (we will use it soon)
 
 ![](images/explorergen.png)
 
-Let's begin with a simple program to gather some experience with this editor:
+Let us begin with a simple program to gather some experience with this editor:
 
 ```python
 import smartpy as sp
@@ -788,7 +786,7 @@ We use a **decorator to add a test**. This type of tests can be conducted with t
 
 ![](images/editor2.png)
 
-In standard view, we can display HTML on the right-side half:
+In the standard view, we can display HTML on the right-side half:
 
 ```python
 import smartpy as sp
@@ -831,9 +829,9 @@ You can switch between the tests using the **Tests** option in the menu bar.
 
 ## Repeater contract
 
-Let's again start with a **repeater contract**.
+Let us again start with a **repeater contract**.
 
-A **repeater contract** waits for an input, and then gives it back as an output without editing. Remember, each contract takes as input one pair of a parameter and storage structure, and then returns as output one pair consisting of an operation list and another storage structure.
+A **repeater contract** waits for input and then gives it back as output without editing. Remember, each contract takes as input one pair of a parameter and storage structure, and then returns as output one pair consisting of an operation list and another storage structure.
 
 So, we will save the input parameter simply in the storage:
 
@@ -848,7 +846,7 @@ class Repeater(sp.Contract):
         # Define a value with initial integer 0
         self.init(storage=0)
 
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def repeat(self, params):
         self.data.storage= params
@@ -870,7 +868,7 @@ As you can see, with
 import smartpy as sp
 ```
 
-we can import SmartPy like a common Python module.
+We can import SmartPy like a common Python module.
 
 ```python
 class Repeater(sp.Contract):
@@ -879,18 +877,18 @@ class Repeater(sp.Contract):
         self.init(storage=0)
 ```
 
-Please don't let you get confused at this point. We consciously choose the name `storage` for the number that we save. Later on you can see that we can produce considerably more complicated data structures. SmartPy itself offers us `self.data`, which corresponds to the storage in Michelson. Our `class Repeater` inherits the class `sp.Contract`.
+Please don't let you get confused at this point. We consciously choose the name `storage` for the number that we save. Later on, you can see that we can produce considerably more complicated data structures. SmartPy itself offers us `self.data`, which corresponds to the storage in Michelson. Our `class Repeater` inherits the class `sp.Contract`.
 
 ```python
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def repeat(self, params):
         self.data.storage= params
 ```
 
-Here you can notice that we save the input directly in `self.data.storage`. We also define a so-called [entry point](https://blog.nomadic-labs.com/michelson-updates-in-005.html). Previous `self.init` will iterate on the defined entry points to build the smart contract.
+Here you can notice that we save the input directly in `self.data.storage`. We also define a so-called [entrypoint](https://blog.nomadic-labs.com/michelson-updates-in-005.html). Previous `self.init` will iterate on the defined entrypoints to build the smart contract.
 
-Afterwards, we program the test and the output:
+Afterward, we program the test and the output:
 
 ```python
 @sp.add_test(name = "First_test")
@@ -906,7 +904,7 @@ This part almost looks like a normal Python program. This is the strength of Sma
 
 ![](images/editor3.png)
 
-We use `register(first_contract, show = True)` to produce the first output. For this reason, we have access among other to the Michelson code.
+We use `register(first_contract, show = True)` to produce the first output. For this reason, we have access among others to the Michelson code.
 
 Have a look at the Michelson code and the test transaction:
 
@@ -925,7 +923,7 @@ Take a look at the Michelson code: What changed? Examine the `TYPES` tab of the 
 
 How do we **manage multiple inputs**?
 
-Let's extend our repeater, and code an adder:
+Let us extend our repeater, and code an adder:
 
 ```python
 import smartpy as sp
@@ -937,7 +935,7 @@ class Adder(sp.Contract):
         # Define storage with initial integer 0
         self.init(storage=0)
 
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def add(self, params):
         self.data.storage= params.first + params.second
@@ -959,7 +957,7 @@ You see that you can use multiple inputs:
 adder_contract.add(first=2, second=3)
 ```
 
-and access these like:
+And access these like:
 
 ```python
 self.data.storage= params.first + params.second

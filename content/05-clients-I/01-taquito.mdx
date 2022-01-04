@@ -33,9 +33,9 @@ For this, we will need:
 
 It includes **various features**, among others:
 
-- the **@taquito/taquito** package that builds upon the other packages in the Tezos TypeScript Library Suite and offers higher level utility,
+- the **@taquito/taquito** package that builds upon the other packages in the Tezos TypeScript Library Suite and offers higher-level utility,
 - the **@taquito/rpc** package that wraps the RPC endpoints,
-- the **@taquito/signer** package to sign with tezos keys, and
+- the **@taquito/signer** package to sign with Tezos keys, and
 - the **@taquito/tezbridge-wallet**, **@taquito/beacon-wallet**, and **@taquito/temple-wallet** packages implementing the Wallet API.
 
 In addition, it is very well [documented](https://tezostaquito.io/docs/quick_start/).
@@ -55,11 +55,11 @@ In addition, we can embed Taquito into a HTML page with:
 crossorigin="anonymous" integrity="sha384-/5I+hK0VgKGoDqq/Xo1aMUdCxeQwcBZyqBo0e8tXrLSqKbS1PC0DoEeexBYUTwr7"></script>
 ```
 
-The **verifier** has to fulfil a simple task: Verify the certification of a given student's address. Therefore, a single input field is sufficient. It will look like this:
+The **verifier** has to fulfill a simple task: Verify the certification of a given student's address. Therefore, a single input field is sufficient. It will look like this:
 
 ![](images/screen_alice.png)
 
-We are taking the primrose path: We will first create a HTML page, and with it contact a public node to fetch data from the Tezos blockchain.
+We are taking the primrose path: We will first create an HTML page, and with it contact a public node to fetch data from the Tezos blockchain.
 
 <HighlightBox type="tip">
 
@@ -67,7 +67,7 @@ You can find a list of [community Tezos-nodes](https://tezostaquito.io/docs/rpc_
 
 </HighlightBox>
 
-Let's start with the `index.html` file:
+Let us start with the `index.html` file:
 
 ```html
 <html>
@@ -101,7 +101,7 @@ crossorigin="anonymous" integrity="sha384-/5I+hK0VgKGoDqq/Xo1aMUdCxeQwcBZyqBo0e8
 
 There you can see our contract's address: [KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v](https://better-call.dev/florencenet/KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v/operations).
 
-You will notice that the script `verifier.js` at the end doesn't exist yet. Let's create it in the same folder:
+You will notice that the script `verifier.js` at the end doesn't exist yet. Let us create it in the same folder:
 
 ```javascript
 const tezos = new taquito.TezosToolkit('https://florencenet.smartpy.io/');
@@ -146,7 +146,7 @@ function getCertStatus(contractAddress, inputId, outputId) {
 }
 ```
 
-Save this. It is brief, but will get the job done.
+Save this. It is brief but will get the job done.
 
 The interesting part is:
 
@@ -164,7 +164,7 @@ The interesting part is:
 
 Note that it returns us the _whole_ storage.
 
-Afterwards, we are going to look for the requested student. 
+Afterward, we are going to look for the requested student. 
 
 <HighlightBox type="tip">
 
@@ -285,7 +285,7 @@ As is common in the "private-key-land", your private key can be generated from a
 tezos.setProvider({signer: InMemorySigner.fromFundraiser(email, password, mnemonic)});
 ```
 
-Now, you already have a private-key JSON "wallet" obtained from the faucet. This private key was actually defined in the genesis of the testnet. To mimic the mainnet, they were issued with passwords and emails. All 3, mnemonic, password, and the email can be found in your JSON file.
+Now, you already have a private-key JSON "wallet" obtained from the faucet. This private key was defined in the genesis of the testnet. To mimic the mainnet, they were issued with passwords and emails. All 3, mnemonic, password and email can be found in your JSON file.
 
 <HighlightBox type="warn">
 
@@ -293,7 +293,7 @@ Now, you already have a private-key JSON "wallet" obtained from the faucet. This
 
 </HighlightBox>
 
-With the in-browser private key generation covered, let's move on to sending a transaction!
+With the in-browser private key generation covered, let us move on to sending a transaction!
 
 That is where we will use:
 
@@ -322,7 +322,7 @@ contract.methods.default(studentAddress, studentName).send()
 
 if we want to test our certification smart contract, which also stores the names of the students.
 
-For an entry point without parameters, you can use:
+For an entrypoint without parameters, you can use:
 
 ```javascript
 [['unit']]
@@ -334,7 +334,7 @@ The testnet network processes transactions with a fee of 0, but with this wallet
 
 In addition, you can use Taquito's [estimation methods](https://tezostaquito.io/docs/estimate#estimate-values) to pick up reasonable values.
 
-Let's continue with the HTML code. This time, to be able to pack all the necessary information, we need more than one input field:
+Let us continue with the HTML code. This time, to be able to pack all the necessary information, we need more than one input field:
 
 ![](images/screen_certifier.png)
 
@@ -490,7 +490,7 @@ $(document).ready(initUI);
 
 ```
 
-You can see that we wait for the operation be included in a block. For production, you would **wait more than a few blocks** before accepting the confirmation.
+You can see that we wait for the operation to be included in a block. For production, you would **wait for more than a few blocks** before accepting the confirmation.
 
 You can see that we use:
 
@@ -662,7 +662,7 @@ a {
 
 ## Taquito with Node.js
 
-There are many tasks, which we would rather handle from the **server side**. For such cases, we can use Taquito with Node.js.
+There are many tasks, which we would rather handle from the **server-side**. For such cases, we can use Taquito with Node.js.
 
 You just have to create a **node project** with:
 
@@ -670,7 +670,7 @@ You just have to create a **node project** with:
 $ npm init
 ```
 
-Afterwards, you can **include the Taquito npm package** in your project with:
+Afterward, you can **include the Taquito npm package** in your project with:
 
 ```bash
 $ npm i @taquito/taquito
@@ -694,7 +694,7 @@ Have a look at the official samples in the [documentation](https://tezostaquito.
 
 </HighlightBox>
 
-Let's try another sample and **validate a signature**:
+Let us try another sample and **validate a signature**:
 
 ```javascript
 const {

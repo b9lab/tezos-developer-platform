@@ -18,16 +18,16 @@ import {
 
 ## OCaml introduction
 
-In this section, we want to give you a quick introduction into [OCaml](https://en.wikipedia.org/wiki/OCaml).
+In this section, we want to give you a quick introduction to [OCaml](https://en.wikipedia.org/wiki/OCaml).
 
 You should take a look at OCaml for multiple reasons:
 
-* the [reference implementation](https://gitlab.com/tezos/tezos/tree/master/src) of the **Tezos components** is written in OCaml, and
-* it is easier to **illustrate some concepts** in OCaml, which are also present in Michelson or LIGO.
+* The [reference implementation](https://gitlab.com/tezos/tezos/tree/master/src) of the **Tezos components** is written in OCaml, and
+* It is easier to **illustrate some concepts** in OCaml, which are also present in Michelson or LIGO.
 
 With OCaml, you can use [functional](https://en.wikipedia.org/wiki/Functional_programming), [imperative](https://en.wikipedia.org/wiki/Imperative_programming), or [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) programming.
 
-We don't want to look at objects and loops here, instead we will learn the syntax and some design concepts in functional programming.
+We don't want to look at objects and loops here, instead, we will learn the syntax and some design concepts in functional programming.
 
 To get started, please [install](https://ocaml.org/docs/install.html) OCaml on your machine.
 
@@ -61,7 +61,7 @@ Hello world!
 - : unit = ()
 ```
 
-Let's take a look at this first piece of code and the output. As expected, `print_string` takes a `string` as input and prints it on the screen.
+Let us take a look at this first piece of code and the output. As expected, `print_string` takes a `string` as input and prints it on the screen.
 
 Try:
 
@@ -80,7 +80,7 @@ Try something different:
 - : string = "Hello\n"
 ```
 
-Do you see the `-` in the output? Let's try it a bit differently:
+Do you see the `-` in the output? Let us try it a bit differently:
 
 ```ocaml
 # let message="Hello world!\n";;
@@ -89,13 +89,13 @@ val message : string = "Hello world!\n"
 
 Okay, now we have a value `"Hello world!\n"` with type `string`, and its name is `message`. If there is no name for a value, we will see `-`. The details of the `let` keyword will be discussed later.
 
-Now, let's look back at our first output:
+Now, let us look back at our first output:
 
 ```ocaml
 - : unit = ()
 ```
 
-We now know, this is a value without Name. The value is `()` and the type is `unit`. Do you remember the `unit` type from Michelson? This type can only have the value `()`, it is similar to `void` in C/C++.
+We now know this is a value without name. The value is `()` and the type is `unit`. Do you remember the `unit` type from Michelson? This type can only have the value `()`, it is similar to `void` in C/C++.
 
 Finally, what's with `;;`? If we use the interpreter, we must append `;;` at the end of our command to execute it. You won't find this in a `.ml` file. But in the interpreter, we are in a [read-eval-print-loop](https://caml.inria.fr/pub/docs/manual-ocaml/toplevel.html)(REPL), therefore we have to indicate the phrase is complete and should be executed.
 
@@ -135,16 +135,16 @@ string      A string
 unit        Written as ()
 ```
 
-**  - Integers**
+**- Integers**
 
-Let's define a number `x`:
+Let us define a number `x`:
 
 ```
 # let x : int = 42;;
 val x : int = 42
 ```
 
-We use the keyword `let` again. It can do more, but used like this, it is a global definition. *We bind the value 42 to the name x*. Here, we explicitly declare the type of `x`
+We use the keyword `let` again. It can do more but used like this, it is a global definition. *We bind the value 42 to the name x*. Here, we explicitly declare the type of `x`
 integer support the operations `+`, `-`, `*`, `/` and `mod`.
 
 ```
@@ -161,7 +161,7 @@ Note that the interpreter shows us the right datatype, without us declaring it e
 val x : float = 42.
 ```
 
-What happens if the try to run:
+What happens if they try to run:
 
 ```
 # let y= x-1;;
@@ -232,7 +232,7 @@ As mentioned before, booleans can assume the value `true` or `false`:
 # 
 ```
 
-Let's try some comparison operators:
+Let us try some comparison operators:
 
 ```
 # true < false;;
@@ -243,7 +243,7 @@ Let's try some comparison operators:
 - : bool = true
 ```
 
-The comparison operators `<`, `>`, `=`, `<=`, `>=` can be applied on basic types. For `int` and `float`, they follow the usual numeric ordering. For `bool` it defines `false < true`.
+The comparison operators `<`, `>`, `=`, `<=`, `>=` can be applied to basic types. For `int` and `float`, they follow the usual numeric ordering. For `bool` it defines `false < true`.
 
 For `char` the ASCII order applies:
 
@@ -291,7 +291,7 @@ Wow, what a short name. To concatenate string, we use the `^` operator.
 
 **Optional values**
 
-There is a so-called `option` type in OCaml. It can either have the value `None` or `Some`, and comes in handy in certain cases to ensure the type security. 
+There is a so-called `option` type in OCaml. It can either have the value `None` or `Some` and comes in handy in certain cases to ensure the type security. 
 
 This code:
 
@@ -316,7 +316,7 @@ val div : int -> int -> int option = <fun>
 **Let**
 
 Now we have learned enough data types to do something more interesting. 
-Let's talk about `let` again: So far, we used it in a way which is a [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar).
+Let us talk about `let` again: So far, we used it in a way that is a [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar).
 
 The `let` syntax is:
 
@@ -362,7 +362,7 @@ let y= -x*2/3 mod 3 + x
 in y;;
 ```
 ​
-That's also the reason why we are able to run:
+That's also the reason why we can run:
 ​
 
 ```ocaml
@@ -460,7 +460,7 @@ are the same. We could also use `function`:
 val add : int * int -> int = <fun>
 ```
 ​
-This results in a different signature, because using `function`, we can only define functions with one parameter. Here, due to `(a,b)` OCaml detects that the input should be a Tuple. We will talk about Tuples in a moment - first we need to talk about [pattern matching](https://en.wikipedia.org/wiki/Pattern_matching), because there is another difference between `fun` and `function`.
+This results in a different signature, because using `function`, we can only define functions with one parameter. Here, due to `(a,b)` OCaml detects that the input should be a tuple. We will talk about tuples in a moment - First, we need to talk about [pattern matching](https://en.wikipedia.org/wiki/Pattern_matching) because there is another difference between `fun` and `function`.
 ​
 Another important keyword is `rec`. We will use it to define [recursive functions](https://en.wikipedia.org/wiki/Recursion_(computer_science)).
 ​
@@ -473,7 +473,7 @@ val fib : int -> float = <fun>
 ```
 ​
 
-`rec` is required here, because otherwise `fib` would not be defined inside the function.
+`rec` is required here because otherwise `fib` would not be defined inside the function.
 
 Now, back to [matching](https://caml.inria.fr/pub/docs/oreilly-book/html/book-ora016.html), it has the following syntax:
 
@@ -506,15 +506,19 @@ val fib : int -> int = <fun>
 ```
 
 **If statement**
+
 ​
 We also used `if` and `else` before. The full syntax is:
+
 ​
 
 ```ocaml
 if condition then exp1 else exp2
 ```
 ​
+
 If the `condition` is `true`, `exp1` will be evaluated and if it is `false`, `exp2` will be evaluated. Please note that the values of `exp1` and `exp2` need to be the same type. You can omit `exp2`:
+
 ​
 
 ```ocaml
@@ -522,7 +526,9 @@ If the `condition` is `true`, `exp1` will be evaluated and if it is `false`, `ex
 OK!- : unit = ()
 ```
 ​
+
 This only works because `print_string` has a value of `()`. The following will not work:
+
 ​
 
 ```ocaml
@@ -532,7 +538,9 @@ Error: This variant expression is expected to have type unit
        The constructor true does not belong to type unit
 ```
 ​
-This means, we must make sure the types are matching by adding an else statement:
+
+This means we must make sure the types are matching by adding an else statement:
+
 ​
 
 ```ocaml
@@ -540,10 +548,13 @@ This means, we must make sure the types are matching by adding an else statement
 - : bool = true
 ```
 ​
+
 `if` are expressions as well and can be nested.
 ​
 ​
-**  - Lists and tuples**
+
+**- Lists and tuples**
+
 ​
 `list` and `tuple` are immutable so all modifying actions on them return a new instance.
 ​
@@ -552,23 +563,29 @@ This means, we must make sure the types are matching by adding an else statement
 let myList = [ "hello"; "world" ];;
 ```
 ​
-will be inferred to a `string list`. Note carefully the `;` between the 2 elements. If you had placed a `,` there:
+
+Will be inferred to a `string list`. Note carefully the `;` between the 2 elements. If you had placed a `,` there:
+
 ​
 
 ```ocaml
 let myList = [ "hello", "world" ];;
 ```
 ​
-it would have been inferred to a `(string * string) list`, yes a list of Tuples. Which also means that the following:
+
+It would have been inferred to a `(string * string) list`, yes a list of tuples. This also means that the following:
+
 ​
 
 ```ocaml
 let myList = [ "hello"; "beautiful", "world" ];;
 ```
 ​
-will result in an `inconsistent types in list` because you put a `,` after `"beautiful"`.
+
+Will result in an `inconsistent types in list` because you put a `,` after `"beautiful"`.
 ​
-A very important operation on lists is `::` :
+A very important operation on lists is `::`:
+
 ​
 
 ```ocaml
@@ -576,14 +593,18 @@ A very important operation on lists is `::` :
 val myList : string list = ["hello"; "beautiful"; "world"]
 ```
 ​
+
 The length of a list can be retrieved with:
+
 ​
 
 ```ocaml
 List.length myList;;
 ```
 ​
-The main difference between Tuples and Lists is that a List can only have one type of values:
+
+The main difference between tuples and Lists is that a List can only have one type of value:
+
 ​
 
 ```ocaml
@@ -592,7 +613,9 @@ Error: This expression has type int but an expression was expected of type
          string
 ```
 ​
-while a Tuple can have different types:
+
+While a tuple can have different types:
+
 ​
 
 ```ocaml
@@ -600,17 +623,19 @@ let myTuple = "hello",2;;
 val myTuple : string * int = ("hello", 2)
 ```
 ​
+
 Or written with the bracket notation:
+
 ​
 
 ```ocaml
 let myTuple = ("hello",2);;
 ```
 ​
-When using Tuples and Lists, we cannot access arbitrary elements. Using `fst`, we can get the first element, and using `snd` you can get the second element.
 
-Let's define a function, which receives a tuple with two elements and interchanges them:
+When using tuples and lists, we cannot access arbitrary elements. Using `fst`, we can get the first element, and using `snd` you can get the second element.
 
+Let us define a function, which receives a tuple with two elements and interchanges them:
 
 ```ocaml
 # let swap (a,b) = (b,a);;
@@ -619,19 +644,18 @@ val swap : 'a * 'b -> 'b * 'a = <fun>
 - : int * int = (2, 1)
 ```
 
-**  - User defined types**
+**- User defined types**
 
-With the keyword `type` we can define own types. Let's take a look at a simple example:
+With the keyword `type` we can define our own types. Let us take a look at a simple example:
 
 ```
 # type storage=int;;
 type storage = int
 ```
 
-**  - Record types**
+**- Record types**
 
 Records are what you may know as a `struct` by another name. Record type elements are accessed by name. For instance:
-
 
 ```ocaml
 # type person = { name : string; age : int; address : string; };;
@@ -642,9 +666,9 @@ val p : person = {name = "foo"; age = 20; address = "bar"}
 - : string = "foo
 ```
 
-**  - Variant types**
+**- Variant types**
 
-Ok, so OCaml is strongly typed, yet it allows you some flexibility. By flexibility, we mean that you could have a variable that is, for instance, either an `int` or a `string`. It is called a [variant type](https://en.wikipedia.org/wiki/Variant_type). To help you grasp the concept if it is new, let's use a contrived Java analogy.
+Ok, so OCaml is strongly typed, yet it allows you some flexibility. By flexibility, we mean that you could have a variable that is, for instance, either an `int` or a `string`. It is called a [variant type](https://en.wikipedia.org/wiki/Variant_type). To help you grasp the concept if it is new, let us use a contrived Java analogy.
 
 ```java
 public class EitherIntOrString {
@@ -723,7 +747,7 @@ val anIntActually : eitherIntOrString = IntActually 3
 val aStringActually : eitherIntOrString = StringActually "Hello World"
 ```
 
-To add further flexibility, it is possible to parameterise your type such as:
+To add further flexibility, it is possible to parameterize your type such as:
 
 ```ocaml
 type 'defineLater eitherSomethingOrString = 
@@ -745,7 +769,7 @@ When you try the following:
 val identity : 'a -> 'a = <fun>
 ```
 
-you can again see the notation `'a`. This is due to the above function being a [polymorphic](https://caml.inria.fr/pub/docs/manual-ocaml/polymorphism.html) function:
+You can again see the notation `'a`. This is due to the above function being a [polymorphic](https://caml.inria.fr/pub/docs/manual-ocaml/polymorphism.html) function:
 
 ```ocaml
 # identity 2;;
@@ -760,17 +784,17 @@ you can again see the notation `'a`. This is due to the above function being a [
 
 **Next steps**
 
-Our quick introduction turned out to be a bit more extensive than announced - and there is so much more! So far, we have only looked at functional programming. But as mentioned, OCaml also supports imperative and object oriented programming.
+Our quick introduction turned out to be a bit more extensive than announced - and there is so much more! So far, we have only looked at functional programming. But as mentioned, OCaml also supports imperative and object-oriented programming.
 
 As there are already some very good resources available online for free about OCaml, we don't want to restate everything here but rather point you towards these. A few topics, just to tease you:
 
-* Modules, including existing ones like Graphics and Gc
-* Modifiable Data Structures like Vectors
-* Polymorphism
-* Streams and I/O ops
-* Abstract classes, Interfaces, 
-* Mixing different styles
-* Further tools
+* Modules, including existing ones like Graphics and Gc,
+* Modifiable Data Structures like Vectors,
+* Polymorphism,
+* Streams and I/O ops,
+* Abstract classes, Interfaces,
+* Mixing different styles, and
+* Further tools.
 
 And much more - including many samples - can be found on these pages:
 
@@ -798,7 +822,7 @@ Although other syntaxes will be supported in the future, here we want to introdu
 
 ## CameLIGO
 
-Along the way we have gained experience with smart contracts and you can have a look at our OCaml introduction (at the beginning of the section) to become familiar with the OCaml syntax. This will make it easier for us to engage with CameLIGO. Before diving into details, let's again write our prominent **repeater** contract.
+Along the way, we have gained experience with smart contracts and you can have a look at our OCaml introduction (at the beginning of the section) to become familiar with the OCaml syntax. This will make it easier for us to engage with CameLIGO. Before diving into details, let us again write our prominent **repeater** contract.
 
 Create `repeater.mligo`:
 
@@ -811,10 +835,10 @@ It looks very similar to OCaml with the difference being that, momentarily, we h
 
 * `type storage = int` is a type definition,
 * `main` takes two arguments, the *parameter* `arg` and the *storage* `storageIn`,
-* even though we named our input storage instance `storageIn`, we do nothing with it, so it could have been left as `_`, and
-* the value is a tuple `([], arg)`, whereas `[]` is of the type `operation list`.
+* Even though we named our input storage instance `storageIn`, we do nothing with it, so it could have been left as `_`, and
+* The value is a tuple `([], arg)`, whereas `[]` is of the type `operation list`.
 
-Let's do a very quick test with the [online editor](https://ide.ligolang.org/):
+Let us do a very quick test with the [online editor](https://ide.ligolang.org/):
 
 ![](images/repeateride.png)
 
@@ -840,7 +864,7 @@ which will do the same, take the left of the input pair `parameter*storage`.
 
 ### Storage
 
-Smart contracts have access to and can modify their own storage, the structure that has to be defined as part of the contract definition. The code and the storage type go together. In fact, the storage is just another type, and by convention we name it `storage`. The type is flexible, but, like the code, cannot be changed once deployed.
+Smart contracts have access to and can modify their storage, the structure that has to be defined as part of the contract definition. The code and the storage type go together. The storage is just another type, and by convention, we name it `storage`. The type is flexible, but, like the code, cannot be changed once deployed.
 
 For instance, if you have a contract that does not need to save anything to the storage, you would declare:
 
@@ -886,7 +910,8 @@ This will create a namespace mapping addresses to balances in tez.
 ## The smart contract to certify students
 
 We want to start with an example that we already know from SmartPy and Michelson, the student certification contract.
-Let's begin by defining a student:
+
+Let us begin by defining a student:
 
 ```ocaml
 type student = {
@@ -895,7 +920,7 @@ type student = {
   }
 ```
 
-Since we don't want everyone to be able to issue certificates, we also want to save an address which represents the authorised person:
+Since we don't want everyone to be able to issue certificates, we also want to save an address that represents the authorized person:
 
 ```ocaml
 type storage = {
@@ -937,7 +962,7 @@ We now can compile the code and get the Michelson output:
 
 You can store this Michelson code and deploy it with the help of the `tezos-client`, as we have done before; e.g. using `--init 'Pair {} "tz1W4W2yFAHz7iGyQvFys4K7Df9mZL6cSKCp"'`.
 
-Let's take a look at the example at [https://ligolang.org/](https://ligolang.org/):
+Let us take a look at the example at [https://ligolang.org/](https://ligolang.org/):
 
 ```ocaml
 type storage = int
@@ -963,11 +988,11 @@ let main (p,s: action * storage) =
 ```
 
 This shows that we can use pattern matching as we know it from OCaml, and also add comments the same way. This is especially useful when used as shown in this example.
-You have been using multiple entry points already. When using LIGO, this [alternative pattern](https://ligolang.org/docs/advanced/entrypoints-contracts) is currently recommended.
+You have been using multiple entrypoints already. When using LIGO, this [alternative pattern](https://ligolang.org/docs/advanced/entrypoints-contracts) is currently recommended.
 
 ## PascaLIGO
 
-[Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)) is a relatively beginner friendly language and has many keywords. For this reason, a Pascal-like syntax should help with writing smart contracts that are easier to read and understand.
+[Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)) is a relatively beginner-friendly language and has many keywords. For this reason, a Pascal-like syntax should help with writing smart contracts that are easier to read and understand.
 
 <HighlightBox type="tip">
 
@@ -975,7 +1000,7 @@ LIGO offers a [VSCode extension](https://ligolang.org/docs/intro/editor-support)
 
 </HighlightBox>
 
-Let's start with the repeater contract again:
+Let us start with the repeater contract again:
 
 ```pascal
 function main (const arg : int;  const storageIn : int) : (list(operation) * int) is
@@ -988,11 +1013,11 @@ After a quick test via online IDE, save this as `repeater.ligo` and run:
 ligo dry-run ./repeater.ligo main 5 0
 ```
 
-Hopefully you will see the expected value.
+Hopefully, you will see the expected value.
 
 For definitions, [similar to Pascal](https://ligolang.org/docs/language-basics/functions) we use:
 
-- `function main` to define a function which can be used as entry point.
+- `function main` to define a function that can be used as an entrypoint.
 - `(const arg : int;  const storageIn : int)` for our input parameters, as we have done with other languages.
 - `(list(operation) * int)` to set the return type, as seen before it is a tuple consisting of a `(list(operation)` and an `int`.
 - `block {skip}` when we don't want to calculate anything
@@ -1000,7 +1025,7 @@ For definitions, [similar to Pascal](https://ligolang.org/docs/language-basics/f
 
 We define variables with `const`(*immutable*) and `var`(*mutable*), where `var` can only be used inside functions or blocks.
 
-So, how would our certification contract for the students looks like?
+So, how would our certification contract for the students look like?
 
 ```pascal
 type student is record
@@ -1047,7 +1072,7 @@ Take a look at the [types section](https://ligolang.org/docs/next/language-basic
 
 </HighlightBox>
 
-Afterwards, we define our entry point with the right input and output parameter types:
+Afterwards, we define our entrypoint with the right input and output parameter types:
 
 ```pascal
 function certifyStudent (const studentName : string; const oldState:certStorage) : (list(operation) * certStorage)

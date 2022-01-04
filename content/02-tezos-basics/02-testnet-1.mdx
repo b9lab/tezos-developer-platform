@@ -33,7 +33,7 @@ We just need to rename the script into <code>mainnet.sh</code> if we want to par
 
 ### Docker
 
-Docker offers so-called "software containers" to execute applications. "Container" is a similar concept to that of virtual machines (VM) and uses **libcontainer**. The isolation level is not as strong as with a VM because Docker containers share the host OS kernel. On the other hand, containers are lighter in weight (Storage, RAM and CPU) and faster in execution compared to a VM.
+Docker offers so-called "software containers" to execute applications. "Container" is a similar concept to that of virtual machines (VM) and uses **libcontainer**. The isolation level is not as strong as with a VM because Docker containers share the host OS kernel. On the other hand, containers are lighter in weight (Storage, RAM, and CPU) and faster in execution compared to a VM.
 
 **Dockerfiles** are blueprints for creating **Docker Images**, which are used to start **containers**. You can find public images on [Docker Hub](https://hub.docker.com/). 
 
@@ -85,7 +85,7 @@ You should now see something similar to:
 
 <HighlightBox type="tip">
 
-In case docker complains about connection pool, run export `COMPOSE_PARALLEL_LIMIT=25` and restart the network.
+In case docker complains about the connection pool, run export `COMPOSE_PARALLEL_LIMIT=25` and restart the network.
 
 </HighlightBox>
 
@@ -101,13 +101,13 @@ From time to time, the `tezos-docker-manager.sh` script will be updated, and, wh
 $ ./florencenet.sh update_script
 ```
 
-or 
+Or 
 
 ```sh
 $ ./florencenet.sh restart
 ```
 
-which will stop the network, update the script, and start the network again. In case you want to disable automatic update when restarting, you can use:
+Which will stop the network, update the script, and start the network again. In case you want to disable automatic update when restarting, you can use:
 
 ```sh
 $ export TEZOS_ALPHANET_DO_NOT_PULL=yes
@@ -119,7 +119,7 @@ When the script is being updated, you may again need the command `chmod +x flore
 
 </HighlightBox>
 
-Wait a few minutes for the node container to start synchronising with the testnet and then check its logs with:
+Wait a few minutes for the node container to start synchronizing with the testnet and then check its logs with:
 
 ```sh
 $ docker logs florencenet_node_1 --follow
@@ -145,7 +145,7 @@ Before you can send anything on this network, you will need a public-private key
 
 <ExpansionPanel title="A closer look at the cryptographic concept of public and private keys">
 
-Public-private keys always come in pairs and offer various capabilities. Those capabilities are based on cryptographic mathematics. As their name suggest, the public key is meant to be distributed to whoever is relevant, while the private key is to be jealously guarded, akin to having your house address public, but keeping the key to your house private.
+Public-private keys always come in pairs and offer various capabilities. Those capabilities are based on cryptographic mathematics. As their names suggest, the public key is meant to be distributed to whoever is relevant, while the private key is to be jealously guarded, akin to having your house address public, but keeping the key to your house private.
 
 #### Encrypt and decrypt
 
@@ -171,9 +171,9 @@ Alice wants to make sure that Bob's public announcement is indeed from Bob:
 
 #### Key management and PKI
 
-If you look again at the Alice and Bob examples, you will notice that there is a vulnerability in "Bob gives Alice his public key". A malicious Charlie could intercept Bob's public key and pass on his own public key to Alice.
+If you look again at the Alice and Bob examples, you will notice that there is a vulnerability in "Bob gives Alice his public key". A malicious Charlie could intercept Bob's public key and pass on his public key to Alice.
 
-Key management and public key infrastructure (PKI) is an important aspect of cryptography that helps mitigate this risk.
+Key management and public key infrastructure (PKI) are important aspects of cryptography that help mitigate this risk.
 
 </ExpansionPanel>
 
@@ -181,11 +181,11 @@ Key management and public key infrastructure (PKI) is an important aspect of cry
 
 RSA(Rives, Shamir, Adleman) is a public-key cryptosystem that was first published in 1977. The premise is that if you have a public key ```$$(pubKey,n)$$``` and a private key ```$$priKey$$``` then you can do the following operations on very large numbers:
 
-* encrypt a message:
+* Encrypt a message:
 
 `$$message ^ {pubKey} \equiv encMessage \mod n$$`
 
-* decrypt the encrypted message:
+* Decrypt the encrypted message:
 
 `$$encMessage ^ {priKey} \equiv message \mod n$$`
 
@@ -195,11 +195,11 @@ If you want to express that in terms of a theorem, you would say that:
 
 > there exists a triplet `$(priKey, pubKey, n)$` such that for any `$message$`, we get `$(message ^ {pubKey}) ^ {priKey} \equiv message \mod n$`, with the additional hurdle that calculating `$priKey$` out of `$(pubKey, n)$` is computationally expensive and in practice impossible.
 
-Let's work out in detail how you create such a triplet.
+Let us work out in detail how you create such a triplet.
 
 **How**
 
-How can we calculate such a triplet of `$(pubKey, n)$` and `$priKey$`? Of course, the difficulty and the art was in finding the following solution, and proving it satisfies the theorem above. Let's dive right in!
+How can we calculate such a triplet of `$(pubKey, n)$` and `$priKey$`? Of course, the difficulty and the art was to find the following solution, and proves it satisfies the theorem above. Let us dive right in!
 
 * First we choose two prime numbers `$p$` and `$q$`. Then we calculate `n` as their product: `$n = p \cdot q$`.
 * Second, we calculate [Euler's totient function](https://en.wikipedia.org/wiki/Euler%27s_totient_function) `$\phi(n)$`. Unfortunately, calculating `$\phi$` in general terms is an NP problem. Fortunately, and this is no accident, if and only if `p` and `q` are prime numbers, then, it turns out that `$$\phi(n) = (p - 1) \cdot (q - 1)$$` .
@@ -218,10 +218,10 @@ Now we can delete `$p$`, `$q$` and `$\phi(n)$`. And delete them we must, as they
 
 **Example**
 
-Let's have a look at an example. 
+Let us have a look at an example: 
 
 * We pick `$p = 2399$` and `$q = 26371$`, which are prime numbers large enough for our demonstration. From them, we deduce that `$n = 63264029$` and `$\phi(n) = 63235260$`.
-* Now, we have to pick a `$pubKey < \phi(n)$` and not a divisor of it. Let's pick `$pubKey = 54833$`.
+* Now, we have to pick a `$pubKey < \phi(n)$` and not a divisor of it. Let us pick `$pubKey = 54833$`.
 * With the help of the [Python implementation](https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm) of the extended Euclidean algorithm, we pass `xgcd(63235260, 54833)`. It returns us a triplet. We only care about the last element of it, i.e. `$priKey = 6589577$`.
 
 ```python
@@ -242,22 +242,23 @@ Type "help", "copyright", "credits" or "license" for more information.
 (1, -5714, 6589577)
 ```
 
-Now we forget about `$p$`, `$q$` and `$\phi(n)$`. Time to put this effort to good use. Let's encrypt the `$message = 9874587$`. Yes, any digital message is essentially a large number. Notice that we took a message that is smaller than `$n$`. That is by design, otherwise we would lose information. We calculate:
+Now we forget about `$p$`, `$q$` and `$\phi(n)$`. Time to put this effort to good use. Let us encrypt the `$message = 9874587$`. Yes, any digital message is essentially a large number. Notice that we took a message that is smaller than `$n$`. That is by design, otherwise, we would lose information. We calculate:
 
 `$$9874587 ^ {54833} \equiv 36898107 \mod 63264029$$`
 
 Our encrypted message is thus `$36898107$`. 
 
-You also happen to know the `$priKey$`, so let's decrypt this right away. We calculate the message back:
+You also happen to know the `$priKey$`, so let us decrypt this right away. We calculate the message back:
+
 `$$36898107 ^ {6589577} \equiv 9874587 \mod 63264029$$`
 
 Yes, our message is, and was, `$9874587$`.
 
 **Why it works**
 
-Let's first introduce Fermat's little theorem. It states that if `$p$` is a prime number then for any number `$a$`, we have `$$a ^ p \equiv a \mod p$$`. If `$a$` is not a multiple of `$p$`, then it can be rewritten as `$$a ^ {p - 1} \equiv 1 \mod p$$`. Our proof will use that knowledge later on.
+Let us first introduce Fermat's little theorem. It states that if `$p$` is a prime number then for any number `$a$`, we have `$$a ^ p \equiv a \mod p$$`. If `$a$` is not a multiple of `$p$`, then it can be rewritten as `$$a ^ {p - 1} \equiv 1 \mod p$$`. Our proof will use that knowledge later on.
 
-Let's rework what we have:
+Let us rework what we have:
 
 `$a \cdot \phi(n) + priKey \cdot pubKey = 1$` means that:
 
@@ -269,7 +270,7 @@ But you will recall that `$\phi(n)$` is itself a product of `$p - 1$` and `$q - 
 
 `$$priKey \cdot pubKey - 1 = h \cdot (p - 1) = k \cdot (q - 1)$$`
 
-With this, let's hop on what we want to prove, encryption followed by decryption works. Let's do just that:
+With this, let us hop on what we want to prove, encryption followed by decryption works. Let us do just that:
 
 `$$(message ^ {pubKey}) ^ {priKey}$$`
 
@@ -281,7 +282,7 @@ Which, again, can be rewritten as:
 
 `$$message \cdot message ^ {pubKey \cdot priKey - 1}$$`
 
-Oh we now recognise this thing we had a few lines above. Let's replace and rewrite as:
+Now we recognize this thing we had a few lines above. Let us replace and rewrite as:
 
 `$$message \cdot message ^ {h \cdot (p - 1)}$$`
 
@@ -289,24 +290,24 @@ And algebra class helping out, can be rewritten as:
 
 `$$message \cdot (message ^ {p - 1}) ^ {h}$$`
 
-It looks awfully like something we saw in Fermat's little theorem. Let's first suppose that `$message$` is a multiple of `$p$`, i.e. that `$message \equiv 0 \mod p$`. In that case we can say that `$$message ^ {p \cdot q} \equiv message \mod p$$`. 
+It looks awfully like something we saw in Fermat's little theorem. Let us first suppose that `$message$` is a multiple of `$p$`, i.e. that `$message \equiv 0 \mod p$`. In that case we can say that `$$message ^ {p \cdot q} \equiv message \mod p$$`. 
 
 In other cases, thanks to Fermat's, we have `$message \cdot (message ^ {p -1 }) ^ {h} \equiv message \cdot 1 ^ {h} \equiv message \mod p$`
 
 Now, we can do the same steps but this time with `$k$` and `$q$` in mind: `$message \cdot (message ^ {q -1 }) ^ {k} \equiv message \cdot 1 ^ {k} \equiv message \mod q$`
 
-Let's remember that `$p$` and `$q$` are prime. So for a number to be a multiple of both, it has to be a multiple of their product `$p \cdot q = n$`.
+Let us remember that `$p$` and `$q$` are prime. So for a number to be a multiple of both, it has to be a multiple of their product `$p \cdot q = n$`.
 
 So by mixing these 2 paths, we end up with, `$$(message ^ {pubKey}) ^ {priKey} \equiv message \mod {p \cdot q} \equiv message \mod n$$`. This is what we set out to demonstrate about why RSA works.
 
 </ExpansionPanel>
 
-Let's do something basic and **create a new key pair**, which our local node will know as `myFirstKey`:
+Let us do something basic and **create a new key pair**, which our local node will know as `myFirstKey`:
 
 ```sh
 $ ./florencenet.sh client gen keys "myFirstKey"
 ```
-Now, let's take a look at the balance of the test account we just created:
+Now, let us take a look at the balance of the test account we just created:
 
 ```sh
 $ ./florencenet.sh client get balance for myFirstKey
@@ -322,7 +323,7 @@ Zero tez! There is no free lunch. Because we do not even have any tez, we cannot
 
 ## Adding testnet tez (XTZ)
 
-Let's get some **testnet** tez to work with! The easiest way to get some _testnet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also a brand new wallet (public-private key pair) on Florencenet, which you will have to copy into your node container.
+Let us get some **testnet** tez to work with! The easiest way to get some _testnet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also a brand new wallet (public-private key pair) on Florencenet, which you will have to copy into your node container.
 
 <HighlightBox type="info">
 
@@ -332,7 +333,7 @@ Also remember: The private key created by the faucet is **only meant for the tes
 
 </HighlightBox>
 
-Let's say the file you got is `tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json`. 
+Let us say the file you got is `tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json`. 
 
 How does the content of this file look?
 
@@ -428,7 +429,7 @@ will **remove all blockchain data**. So please, if you made good progress with t
 
 </HighlightBox>
 
-We said that there is a chance that this `faucetWallet` may be compromised, so it is within the realm of the reasonable to _protect_ our tez in a local-only wallet. Let's do that and transfer some tez from `faucetWallet` to our `myFirstKey` account:
+We said that there is a chance that this `faucetWallet` may be compromised, so it is within the realm of the reasonable to _protect_ our tez in a local-only wallet. Let us do that and transfer some tez from `faucetWallet` to our `myFirstKey` account:
 
 ```sh
 $ ./florencenet.sh client transfer 1 from faucetWallet to myFirstKey --burn-cap 0.5

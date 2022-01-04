@@ -216,7 +216,7 @@ For a closer look at domain-specific data types, go
 
 <HighlightBox type="tip">
 
-For a more detailed account on stack operations, we recommend: [https://tezos.gitlab.io/008/michelson.html#stack-operations](https://tezos.gitlab.io/008/michelson.html#stack-operations).
+For a more detailed account on stack operations, we recommend [https://tezos.gitlab.io/008/michelson.html#stack-operations](https://tezos.gitlab.io/008/michelson.html#stack-operations).
 
 </HighlightBox>
 
@@ -305,7 +305,7 @@ More on operations on strings? Check out: [https://tezos.gitlab.io/008/michelson
 
 ### A smart contract to certify students
 
-Let's write a smart contract using this knowledge. We want to rewrite our certification smart contract with Michelson. 
+Let us write a smart contract using this knowledge. We want to rewrite our certification smart contract with Michelson. 
 
 Create a new file `certify.tz` in the same folder as `florencenet.sh` and paste:
 
@@ -323,7 +323,7 @@ code { DUP;
        PAIR };
 ```
 
-It is important that you understand the stack. Working with Michelson means to work with a stack. What do we do in this part of the code? Let's take a look at the stack:
+You must understand the stack. Working with Michelson means working with a stack. What do we do in this part of the code? Let us take a look at the stack:
 
 ```
 $ ./florencenet.sh client typecheck script container:certify.tz -details
@@ -360,7 +360,7 @@ This should give you the output:
          /* [ pair (list operation) (map @certified address bool) ] */ } }
 ```
 
-First, let's understand the syntax of the output. We see:
+First, let us understand the syntax of the output. We see:
 
 ```
   code { /* [ pair (address @parameter) (map @storage address bool) ] */
@@ -381,7 +381,7 @@ Here you see that we use `@certified` so the output tells us:
 @certified map address bool
 ```
 
-This is very useful for understanding the stack. We want to have a `map address bool` to store students certification status.
+This is very useful for understanding the stack. We want to have a `map address bool` to store students' certification status.
 
 Now we can take the address of the student which we want to certify:
 
@@ -398,7 +398,7 @@ The result is:
 
 So we have **two** elements in the stack, an element of type `address` and an element of type `map address bool`.
 
-Now we want to [update](https://tezos.gitlab.io/008/michelson.html#operations-on-maps) the `map` :
+Now we want to [update](https://tezos.gitlab.io/008/michelson.html#operations-on-maps) the `map`:
 
 ```
 DIP { PUSH bool True; SOME; };
@@ -425,7 +425,7 @@ NIL operation;
 PAIR };
 ```
 
-Let's run test smart contract:
+Let us run test smart contract:
 
 ```
 $ ./florencenet.sh client run script container:certify.tz on storage '{}' and input '"tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' --trace-stack
@@ -433,7 +433,7 @@ $ ./florencenet.sh client run script container:certify.tz on storage '{}' and in
 
 You can also deploy the contract and interact with it further. But as you can see, this contract will not check who is issuing a certificate.
 
-Let's change this:
+Let us change this:
 
 ```
 parameter address;
@@ -479,7 +479,7 @@ IF { PUSH string "Only certifier is allowed to certify" ; FAILWITH }
 
 at the beginning. `SENDER` will give us the address of the contract which is calling our contract. We can `COMPARE` it with the certifier in the storage. It will push a zero only if those addresses match. We check this with `NEQ` and if it is not zero, we will abort the transaction with `FAILWITH`. 
 
-Let's do a typecheck:
+Let us do a typecheck:
 
 ```
 $ ./florencenet.sh client typecheck script container:certify.tz -details
@@ -591,19 +591,19 @@ You can also use `{}` as the second branch of `IF`, or put the rest of the code 
 
 </HighlightBox>
 
-Now, let's test this contract:
+Now, let us test this contract:
 
 ```
 $ ./florencenet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN
 ```
 
-And let's test it with another `--source` which is not in the `storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"'`:
+And let us test it with another `--source` which is not in the `storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"'`:
 
 ```
 $ ./florencenet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a
 ```
 
-This time it should fail. We can optimise our code and use the second branch of the `IF` and a `big_map` instead of a `map`: 
+This time it should fail. We can optimize our code and use the second branch of the `IF` and a `big_map` instead of a `map`: 
 
 ```
 parameter address;
@@ -634,7 +634,7 @@ code { DUP;
 
 Note that you can only have one `big_map` in a contract. This limitation of `big_map` will [probably be dropped in the future](https://blog.nomadic-labs.com/michelson-updates-in-005.html).
 
-Let's deploy this contract. Therefore, first check the address of your accounts/contracts with:
+Let us deploy this contract. Therefore, first check the address of your accounts/contracts with:
 
 ```
 $ ./florencenet.sh client list known addresses
@@ -667,7 +667,7 @@ You can check its state and script with [Better Call Dev](https://better-call.de
 
 <ExpansionPanel title="Full grammar">
 
-Michelson will be a new language for most of you. The following list can help you to quickly find out what you might have done wrong -in case something does not go as intended.
+Michelson will be a new language for most of you. The following list can help you to quickly find out what you might have done wrong - in case something does not go as intended:
 
 ```
 <data> ::=
