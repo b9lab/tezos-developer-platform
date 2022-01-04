@@ -1,5 +1,5 @@
 ---
-title: Testnet - Communicating with Tezos
+title: Testnet - Communicating With Tezos
 description: JSON/RPC interface
 slug: /tezos-basics/testnet-3
 ---
@@ -10,7 +10,7 @@ So far we have used the testnet script to execute **tezos-client** commands. Thi
 
 Communication works with the help of the **JSON/RPC interface**. The **tezos-node** responses are **JSON** based. Notice it is not the **JSON-RPC** protocol, the communication is done over **HTTP** protocol.
 
-Let's first list what the RPC offers:
+Let us first list what the RPC offers:
 
 ```
 $ ./florencenet.sh client rpc list
@@ -32,7 +32,7 @@ Look for `myFirstKey` from the last section and use its address to get the balan
 $ ./florencenet.sh client rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
 ```
 
-Now you should see the balance. But where is the JSON we are talking about? Let's add a flag and use the command again:
+Now you should see the balance. But where is the JSON we are talking about? Let us add a flag and use the command again:
 
 ```
 $ ./florencenet.sh client -l rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
@@ -46,13 +46,13 @@ You can find the reference for the JSON/RPC interface at the [Tezos Developer Re
 
 </HighlightBox>
 
-We can use the flag `-l` for all commands from previous section. So, if you run the command:
+We can use the flag `-l` for all commands from the previous section. So, if you run the command:
 
 ```
 $ ./florencenet.sh client transfer 1 from faucetWallet to myFirstKey --burn-cap 0.5
 ```
 
-from last section, you will see all the queries and responses traveling in the background. 
+From the last section, you will see all the queries and responses traveling in the background. 
 
 We can also use `curl` for a request 
 if you start the network and with an exposed RPC port:
@@ -61,7 +61,7 @@ if you start the network and with an exposed RPC port:
 ./florencenet.sh start --rpc-port 8732
 ```
 
-Let's request the balance again:
+Let us request the balance again:
 
 ```
 curl -s localhost:8732/chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance

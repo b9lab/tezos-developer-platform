@@ -60,7 +60,7 @@ where `a` represents the total amount of tokens issued.
 We were not going to implement `burn`, but because burning is a part of the selling process, we will define an internal function to burn tokens:
 
 ```python          
-    # internal burn function will be called by the entry points burn and sell
+    # internal burn function will be called by the entrypoints burn and sell
     def burn_intern(self, amount):
         # check if the address owns tokens
         sp.if self.data.ledger.contains(sp.sender):

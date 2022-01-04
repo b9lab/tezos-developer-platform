@@ -1,12 +1,12 @@
 ---
-title: SmartPy Library - Diving into the Language
+title: SmartPy Library - Diving Into the Language
 description: Dive deeper into the SmartPy – Typing and conditions
 slug: /smartpy/language
 ---
 
 import HighlightBox from "../../src/components/HighlightBox"
 
-Now, let's write a different smart contract. It shall sum all natural numbers from 0 to a given number: 
+Now, let us write a different smart contract. It shall sum all natural numbers from 0 to a given number: 
 
 ```python
 import smartpy as sp
@@ -18,7 +18,7 @@ class Summarize(sp.Contract):
         # Define storage with initial integer 0
         self.init(storage=0)
 
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def sum(self, params):
         sp.for i in sp.range(1, params+1):
@@ -67,7 +67,7 @@ class Summarize(sp.Contract):
         # Define storage with initial integer 0
         self.init(storage=0)
 
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def sum(self):
         for i in range(1, 6):
@@ -82,7 +82,7 @@ def test():
     scenario+= second_contract.sum()
 ```
 
-That is, we could write a function, which is not dependent neither of the input or the storage. Keep in mind that either way it has write access to the storage.
+That is, we could write a function, which is not dependent neither on the input or the storage. Keep in mind that either way it has write access to the storage.
 
 How does the Michelson code of such a contract look like?
 
@@ -125,7 +125,7 @@ def sum(self):
 
 This will be translated to 5 times `ADD` in the Michelson code.
 
-Remember that **computation is costly** on blockchains as each calculation costs gas and with it de facto money. A code with a **minimalistic approach**, in regard to the contract code, is therefore cheaper. [It is advisable to do the least possible number of calculations on the blockchain](/blockchain-fundamentals/introduction-2#trusted-execution-on-chain---smart-contracts), metaprogramming can help with that.
+Remember that **computation is costly** on blockchains as each calculation costs gas and with it de facto money. A code with a **minimalistic approach**, regarding the contract code, is therefore cheaper. [It is advisable to do the least possible number of calculations on the blockchain](/blockchain-fundamentals/introduction-2#trusted-execution-on-chain---smart-contracts), metaprogramming can help with that.
 
 If we instead use SmartPy and write:
 
@@ -139,7 +139,7 @@ class Summarize(sp.Contract):
         # Define storage with initial integer 0
         self.init(storage=0)
 
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def sum(self):
         sp.for i in sp.range(1, 6):
@@ -192,7 +192,7 @@ code
   };
 ```
 
-Here, we have less `ADD` instructions, which are nested in the `LOOP` instruction because of:
+Here, we have fewer `ADD` instructions, which are nested in the `LOOP` instruction because of:
 
 ```python
     sp.for i in sp.range(1, 6):
@@ -205,7 +205,7 @@ This means that the loop as such is included in Michelson. In doing so, we can s
 
 We know that Python uses [duck typing](https://en.wikipedia.org/wiki/Duck_typing) and Michelson is [strong typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing). How does this fit together?
 
-Let's take another look at our **repeater contract**:
+Let us take another look at our **repeater contract**:
 
 ```python
 # Import SmartPy
@@ -218,7 +218,7 @@ class Repeater(sp.Contract):
         # Define storage with initial integer 0
         self.init(storage=0)
 
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def repeat(self, params):
         self.data.storage= params
@@ -239,11 +239,11 @@ Storage:
 {
   storage: sp.TIntOrNat;
 }.layout("storage")
-Entry points:
+Entrypoints:
 | repeat sp.TIntOrNat
 ```
 
-Our storage has the type `TIntOrNat`. This is due to the fact that **Michelson** has the types `int` and `nat`, and our script doesn't allow SmartPy to simply recognize which one we need or respectively which one we want to use. When observing the Michelson code, we can see that our storage in the end has the type **int** - eventually a decision has to be made.
+Our storage has the type `TIntOrNat`. This is because **Michelson** has the types `int` and `nat`, and our script doesn't allow SmartPy to simply recognize which one we need or respectively which one we want to use. When observing the Michelson code, we can see that our storage, in the end, has the type **int** - eventually, a decision has to be made.
 
 In case we initialise the storage differently:
 
@@ -252,14 +252,14 @@ In case we initialise the storage differently:
         self.init(storage=sp.nat(0))
 ```
 
-we see in the `Types` tab:
+We see in the `Types` tab:
 
 ```
 Storage:
 {
   storage: sp.TNat;
 }.layout("storage")
-Entry points:
+Entrypoints:
 | repeat sp.TNat
 ```
 
@@ -270,11 +270,11 @@ Feel free to test:
         self.init(storage=sp.int(0))
 ```
 
-and check which type we now have.
+And check which type we now have.
 
 ## Conditions
 
-Often we want a smart contract to **only accept a transaction under certain conditions**. The most important tool in SmartPy for this is `sp.verify(condition)`. Should the condition not be met, the entire transaction becomes invalid and our script stops running:
+Often we want a smart contract to **only accepts a transaction under certain conditions**. The most important tool in SmartPy for this is `sp.verify(condition)`. Should the condition not be met, the entire transaction becomes invalid and our script stops running:
 
 ```python
 # Import SmartPy
@@ -287,7 +287,7 @@ class Repeater(sp.Contract):
         # Define storage with initial integer 0
         self.init(storage=sp.int(0))
 
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def repeat(self, params):
         sp.verify(params>0)
@@ -328,7 +328,7 @@ code
   };
 ```
 
-and because of our test with `-1`you can see the corresponding message in the editor:
+And because of our test with `-1`you can see the corresponding message in the editor:
 
 ![](images/editormessage.png)
 
@@ -345,7 +345,7 @@ class Repeater(sp.Contract):
         # Define storage with initial integer 0
         self.init(storage=sp.int(0))
 
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def repeat(self, params):
         sp.if params>0:
@@ -367,7 +367,7 @@ We have used `sp.for` already.
 In addition, SmartPy offers `sp.while`.
 
 ```
-    # Define Entry Point
+    # Define Entrypoint
     @sp.entry_point
     def repeat(self, params):
         sp.while (params>0):

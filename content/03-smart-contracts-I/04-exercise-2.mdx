@@ -4,34 +4,34 @@ description: A smart contract to crowdfund
 slug: /smartpy/exercise-2
 ---
 
-Now that we tested a more complicated storage structure, let's dive into another example.
+Now that we tested a more complicated storage structure, let us dive into another example.
 
 Does [crowdfunding](https://en.wikipedia.org/wiki/Crowdfunding) sound familiar to you?
 
 The topic is very interesting because there are many forms in which to conduct crowdfunding. The basic idea is to finance a project or enterprise **through the contributions of many**, i.e. "the crowd", instead of convincing a closed group of traditional financing institutions (i.e. banks, venture capital funds, investment firms, etc.) to provide capital for a project.
 
-We want to explore the possibilities of a **decentralised crowdfunding approach**.
+We want to explore the possibilities of a **decentralized crowdfunding approach**.
 
-For this, a public blockchain like Tezos is well-fitted. The openness of a public blockchain platform should be suitable as crowdfunding is in its nature an **open, transparent, and public form of financing**. The main idea is that a project initiator, i.e. the founder, is able to kick off a crowdfund with just a few clicks.
+For this, a public blockchain like Tezos is well-fitted. The openness of a public blockchain platform should be suitable as crowdfunding is in its nature an **open, transparent, and public form of financing**. The main idea is that a project initiator, i.e. the founder, can kick off a crowdfund with just a few clicks.
 
 ## The crowdfunding smart contract
 
-Each project will be represented by an individual Tezos smart contract. The smart contract has to fulfil **three functions**:
+Each project will be represented by an individual Tezos smart contract. The smart contract has to fulfill **three functions**:
 
-* **send_fund**: Every user with a Tezos address can use this function to participate in the crowdfund. For reasons of simplicity, each address can only make **one payment**;
-* **pay_off**: The project initiator can transfer the collected funds to a different address. This can only be done if the **funding target is met**. For reasons of simplicity, the owner can call this function only after the deadline has passed;
-* **refund**: In case the set funding goal is not met in a specified time frame, each participant can request a refund.
+* **`send_fund`**: Every user with a Tezos address can use this function to participate in the crowdfunding. For reasons of simplicity, each address can only make **one payment**;
+* **`pay_off`**: The project initiator can transfer the collected funds to a different address. This can only be done if the **funding target is met**. For reasons of simplicity, the owner can call this function only after the deadline has passed;
+* **`refund`**: In case the set funding goal is not met in a specified time frame, each participant can request a refund.
 
 Moreover, the **storage** has to contain the following **information**:
 
-* **minAmount**: This is the minimum limit to be achieved for a crowdfund to be considered successful, and
-* **maxTime**: This value represents the deadline by which the **minAmount** has to be met.
+* **`minAmount`**: This is the minimum limit to be achieved for a crowdfund to be considered successful, and
+* **`maxTime`**: This value represents the deadline by which the **minAmount** has to be met.
 
 ## Test-driven approach
 
 Surely, you already have some ideas for the smart contract, and maybe you also started seeing possible difficulties and stumbling blocks.
 
-So, we start with the test ensuring a functioning smart contracts fulfilling the requirements as specified before.
+So, we start with the test ensuring a functioning smart contract, fulfilling the requirements as specified before:
 
 ```python
 @sp.add_test(name = "successful Crowdfunding")
@@ -79,16 +79,17 @@ Try to implement a contract, which can pass the tests.
 
 As you can see, you will need to implement a class called `Crowdfunding`:
 
-- The storage will need to keep track on the fundings;
+- The storage will need to keep track onfthe fundings;
 - The contract will have an owner, who can call the `pay_off` function;
 - Several conditions must be met for `pay_off` and `refund`.
 
 There are a few keywords that you will need but we have not seen so far:
+
 - `sp.amount` will give you the amount of `mutez`(in **microtez**) in the transaction,
 - You can access the balance of the contract with `sp.balance`,
 - `sp.now` will give you the timestamp of the block with the transaction. 
 
-At the end, such a contract will look like:
+In the end, such a contract will look like this:
 
 ```python
 import time
@@ -122,7 +123,7 @@ class Crowdfunding(sp.Contract):
 
 The smart contract allows:
 
-* A user with a Tezos address to send funds - Remember, a payment can only be made once;
+* A user with a Tezos address to send funds - Remember, payment can only be made once;
 * To transfer the collected funds to a different address of the initiator once the funding target is met;
 * The crowdfunding participants to request a refund, if the funding target isn't met;
 * For the storage to contain the **minAmount** and **maxTime**.

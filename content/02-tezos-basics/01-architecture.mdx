@@ -14,15 +14,15 @@ import {
 
 ![Tezos architecture overview](images/overview.png)
 
-Above, you can see a graphical representation of Tezos' architecture and the relation between its individual elements.
+Above, you can see a graphical representation of Tezos' architecture and the relation between its elements.
 
 To understand the architecture of the Tezos platform, one needs to comprehend the function of:
 
-* the endorser,
-* the baker,
-* the accuser,
-* the node, and
-* the client.
+* The endorser,
+* The baker,
+* The accuser,
+* The node, and
+* The client.
 
 ### Node
 
@@ -32,9 +32,9 @@ The gossip network is how Tezos nodes communicate to exchange blocks and operati
 
 As well as listening for updates to the context, the node can send operations to peers when instructed to by the client or emit new blocks when instructed by the baker. Furthermore, the node can endorse blocks when instructed by the endorser or report bad blocks when instructed by the accuser.
 
-State changing operations propagate through the network via gossip between peers until a baker includes the operation in a block. An operation can propagate across several peers before it is included in a block. New blocks are currently produced about once per minute, but this could change in the future via the Tezos governance mechanism.
+State-changing operations propagate through the network via gossip between peers until a baker includes the operation in a block. An operation can propagate across several peers before it is included in a block. New blocks are currently produced about once per minute, but this could change in the future via the Tezos governance mechanism.
 
-After initialisation, the node will sync up with the Tezos network. As the node processes blocks, it runs the operations in the blocks against the local copy of the context to create a new context. The latest block received is known as the head of the chain. Nodes advertise the latest chain head they have to other nodes in the network.
+After initialization, the node will sync up with the Tezos network. As the node processes blocks, it runs the operations in the blocks against the local copy of the context to create a new context. The latest block received is known as the head of the chain. Nodes advertise the latest chain head they have to other nodes in the network.
 
 The node also gathers metadata about peers and multiple chains that may exist so it can select the best one based on its fitness. “Fitness” determines the quality of the chain leading up to that block.
 
@@ -44,15 +44,15 @@ The node also gathers metadata about peers and multiple chains that may exist so
 
 For nodes there are **three modes** in Tezos:
 
-* The **rolling mode**: A node that only stores the minimal rolling fragment of data to validate blocks and synchronise with the head;
-* The **full mode**: The **deault mode**, the node stores the **minimum data amount** needed to reconstruct the complete ledger state since the genesis block;
+* The **rolling mode**: A node that only stores the minimal rolling fragment of data to validate blocks and synchronize with the head;
+* The **full mode**: The **default mode**, the node stores the **minimum data amount** needed to reconstruct the complete ledger state since the genesis block;
 * The **archive mode**: Node stores all chain data to query for information since the genesis block.
 
-As said before, in the **rolling mode**, the minimal data for rolling is stored. Thus, it is the _lightest mode_. The node is able to validate blocks and only requires minimal and bounded disk storage. Bootstrapping the node can be done within minutes. It is suitable to run on low-resource architectures. As a downside, the node cannot query historical block information in regard to balances and staking rights. Furthermore, it doesn't help other nodes to bootstrap because it cannot provide the complete chain history.
+As said before, in the **rolling mode**, the minimal data for rolling is stored. Thus, it is the _lightest mode_. The node can validate blocks and only requires minimal and bounded disk storage. Bootstrapping the node can be done within minutes. It is suitable to run on low-resource architectures. As a downside, the node cannot query historical block information regarding balances and staking rights. Furthermore, it doesn't help other nodes to bootstrap because it cannot provide the complete chain history.
 
-**Full mode** for nodes allows to store the minimal data needed to reconstruct the ledger state, thus requiring little disk storage. It can be synchronised using a snapshot, and can help other nodes bootstrap and synchronise with the Tezos chain. This mode is most-suitable for baker nodes. The necessary disk storage continously increases while history "progresses". This type of node cannot query historical balances or staking rights before the checkpoint.
+**Full mode** for nodes allows storing the minimal data needed to reconstruct the ledger state, thus requiring little disk storage. It can be synchronized using a snapshot and can help other nodes bootstrap and synchronize with the Tezos chain. This mode is most-suitable for baker nodes. The necessary disk storage continuously increases while history "progresses". This type of node cannot query historical balances or staking rights before the checkpoint.
 
-The **archive mode** is the _heaviest mode_ as archive nodes store the whole data of the blockchain. This allows archive nodes to query for any information since the genesis block. As the whole chain is available, archive nodes are especially suited for indexers and block explorers. At the same time, this node type requires a large amount data storage.
+The **archive mode** is the _heaviest mode_ as archive nodes store the whole data of the blockchain. This allows archive nodes to query for any information since the genesis block. As the whole chain is available, archive nodes are especially suited for indexers and block explorers. At the same time, this node type requires a large amount of data storage.
 
 If you want to find out more on how to set up the different node types, we recommend the documentation on:
 
@@ -68,13 +68,13 @@ The Tezos client is the main interface to the node. The client can read the cont
 
 ### Baker
 
-In Tezos, block creators are referred to as bakers. As the name suggests, the baker is responsible for baking (producing) new blocks. Bakers are connected to implicit accounts (more on implicit (tz1…) vs. originated (KT1…) accounts later) and compute baking rights on a per account basis based on a baker’s total stake (i.e. tokens participating in consensus). The baker is unique in that it needs direct access to the node data directory for performance reasons.
+In Tezos, block creators are referred to as bakers. As the name suggests, the baker is responsible for baking (producing) new blocks. Bakers are connected to implicit accounts (more on implicit (tz1…) vs. originated (KT1…) accounts later) and compute baking rights on a per-account basis based on a baker’s total stake (i.e. tokens participating in consensus). The baker is unique in that it needs direct access to the node data directory for performance reasons.
 
 When the baker is selected to bake a block, it draws transactions from the mempool, which is the pool of operations that are known about (via gossip) but have not yet been included in a block.
 
 ### Endorser
 
-Like the baker, the endorser is connected to an implicit account and computes endorsing rights on a per account basis based on a baker’s total stake. On receipt of new blocks it verifies the validity of the block. If the block is valid it will broadcast an endorsement operation.
+Like the baker, the endorser is connected to an implicit account and computes endorsing rights on a per-account basis based on a baker’s total stake. On receipt of new blocks, it verifies the validity of the block. If the block is valid it will broadcast an endorsement operation.
 
 ### Accuser
 
@@ -87,7 +87,7 @@ Such irregularities trigger double-baking and double-endorsing operations that c
 
 ## OCaml, Michelson, SmartPy, LIGO, and other languages
 
-Tezos itself is implemented in [OCaml](https://ocaml.org/). OCaml is a functional programming language used in mission-critical industries that require formal proofs of properties of programs. There also is [Michelson](https://tezos.gitlab.io/whitedoc/michelson.html), a domain-specific language used to write smart contracts on Tezos. It is stack-based, strongly typed, and designed to facilitate formal verification so developers can more easily prove smart contract properties.
+Tezos itself is implemented in [OCaml](https://ocaml.org/). OCaml is a functional programming language used in mission-critical industries that require formal proofs of the properties of programs. There also is [Michelson](https://tezos.gitlab.io/whitedoc/michelson.html), a domain-specific language used to write smart contracts on Tezos. It is stack-based, strongly typed, and designed to facilitate formal verification so developers can more easily prove smart contract properties.
 
 There are several other Tezos smart contracts languages. [SmartPy](https://smartpy.io/) is an intuitive and effective smart contracts language and development platform that will allow Python developers to write smart contracts on Tezos. [LIGO](https://ligolang.org/) is a statically typed high-level language that compiles down to Michelson. The syntaxes that are currently supported are PascaLIGO (pascal-like syntax), CameLIGO (caml-like syntax), and ReasonLIGO (reason-like syntax). Additionally, [Morley/Lorentz](https://hackage.haskell.org/package/morley) is a library to write Michelson contracts in Haskell. The [Juvix](https://juvix.org/) smart contract language supports Michelson and includes a standard library with Michelson primitive types and operations.
 

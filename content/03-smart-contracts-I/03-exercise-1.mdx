@@ -4,16 +4,16 @@ description: A smart contract to certify students
 slug: /smartpy/exercise-1
 ---
 
-Let's test a more complicated storage structure.
+Let us test a more complicated storage structure.
 
-Imagine that at the end of a course, you want to test all the students, and accordingly certify their performance. Let's write the for this purpose needed basic smart contract together.
+Imagine that at the end of a course, you want to test all the students, and accordingly certify their performance. Let us write the for this purpose needed basic smart contract together.
 
 We begin our thinking with what we want:
 
 - We want to maintain a **list of students**, which passed the exam and thereby are certified;
-- We want to **restrict who is able to change the list** so that not everybody is able to do so.
+- We want to **restrict who can change the list** so that not everybody can do so.
 
-Let's start with the former: How could we represent students? The easiest would be to work with a list:
+Let us start with the former: How could we represent students? The easiest would be to work with a list:
 
 ```python
 import smartpy as sp
@@ -44,7 +44,7 @@ You can see how SmartPy understands that we want to use a `List` without explici
 
 Currently, we have **two issues**:
 
-- Everyone is able to invoke this smart contract, and expand the list of certified students;
+- Everyone can invoke this smart contract, and expand the list of certified students;
 - It could be that two students have the same name.
 
 We can solve the first quite simply by using `sp.verify`:
@@ -71,7 +71,7 @@ def test():
     scenario+= contract.certify("Ibo Sy").run(sender=sp.address("tz1W4W2yFAHz7iGyQvFys4K7Df9mZL6cSKCp"))
 ```
 
-or better testing with `test_account`:
+Or better testing with `test_account`:
 
 ```python
 
@@ -106,13 +106,13 @@ We expanded our storage and **saved an address that represents the certifier**. 
 sp.verify(sp.sender==self.data.certifier)
 ```
 
-it will lead to an **invalid transaction**.
+It will lead to an **invalid transaction**.
 
 A common existing verification in smart contract writing is: What address does this smart contract call? In SmartPy, we have access to the address via `sp.sender`.
 
 Now, we can tackle the second issue.
 
-We need a [unique identifier](https://en.wikipedia.org/wiki/Unique_identifier) for the students. The most simple and obvious solution would be the **use of the student's Tezos address as unique identifier**. For this, a `map` is perfectly suited:
+We need a [unique identifier](https://en.wikipedia.org/wiki/Unique_identifier) for the students. The most simple and obvious solution would be the **use of the student's Tezos address as a unique identifier**. For this, a `map` is perfectly suited:
 
 ```python
 import smartpy as sp
@@ -148,7 +148,7 @@ Storage:
   certified: sp.TMap(sp.TAddress, sp.TString);
   certifier: sp.TAddress;
 }.layout(("certified", "certifier"))
-Entry points:
+Entrypoints:
 | certify
   {
     address: sp.TAddress;
@@ -156,7 +156,7 @@ Entry points:
   }.layout(("address", "name"))
 ```
 
-and again we see how the list is growing:
+And again we see how the list is growing:
 
 ![](images/test2.png)
 
@@ -196,11 +196,11 @@ First, we can again **import an account from the faucet**:
 
 ![](images/faucet.png)
 
-Now we need to **activate and reveal** this account, before we can deploy our contract:
+Now we need to **activate and reveal** this account before we can deploy our contract:
 
 ![](images/activate.png)
 
-Afterwards, we can **deploy the smart contract**:
+Afterward, we can **deploy the smart contract**:
 
 ![](images/origination_result.png)
 

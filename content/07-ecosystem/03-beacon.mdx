@@ -12,7 +12,7 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-A **wallet** will store your keys and can also fulfil other tasks, like signing transactions. 
+A **wallet** will store your keys and can also fulfill other tasks, like signing transactions. 
 
 [Beacon](https://www.walletbeacon.io/) is an **interface** between such a wallet and your application. At the time of writing, Beacon supports:
 
@@ -91,7 +91,7 @@ Then we can again **create an `index.html`**:
 
 <ExpansionPanel title="The CSS file">
 
-A bit of styling, so it doesn't hurt our eyes:
+A bit of styling, so it does not hurt our eyes:
 
 ```css
 body {
@@ -333,7 +333,7 @@ You see our new function `connectWallet()`. What is new there?
 
 ```
 
-There are other [useful options](https://tezostaquito.io/docs/wallet_api/#--tzip-10-wallet), like [eventHandlers](https://github.com/airgap-it/beacon-sdk/blob/9d610e015d183cf2689835b94398bd0128ddf32e/src/events.ts#L38) which should be utilised for better user experience in a real application. Anyway we will keep it simple and set only what must be set. 
+There are other [useful options](https://tezostaquito.io/docs/wallet_api/#--tzip-10-wallet), like [eventHandlers](https://github.com/airgap-it/beacon-sdk/blob/9d610e015d183cf2689835b94398bd0128ddf32e/src/events.ts#L38) which should be utilized for better user experience in a real application. Anyway, we will keep it simple and set only what must be set. 
 
 ```javascript
     wallet
@@ -377,13 +377,13 @@ As you can see, it is just **slightly changed**: We use `tezos.wallet.at` instea
 
 ## Test run
 
-Let's test this!
+Let us test this!
 
 First, you need the [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn) extension for Chrome. After installation you can turn on the developer mode:
 
 ![](images/beacon1.png)
 
-In this case, you can **setup a local secret** and you don't need a wallet to pair it with. 
+In this case, you can **set up a local secret** and you don't need a wallet to pair it with. 
 
 ![](images/beacon2.png)
 
@@ -391,7 +391,7 @@ Now we can **set the network** to Florencenet:
 
 ![](images/beacon3.png)
 
-Now let's **start our application**!
+Now let us **start our application**!
 
 Run in your project folder:
 
@@ -434,7 +434,7 @@ Please adjust the name `index.9c3bd9ee.js` into the correct one, which will be g
 
 <HighlightBox type="tip">
 
-If you work on MacOs, you will need the command to start with `-i ''` like `sed -i '' 's/require("l....`
+If you work on MacOS, you will need the command to start with `-i ''` like `sed -i '' 's/require("l....`
 
 </HighlightBox>
 
@@ -460,9 +460,9 @@ index.9c3bd9ee.js:112926 0ac90fc8-a9fc-5908-5d6f-1b0e9a77db4c: 2754.822998046875
 index.9c3bd9ee.js:502 tz1PseT4U3hKdkC5dWhvHwxcnhSYc5qmtBfn
 ```
 
-At the time of writing, unfortunately we **cannot** import faucet accounts into Spire. Instead it will generate a new account with 0 tez in it.
+At the time of writing, unfortunately, we **cannot** import faucet accounts into Spire. Instead, it will generate a new account with 0 tez in it.
 
-So to continue, you will need to transfer some tez from a faucet account on the testnet to your address in Spire first. You can do this, like we did in the _CLI section_, with the `tezos-client` or via [SmartPy](https://smartpy.io/wallet.html) - You will need to visit SmartPy anyway to deploy the [certification contract](https://smartpy.io/ide?code=eJytkUFLxDAQhe_5FaGnFCUguhehoO5F8SKoiIiEmKQ0uE1jZna1_nqTtnG77N40h0LnvZnvZWJb3wWk0MqAvqcSKHhC1EoC0KUJaGurJNrOMfB82TkMUmF5Tmg82tRUCOssCsHArOpjqsYWEyZLOknhycWyqquX15m32naRoesiskxE9cJ31uEvbPT1E8vLIFuYgzzfmDAYPAfjdBxdDXQtUfIZZSfajqi5X0PDptmEpChSa4EGkDnZGlrRYlxMX5QkpRqkKcals6voiE2pKqRS3dohK1K9GLk3b90hRyxPhuGTV13tv0KMEwwAK_D75A7Mw9njaXOr35cL_dRsrj@_lGvun9Xio8Wr2hXlOBSUcTLYOTqX2LT1_H9UZfg2zr7G82Okq@VMJQ_rmHFc_V@jHmDFJf0X6gddefug) again for your new address.
+So to continue, you will need to transfer some tez from a faucet account on the testnet to your address in Spire first. You can do this, as we did in the _CLI section_, with the `tezos-client` or via [SmartPy](https://smartpy.io/wallet.html) - You will need to visit SmartPy anyway to deploy the [certification contract](https://smartpy.io/ide?code=eJytkUFLxDAQhe_5FaGnFCUguhehoO5F8SKoiIiEmKQ0uE1jZna1_nqTtnG77N40h0LnvZnvZWJb3wWk0MqAvqcSKHhC1EoC0KUJaGurJNrOMfB82TkMUmF5Tmg82tRUCOssCsHArOpjqsYWEyZLOknhycWyqquX15m32naRoesiskxE9cJ31uEvbPT1E8vLIFuYgzzfmDAYPAfjdBxdDXQtUfIZZSfajqi5X0PDptmEpChSa4EGkDnZGlrRYlxMX5QkpRqkKcals6voiE2pKqRS3dohK1K9GLk3b90hRyxPhuGTV13tv0KMEwwAK_D75A7Mw9njaXOr35cL_dRsrj@_lGvun9Xio8Wr2hXlOBSUcTLYOTqX2LT1_H9UZfg2zr7G82Okq@VMJQ_rmHFc_V@jHmDFJf0X6gddefug) again for your new address.
 
 After that, you can try to **issue a certificate**.
 

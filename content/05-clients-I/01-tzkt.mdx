@@ -8,7 +8,7 @@ import HighlightBox from "../../src/components/HighlightBox"
 
 [TzKT](https://github.com/baking-bad/tzkt) is a **Tezos blockchain indexer**.
 
-We have talked about how a blockchain includes a lot of transactions and information. Working directly on the whole blockchain to fetch and process data will be time consuming. The **TzKT indexer** can reduce this time and in addition, offers high-level [functionalities](https://github.com/baking-bad/tzkt#features), which are not provided by the Tezos JSON/RPC interface. 
+We have talked about how a blockchain includes a lot of transactions and information. Working directly on the whole blockchain to fetch and process data will be time-consuming. The **TzKT indexer** can reduce this time and in addition, offers high-level [functionalities](https://github.com/baking-bad/tzkt#features), which are not provided by the Tezos JSON/RPC interface. 
 
 You can [install](https://github.com/baking-bad/tzkt#installation-docker) or [build](https://github.com/baking-bad/tzkt#installation-from-source) it, and [configure](https://github.com/baking-bad/tzkt#install-tzkt-indexer-and-api-for-testnets) it for the testnet.
 
@@ -62,7 +62,7 @@ $ node index.js
 
 We **limit the output** to 10 accounts, and we want to fetch the account balance for those 10.
 
-It is important that you first think about what you want to get before making a request, because it will [impact the performance](https://baking-bad.org/blog/2020/08/10/tezos-explorer-api-tzkt-request-only-what-you-need/). 
+It is important that you first think about what you want to get before making a request because it will [impact the performance](https://baking-bad.org/blog/2020/08/10/tezos-explorer-api-tzkt-request-only-what-you-need/). 
 
 You can specify `select`, and use `select.fields` or `select.values` to fetch the fields or the values. As you can see in the `request`, we can also tell TzKT API to `sort` the balances. This will give us the 10 richest accounts.
 
@@ -93,7 +93,7 @@ The **amount of endpoints** TzKT offers is huge. [Each is documented](https://ap
 
 </HighlightBox>
 
-Let's fetch the storage of our certification smart contract:
+Let us fetch the storage of our certification smart contract:
 
 ```javascript
 const request = require('request');
@@ -134,7 +134,7 @@ It is a recommended best practice when using the TzKT API to not conduct the sam
 
 </HighlightBox>
 
-You know that each transaction needs to be included into a block. So we don't need to fetch data more often than blocks appear. We can fetch the [protocol constants](https://api.edo2net.tzkt.io/v1/protocols/current) and use the **timeBetweenBlocks** value to estimate the arrival time for the next block. Notice, usually you would also wait more than one block to confirm a transaction.
+You know that each transaction needs to be included in a block. So we don't need to fetch data more often than blocks appear. We can fetch the [protocol constants](https://api.edo2net.tzkt.io/v1/protocols/current) and use the **timeBetweenBlocks** value to estimate the arrival time for the next block. Notice that usually you would also wait for more than one block to confirm a transaction.
 
 With [request-promise](https://github.com/request/request-promise):
 
@@ -185,17 +185,17 @@ main();
 
 ```
 
-This will wait `timeBetweenBlocks` from the timestamp of the last recent block before fetching the timestamp of the most recent block. Also, even after the time passed, it won't do more than one request each 5 seconds. This should be enough to have an accurate storage.
+This will wait for `timeBetweenBlocks` from the timestamp of the last recent block before fetching the timestamp of the most recent block. Also, even after the time passed, it won't do more than one request every five seconds. This should be enough to have accurate storage.
 
 Notice, we didn't catch any error above, but you should always check for the response if you work with an API.
 
 <HighlightBox type="tip">
 
-You can also try the [WebSocket API JS simple client](https://api.tzkt.io/#section/JS-simple-client) and subscribe to [events](https://api.tzkt.io/#tag/TzKT-Events). This will reduce the traffic further and make the data real-time available.
+You can also try the [WebSocket API JS simple client](https://api.tzkt.io/#section/JS-simple-client) and subscribe to [events](https://api.tzkt.io/#tag/TzKT-Events). This will reduce the traffic further and make the data available in real-time.
 
 </HighlightBox>
 
-We can also look for specific entry point calls or parameters in the transactions. Let's confirm with [filtering](https://baking-bad.org/blog/2021/03/03/tzkt-v14-released-with-improved-smart-contract-data-and-websocket-api/#filter-transactions-by-parameter-like-a-boss) that `tz1YTVs4uDn1jEQ2Z4RJyR47zAzhXv1b9Q7t` is certified by `tz1WNmpLG56yT4XixkCFe5M5NpZ7gPgVpVqc`:
+We can also look for specific entrypoint calls or parameters in the transactions. Let us confirm with [filtering](https://baking-bad.org/blog/2021/03/03/tzkt-v14-released-with-improved-smart-contract-data-and-websocket-api/#filter-transactions-by-parameter-like-a-boss) that `tz1YTVs4uDn1jEQ2Z4RJyR47zAzhXv1b9Q7t` is certified by `tz1WNmpLG56yT4XixkCFe5M5NpZ7gPgVpVqc`:
 
 ```
 https://api.florencenet.tzkt.io/v1/operations/transactions?target=KT1SgX1ZehTysGcNoSwypwg6Xs5Cj7cpokwK&parameter=tz1YTVs4uDn1jEQ2Z4RJyR47zAzhXv1b9Q7t&select=sender
@@ -207,7 +207,7 @@ which will give you:
 [{"address":"tz1WNmpLG56yT4XixkCFe5M5NpZ7gPgVpVqc"}]
 ```
 
-Let's do something else not easy to do without the TzKT API and ask for the [number of smart contracts](https://api.tzkt.io/#operation/Accounts_GetCount) in Florencenet:
+Let us do something else not easy to do without the TzKT API and ask for the [number of smart contracts](https://api.tzkt.io/#operation/Accounts_GetCount) in Florencenet:
 
 ```
 https://api.florencenet.tzkt.io/v1/accounts/count?type=contract
