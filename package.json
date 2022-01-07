@@ -25,6 +25,7 @@
     "gatsby-remark-katex": "^3.10.0",
     "gatsby-theme-apollo-docs": "4.5.12",
     "gatsby-transformer-remark": "~2.15.0",
+    "glossarizer": "^1.5.2",
     "h5p-standalone": "^2.2.0",
     "jquery": "^3.5.1",
     "katex": "^0.12.0",
