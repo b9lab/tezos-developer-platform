@@ -44,9 +44,7 @@
         const _remove = () => {
             if (tooltip.is(':hover')) return;
 
-            tooltip.animate({ top: '-=10', opacity: 0 }, 50, () => {
-                tooltip.remove();
-            });
+            tooltip.remove();
     
             target.attr('title', tip);
         }
