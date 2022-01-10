@@ -22,7 +22,7 @@ For a close look at the formulas for calculation, we recommend consulting the [C
 
 </HighlightBox>
 
-We implemented our smart contract in [SmartPy](https://smartpy.io/). To keep things simple, the tokens are represented as a simple map. In addition we will store everything we want to keep track on-chain:
+We implemented our smart contract in [SmartPy](https://smartpy.io/). To keep things simple, the tokens are represented as a simple map. In addition, we will store everything we want to keep track of on-chain:
 
 ```python
        self.init(
@@ -67,7 +67,7 @@ The contract has **five entrypoints**:
 * `burn`, and
 * `close`.
 
-In this section, we will begin with an explanation of the `buy` and the `pay` function. Afterwards, in the [next section](./cso-smart-contract-implementation-part-2), we will talk about the `sell` and `close` functions (closing function). 
+In this section, we will begin with an explanation of the `buy` and the `pay` functions. Afterwards, in the [next section](./cso-smart-contract-implementation-part-2), we will talk about the `sell` and `close` functions (closing function). 
 
 <HighlightBox type="info">
 
@@ -76,8 +76,6 @@ You can find the smart contract in the [project repository](https://github.com/b
 </HighlightBox>
 
 If you want to extend this smart contract to, for example, fullfil the FA2 token standard, you will need to implement additional entrypoints. You can find more information regarding the token standard in the [FA2](./fa2) section.
-
-<!-- In case we do implement the FA2 standard please change the above paragraph towards introducing it -->
 
 ## The `buy` function
 
@@ -268,7 +266,7 @@ To avoid this issue, the contract checks in which phase the buy transaction fall
 
 We basically want to differentiate between the initial and the post-MFG phase, so that the contract only allows to buy tokens at the initial price until the MFG is reached. The user will need another call to continue to buy but at the post-MFG phase price.
 
-## Pay function
+## The `pay` function
 
 A costumer cann call the `pay()` entrypoint to send a payment to the organisation via the smart contract. If `pay()` is called, the smart contract will issue new tokens and by default send them to the organisation. Optionally the costumer can pass an address for the tokens to be sent. A determinited part of the received tez will be kept in the reserve and the rest will be sent to the organisation. 
 
