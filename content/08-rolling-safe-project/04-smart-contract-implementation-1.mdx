@@ -22,7 +22,34 @@ For a close look at the formulas for calculation, we recommend consulting the [C
 
 </HighlightBox>
 
-We implemented our smart contract in [SmartPy](https://smartpy.io/). To keep things simple, the tokens are represented as a simple map.
+We implemented our smart contract in [SmartPy](https://smartpy.io/). To keep things simple, the tokens are represented as a simple map. In addition, we will store everything we want to keep track of on-chain:
+
+```python
+       self.init(
+            organization       = organization,                                     # contract administrator
+            ledger             = sp.map(l = {organization: sp.as_nat(preminted)}), # token ledger
+            price              = initial_price,                                    # initial price before MFG
+            total_tokens       = preminted,
+            burned_tokens      = burned_tokens,
+            MFG                = MFG,                                              # minimal funding goal
+            MPT                = sp.timestamp(...),                                # minimum period of time
+            b                  = b,                                                # buy slope
+            s                  = s,                                                # sell slope
+            I                  = I,                # percentage of the funds being held in the cash reserve
+            D                  = D,                # percentage of the revenues being funneled into cash reserve
+            minimumInvestment  = minimumInvestment,
+            company_v          = company_valuation,
+            base_currency      = base_currency,
+            total_allocation   = total_allocation,
+            stake_allocation   = stake_allocation, 
+            termination_events = termination_events,
+            govRights          = govRights,
+            company_name       = company_name,
+            phase              = 0,                                                # starting under MFG
+            total_investment   = sp.tez(0)
+            )
+```
+
 
 <HighlightBox type="tip">
 
@@ -32,13 +59,15 @@ Need a recap on SmartPy? No worries! We recommend a look at the chapter [Writing
 
 ## Contract entrypoints
 
-The contract has **three entrypoints**:
+The contract has **five entrypoints**:
 
 * `buy`,
-* `sell`, and
+* `sell`,
+* `pay`,
+* `burn`, and
 * `close`.
 
-In this section, we will begin with an explanation of the `buy` function. Afterwards, in the [next section](./cso-smart-contract-implementation-part-2), we will talk about the `sell` and `close` functions (closing function). For the sake of simplicity, we will not implement the entrypoints for `burn` and `pay`.
+In this section, we will begin with an explanation of the `buy` and the `pay` functions. Afterwards, in the [next section](./cso-smart-contract-implementation-part-2), we will talk about the `sell` and `close` functions (closing function). 
 
 <HighlightBox type="info">
 
@@ -46,7 +75,7 @@ You can find the smart contract in the [project repository](https://github.com/b
 
 </HighlightBox>
 
-If you want to extend this smart contract to, for example, fullfil the FA2 token standard, you will need to implement additional entrypoints. You can find more information regarding the token standard in the [FA2](./fa2) section of this course.
+If you want to extend this smart contract to, for example, fullfil the FA2 token standard, you will need to implement additional entrypoints. You can find more information regarding the token standard in the [FA2](./fa2) section.
 
 ## The `buy` function
 
@@ -192,7 +221,7 @@ At the end of a `buy_slope` call, the contract updates the sell slope. This is s
 
 </HighlightBox>
 
-## Entrypoints
+## Entrypoint
 
 Now we can look at the `buy` entrypoint and understand the conditions for calling the initial or slope buy function:
 
@@ -236,5 +265,68 @@ Imagine a scenario where a user (investor) commits a large amount to buy tokens.
 To avoid this issue, the contract checks in which phase the buy transaction falls. In the above-described scenario, it would not accept the transaction for the whole investment amount. Instead, the investor receives all tokens that can be bought for the initial-phase price and an excess return, with which more tokens can be bought but at the price determined by the `buy` function.
 
 We basically want to differentiate between the initial and the post-MFG phase, so that the contract only allows to buy tokens at the initial price until the MFG is reached. The user will need another call to continue to buy but at the post-MFG phase price.
+
+## The `pay` function
+
+A customer can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract will issue new tokens and by default send them to the organization. Optionally, the customer can pass an address to which the tokens are sent. A pre-determined part of the received tez will be kept in the reserve and the rest will be sent to the organization.
+
+We will have to consider all phases again:
+
+```python
+@sp.entry_point
+        def pay(self, params):
+            #check if in the initial phase
+            sp.if self.data.phase == 1:
+                pay_initial(params)
+            sp.elseif self.data.phase == 2:
+                pay_slopy(params)
+```
+
+And we need to implement `pay_initial` and `pay_slopy`:
+
+```python
+@sp.entry_point
+        def pay_slopy(self, params):
+            # see https://github.com/C-ORG/whitepaper#-revenues---pay
+            buyback_reserve = sp.local(
+                "local_amount", 
+                sp.utils.nat_to_mutez(
+                    sp.utils.mutez_to_nat(sp.amount) * self.data.D / 100
+                    )
+                )
+            # send sp.amount - buyback_reserve to organization
+            d = sp.amount - buyback_reserve.value
+            sp.send(self.data.organization, d)
+
+            token_amount = sp.local(
+            "token_amount", 
+            self.square_root(
+                2 * sp.utils.mutez_to_nat(d) /self.data.b + 
+                self.data.total_tokens * self.data.total_tokens
+                ) - self.data.total_tokens
+            )
+
+        # check if the address owns tokens
+        sp.if self.data.ledger.contains(sp.sender):
+            self.data.ledger[sp.sender] += sp.as_nat(token_amount.value)
+        sp.else:
+            self.data.ledger[sp.sender] = sp.as_nat(token_amount.value)
+                 
+        # increase total amount of the tokens
+        self.data.total_tokens += sp.as_nat(token_amount.value)
+
+```
+
+As you can see, it will mint the same number of tokens as if `buy()` would have been called. A part of the tez sent with the call will be kept in the contract:
+
+```python
+        # send (100-D) * amount/100 of the received tez to the organization
+        sp.send(self.data.organization, company_pay.value)
+        # this will keep D * amount/100 in this contract as buyback reserve
+            
+        # set new price
+        self.data.price = sp.utils.nat_to_mutez(self.data.b * self.data.total_tokens)
+        self.modify_sell_slope(send_back.value + company_pay.value)
+```
 
 Let us now take a look at the `sell` function.

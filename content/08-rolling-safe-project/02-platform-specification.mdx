@@ -17,13 +17,13 @@ This division of concerns allows developing both parts in parallel while decreas
 
 ![Division of concerns - System split](./images/system-split-l.png)
 
-The `DataHander` is written in JavaScript and exposes all functions for the web application to interact with the blockchain on a high level (both read and write). For the developer working on the web application implementation, this handler allows all interaction and does not require developers to know the actual smart contract implementation.
+The [`DataHander`](https://github.com/b9lab/tezos-cso-project/blob/master/src/services/DataHandler.ts) is written in JavaScript and exposes all functions for the web application to interact with the blockchain on a high level (both read and write). For the developer working on the web application implementation, this handler allows all interaction and does not require developers to know the actual smart contract implementation.
 
 On the other side, the `DataHandler` directly calls the wrapper functions implemented by the smart contract team, which does not need to know about the processing of this data in the web application beyond the wrapper functions. The call to the wrapper functions is also implemented in the `DataHandler` - so we really drew the line _through_ it.
 
 With this setup, the team working on the web application does not need to be fully knowledgeable about all the blockchain-related details, while the smart contract team just needs normal JavaScript/TypeScript to implement the wrappers without knowledge regarding both frontend and backend frameworks (React, Next, Express). Not everyone needs to be a full-stack developer.
 
-After a quick general project introduction (i.e. an explanation of the Rolling SAFE) and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the `DataHandler` on a basic level:
+After a quick general project introduction (i.e. an explanation of the Rolling SAFE) and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the [`DataHandler`](https://github.com/b9lab/tezos-cso-project/blob/master/src/services/DataHandler.ts) on a basic level:
 
 ```javascript
 @return Promise.resolve(number totalInvestors) or Promise.reject(error)
@@ -40,7 +40,7 @@ You can take a look at the [full (original) specification document](https://docs
 
 An example stub for the `getInvestmentNumbers()` function in the [very first version](https://github.com/b9lab/tezos-cso-project/blob/72ce67a34d8aa99e38895595033900e00d4f7b70/src/services/DataHandler.ts#L46) is:
 
-```javascript
+```typescript
 // General Investment Info
 
 getInvestmentNumbers(): Promise<InvestmentNumbersDto> {
@@ -59,6 +59,72 @@ getInvestmentNumbers(): Promise<InvestmentNumbersDto> {
 ```
 
 On the web application side, this common `DataHandler` with stubs allows to immediately start with the implementation of the scenarios with their views and flows. For the smart contract development, this is a perfect blueprint to be used as expected values in unit tests allowing to start with **test-driven development** right away.
+
+Later, the stubs are replaced with the `chainWrapper` methods according the signatures:
+
+```typescript
+
+class DataHandler {
+
+    /**
+     * Gets the general investment numbers
+     */
+    async getInvestmentNumbers(): Promise<InvestmentNumbersDto> {
+        const start = new Date(process.env.DEPLOYMENT_DATE || "2021-07-21T14:02:43Z");
+        const end = new Date();
+        const steps = 30;
+
+        const storage = await chain.storage();
+        const [
+            companyName, 
+            buyPrice, 
+            sellPrice, 
+            minimumFundingGoal, 
+            totalInvestments, 
+            investorsCount, 
+            totalTokens, 
+            reserveAmount, 
+            sellSlope,
+            buySlope, 
+            unlockingDate,
+            burnedTokensCount,
+            phase,
+            priceHistory
+        ] = await Promise.all([
+            chain.companyName(storage), 
+            chain.buyPrice(storage, 1),
+            chain.sellPrice(1),
+            chain.mfg(storage),
+            chain.totalInvestments(storage),
+            chain.totalInvestors(storage),
+            chain.totalTokens(storage),
+            chain.reserveAmount(),
+            chain.sellSlope(storage),
+            chain.buySlope(storage),
+            chain.unlockingDate(storage),
+            chain.burnedTokens(storage),
+            chain.phase(storage),
+            chain.priceHistory(start, end, steps)
+        ]);
+
+        return {
+            companyName: companyName,
+            tokenBuyPrice: +buyPrice,
+            tokenSellPrice: +sellPrice,
+            minimumFundingGoal: +minimumFundingGoal,
+            unlockingDate: unlockingDate,
+            totalInvestment: +totalInvestments,
+            investorsCount: +investorsCount,
+            tokensCount: +totalTokens,
+            burnedTokensCount: +burnedTokensCount,
+            reserveAmount: +reserveAmount,
+            buySlope: +buySlope,
+            sellSlope: +sellSlope,
+            isMFGReached: !!+phase,
+            prices: priceHistory
+        };
+    }
+```
 
 ## Workflows
 
