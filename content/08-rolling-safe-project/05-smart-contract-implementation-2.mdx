@@ -57,7 +57,16 @@ where `a` represents the total amount of tokens issued.
 
 ## Burning tokens
 
-We were not going to implement `burn`, but because burning is a part of the selling process, we will define an internal function to burn tokens:
+Now we can have a look at `burn`:
+
+```python
+    @sp.entry_point
+    def burn(self, params):
+        self.burn_intern(params.amount)
+        self.modify_sell_slope()
+```
+
+because burning is a part of the selling process, so we will define an internal function to burn tokens:
 
 ```python          
     # internal burn function will be called by the entrypoints burn and sell
