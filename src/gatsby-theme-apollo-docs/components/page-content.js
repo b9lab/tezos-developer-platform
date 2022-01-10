@@ -286,7 +286,7 @@ export default function PageContent(props) {
           ref={contentRef}
           className={cn('content-wrapper', {
             'api-ref': props.apiReference
-          })}
+          }) + ' body-content'}
         >
           <TopInfoBar>
             <SVGIconWrapper>

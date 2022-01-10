@@ -7,9 +7,9 @@ export default function Glossarizer({dep}) {
         window.jQuery = $;
         window.Glossarizer = require('glossarizer/jquery.glossarize.js');
         window.Tooltip = require('../../public/tooltip/tooltip.js');
-        $(':root').glossarizer({
+        $('.body-content').glossarizer({
             sourceURL: '/glossary.json',
-            lookupTagName: 'p, ul, ol',
+            lookupTagName: 'p:not(a > p), ul:not(a > ut), ol:not(a > ol)',
             callback: function() {
                 // Callback fired after glossarizer finishes its job
                 // eslint-disable-next-line
