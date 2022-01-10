@@ -268,9 +268,9 @@ We basically want to differentiate between the initial and the post-MFG phase, s
 
 ## The `pay` function
 
-A costumer cann call the `pay()` entrypoint to send a payment to the organisation via the smart contract. If `pay()` is called, the smart contract will issue new tokens and by default send them to the organisation. Optionally the costumer can pass an address for the tokens to be sent. A determinited part of the received tez will be kept in the reserve and the rest will be sent to the organisation. 
+A customer can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract will issue new tokens and by default send them to the organization. Optionally, the customer can pass an address to which the tokens are sent. A pre-determined part of the received tez will be kept in the reserve and the rest will be sent to the organization.
 
-Again we will have to consider all phases:
+We will have to consider all phases again:
 
 ```python
 @sp.entry_point
@@ -282,7 +282,7 @@ Again we will have to consider all phases:
                 pay_slopy(params)
 ```
 
-and we need implement `pay_initial` and `pay_slopy`:
+And we need to implement `pay_initial` and `pay_slopy`:
 
 ```python
 @sp.entry_point
@@ -317,7 +317,7 @@ and we need implement `pay_initial` and `pay_slopy`:
 
 ```
 
-as you can see it will mint the same amount of tokens if `buy()` would have been called. A part of the tez send with the call will be kept in the contract:
+As you can see, it will mint the same number of tokens as if `buy()` would have been called. A part of the tez sent with the call will be kept in the contract:
 
 ```python
         # send (100-D) * amount/100 of the received tez to the organization
@@ -328,6 +328,5 @@ as you can see it will mint the same amount of tokens if `buy()` would have been
         self.data.price = sp.utils.nat_to_mutez(self.data.b * self.data.total_tokens)
         self.modify_sell_slope(send_back.value + company_pay.value)
 ```
-
 
 Let us now take a look at the `sell` function.
