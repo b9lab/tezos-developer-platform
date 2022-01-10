@@ -2,7 +2,8 @@ const path = require('path');
 const here = `${path.parse(__dirname).base}${path.sep}`;
 module.exports = [
   `${here}00-landingpage`,
-  `${here}01-intro-what-is-a-rolling-safe`,
+  `${here}01-intro-origins-of-rolling-safe`,
+  `${here}02-what-is-a-rolling-safe`,
   `${here}02-platform-specification`,
   `${here}03-platform-connections`,
   `${here}04-smart-contract-implementation-1`,
