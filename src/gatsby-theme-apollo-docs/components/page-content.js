@@ -14,6 +14,7 @@ import {withPrefix, useStaticQuery} from 'gatsby';
 import FeedbackBox from '../../components/FeedbackBox'
 import {ReactComponent as IconClockSVG} from "../assets/fa-clock-light.svg";
 import {slackLinkUrl} from '../../../theme-options'
+import Glossarizer from '../../components/Glossarizer';
 
 const Wrapper = styled.div({
   display: 'flex',
@@ -316,6 +317,7 @@ export default function PageContent(props) {
         )}
         {slackLink}
       </Aside>
+      <Glossarizer dep={contentRef}/>
     </Wrapper>
   );
 }
