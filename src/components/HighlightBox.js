@@ -32,11 +32,11 @@ const HighlightBoxIcon = styled.div`
   }
 
   ${({ type }) => type==="info" && `
-    background: #2C7DF7;
+    background: #0F61FF;
   `}
 
   ${({ type }) => type==="tip" && `
-    background: #DE7150;
+    background: #616F82;
   `}
 
   ${({ type }) => (type==="warn" || type==="warning") && `
@@ -44,7 +44,7 @@ const HighlightBoxIcon = styled.div`
   `}
 
   ${({ type }) => type==="reading" && `
-    background: #389C66;
+    background: #838893;
   `}
 `;
 
@@ -67,14 +67,14 @@ const HighlightBoxContent = styled.div`
   ${({ type }) => type==="info" && `
     &::before {
       content: "Info";
-      color: #2C7DF7;
+      color: #0F61FF;
     }
   `}
 
   ${({ type }) => type==="tip" && `
     &::before {
       content: "Tip";
-      color: #DE7150;
+      color: #616F82;
     }
   `}
 
@@ -88,7 +88,7 @@ const HighlightBoxContent = styled.div`
   ${({ type }) => type==="reading" && `
     &::before {
       content: "Further Reading";
-      color: #389C66;
+      color: #838893;
     }
   `}
 `;

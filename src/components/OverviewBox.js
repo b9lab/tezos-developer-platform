@@ -44,7 +44,7 @@ const ContentRight = styled.div({
 });
 
 const Link = styled.a({
-  color: "#DD4F52",
+  color: "#0F61FF",
   fontWeight: 700,
   textDecoration: "none",
   ":hover": {

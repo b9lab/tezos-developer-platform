@@ -25,7 +25,7 @@ const ExpandAll = styled.button(smallCaps, {
   color: 'inherit',
   ':hover': {
     opacity: 1,
-    color: "#DD4F52"
+    color: "#0F61FF"
   },
   svg: {
     ...size(12),
@@ -49,13 +49,13 @@ const StyledListItem = styled.li({
     textDecoration: 'none',
     ':hover': {
       opacity: colors.hoverOpacity,
-      color: "#DD4F52"
+      color: "#0F61FF"
     },
     ':first-child': {
       marginBottom: '10px'
     },
     '&.active': {
-      color: "#DD4F52",
+      color: "#0F61FF",
       pointerEvents: 'none'
     }
   }
@@ -82,7 +82,7 @@ const categoryTitleStyles = {
   ...smallCaps,
   svg: size(10),
   '&.active': {
-    color: "#DD4F52"
+    color: "#0F61FF"
   }
 };
 
