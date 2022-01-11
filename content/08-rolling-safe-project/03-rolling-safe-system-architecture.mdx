@@ -42,7 +42,7 @@ totalInvestments()
 companyValuation()
 ```
 
-You can take a look at the full (original) specification document below, to get a feel for our first approach - Please note that this document was our very first specification document. After we had created this document, we began to implement the DataHandler with stubs, which then became our new specification file.
+You can take a look at the full (original) specification document below to get a feel for our first approach - Please note that this document was our very first specification document. After we creating this document, we began to implement the `DataHandler` with stubs, which then became our new specification file.
 
 <ExpansionPanel title="Full signature specification">
 
@@ -233,10 +233,9 @@ class DataHandler {
 
 ## Workflows
 
-We also used this common interface to communicate (specification) updates between the smart contract development and the application. Using automated units tests that run on any code update, any breaking change will be immediately visible. This is very important for any project because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during a project.
+We also used this common interface to communicate (specification) updates between the smart contract development and the application. When using automated units tests that run on any code update, any breaking change will be immediately visible. This is very important for any project because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during a project.
 
-We will look into the details of the unit and integration tests in the [testing Section](./07-testing). You can take a look at the configuration and run results in our public [repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
-
+We will look into the details of the unit and integration tests in the [testing Section](./07-testing). You can take a look at the configuration and run results in our [public repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
 
 ## Two parts, two repositories
 
@@ -251,7 +250,7 @@ When a change on the smart contract functions is requested from the web applicat
 
 During the initial development, it was also very easy to update the stubbed functions with this split up once the smart contract and wrapper functions were ready, as the smart contract team could easily replace the stubbed data fields with the wrapper calls and push this update to the web application team to connect their functions.
 
-## Connecting System Components
+## Connecting system components
 
 The component that brings the TZMINT web application and the Tezos blockchain together is the `DataHandler`. It requests the data the web application needs through wrappers, which use various Tezos APIs to interact with the blockchain and the user wallet:
 
