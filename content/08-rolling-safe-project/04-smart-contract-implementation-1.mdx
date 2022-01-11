@@ -1,7 +1,7 @@
 ---
 title: Smart Contract Implementation I
 description: Implementing the buy function
-slug: /cso-smart-contract-implementation-part-1
+slug: /rolling-safe-smart-contract-implementation-part-1
 ---
 
 import HighlightBox from "../../src/components/HighlightBox"
@@ -66,7 +66,7 @@ The contract has **five entrypoints**:
 * `burn`, and
 * `close`.
 
-In this section, we will begin with an explanation of the `buy` and the `pay` functions. Afterwards, in the [next section](./cso-smart-contract-implementation-part-2), we will talk about the `sell` and `close` functions (closing function). 
+In this section, we will begin with an explanation of the `buy` and the `pay` functions. Afterwards, in the [next section](./rolling-safe-smart-contract-implementation-part-2), we will talk about the `sell` and `close` functions (closing function). 
 
 <HighlightBox type="info">
 
@@ -220,7 +220,7 @@ Each time someone buys a token, a part of the tez amount in the transaction will
 
 <HighlightBox type="info">
 
-At the end of a `buy_slope` call, the contract updates the sell slope. This is something we address in the [next section](./cso-smart-contract-implementation-part-2).
+At the end of a `buy_slope` call, the contract updates the sell slope. This is something we address in the [next section](./rolling-safe-smart-contract-implementation-part-2).
 
 </HighlightBox>
 
