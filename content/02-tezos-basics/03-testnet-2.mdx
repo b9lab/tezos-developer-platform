@@ -40,7 +40,7 @@ A Tezos node will directly execute a serialized Michelson program when asked to.
 
 Time to deploy our first Tezos contract! 
 
-Create a new file `repeater.tz` in the same folder as `florencenet.sh` and paste:
+Create a new file `repeater.tz` in the same folder as `hangzhounet.sh` and paste:
 
 ```michelson
 parameter int;
@@ -68,7 +68,7 @@ At this stage, the Tezos environment takes the output storage structure, here an
 Before we deploy this contract, we can test it with any test parameter and storage:
 
 ```sh
-$ ./florencenet.sh client run script container:repeater.tz on storage 0 and input 1
+$ ./hangzhounet.sh client run script container:repeater.tz on storage 0 and input 1
 ```
 It will give you as a result:
 
@@ -85,7 +85,7 @@ Notice the trick we did here? We did not pretend that it was deployed and that i
 We can also check the stack:
 
 ```
-$ ./florencenet.sh client typecheck script container:repeater.tz -details
+$ ./hangzhounet.sh client typecheck script container:repeater.tz -details
 Warning:
   
                  This is NOT the Tezos Mainnet.
@@ -110,7 +110,7 @@ So it starts with one element `[ pair (int @parameter) (int @storage) ]` in the 
 Satisfied with this exhaustive battery of tests, let us deploy this contract:
 
 ```sh
-$ ./florencenet.sh client originate contract repeater for myFirstKey transferring 0.1 from myFirstKey running container:repeater.tz --init 0 --burn-cap 0.295
+$ ./hangzhounet.sh client originate contract repeater for myFirstKey transferring 0.1 from myFirstKey running container:repeater.tz --init 0 --burn-cap 0.295
 Warning:
   
                  This is NOT the Tezos Mainnet.
@@ -185,7 +185,7 @@ Tezos offers two kinds of accounts, [implicit and originated](https://github.com
 Now, with:
 
 ```sh
-$ ./florencenet.sh client list known contracts
+$ ./hangzhounet.sh client list known contracts
 Warning:
   
                  This is NOT the Tezos Mainnet.
@@ -202,7 +202,7 @@ You can see the address of our contract. Your client gives aliases to some addre
 Time to do our **first contract interaction**, here known as `transfer`:
 
 ```sh
-$ ./florencenet.sh client transfer 0 from myFirstKey to repeater --arg "1"
+$ ./hangzhounet.sh client transfer 0 from myFirstKey to repeater --arg "1"
 ```
 In the output, you will see `Updated storage: 1`.
 

@@ -92,37 +92,64 @@ An important thing in the above code to notice is that we do not modify the tota
 
 ## Entrypoints
 
-It is time to have a look at the `sell` **entrypoint**. There is no selling in the initial phase, so no internal function is needed and the entrypoint can be implemented directly:
+It is time to have a look at the `sell` **entrypoint**:
 
 ```python
     @sp.entry_point
     def sell(self, params):
-        # check that the initial phase is over but not closed
-        sp.verify(self.data.phase == 1)
+        sp.if self.data.phase == 0:
+            self.sell_initial(params.amount)
+        sp.if self.data.phase == 1:
+            self.sell_slope(params.amount)
+```
+
+this seems less complex than the buy entrypoint. The reason is that we cannot change the phase by selling:
+
+```python
+    def sell_initial(self, amount):
         # check if the address owns tokens
         sp.if self.data.ledger.contains(sp.sender):
         # check if the address owns enough tokens
-            sp.if self.data.ledger[sp.sender] >= sp.as_nat(params.amount):
+            sp.if self.data.ledger[sp.sender] >= sp.as_nat(amount):
                 # calculate the amount of tez to send
                 # see https://github.com/C-ORG/whitepaper#-investments---sell
                 pay_amount = sp.local(
                     "pay_amount", 
-                    sp.as_nat(
-                        self.data.total_tokens * sp.as_nat(params.amount) * self.data.s - 
-                        sp.as_nat(params.amount * params.amount) * self.data.s / 2 
-                        ) + 
-                        self.data.s * sp.as_nat(params.amount) * 
-                        self.data.burned_tokens * self.data.burned_tokens /
-                        sp.as_nat(2 * (self.data.total_tokens - self.data.burned_tokens) )
+                    sp.utils.mutez_to_nat(self.data.price) * sp.as_nat(amount)
                 )
                 # burn the amount of tokens selled
-                self.burn_intern(params.amount)
+                self.burn_intern(amount)
                 # send pay_amount tez to the sender of the transaction
                 sp.send(sp.sender, sp.utils.nat_to_mutez(pay_amount.value))
                 self.modify_sell_slope(sp.utils.nat_to_mutez(pay_amount.value))
 ```
 
-## Calculating the pay amount
+In the initial phase, one can sell a token and get 100% of the buy price, which will remain the same till MFG is reached.
+
+```python
+    def sell_slope(self, amount):
+        # check if the address owns tokens
+        sp.if self.data.ledger.contains(sp.sender):
+        # check if the address owns enough tokens
+            sp.if self.data.ledger[sp.sender] >= sp.as_nat(amount):
+                # calculate the amount of tez to send
+                # see https://github.com/C-ORG/whitepaper#-investments---sell
+                pay_amount = sp.local(
+                    "pay_amount", 
+                    sp.as_nat(
+                        self.data.total_tokens * sp.as_nat(amount) * self.data.s - 
+                        sp.as_nat(amount * amount) * self.data.s / 2 
+                        ) + 
+                        self.data.s * sp.as_nat(amount) * 
+                        self.data.burned_tokens * self.data.burned_tokens /
+                        sp.as_nat(2 * (self.data.total_tokens - self.data.burned_tokens) )
+                )
+                # burn the amount of tokens selled
+                self.burn_intern(amount)
+                # send pay_amount tez to the sender of the transaction
+                sp.send(sp.sender, sp.utils.nat_to_mutez(pay_amount.value))
+                self.modify_sell_slope(sp.utils.nat_to_mutez(pay_amount.value))
+```
 
 The calculation of `pay_amount` looks a bit messy because it depends on `total_tokens`, `self.data.s`(sell slope), `params.amount` (tez sent with the transaction), and `self.data.burned_tokens`:
 

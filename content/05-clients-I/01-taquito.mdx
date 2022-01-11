@@ -99,12 +99,12 @@ crossorigin="anonymous" integrity="sha384-/5I+hK0VgKGoDqq/Xo1aMUdCxeQwcBZyqBo0e8
 </html>
 ```
 
-There you can see our contract's address: [KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v](https://better-call.dev/florencenet/KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v/operations).
+There you can see our contract's address: [KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v](https://better-call.dev/hangzhou2net/KT1F1eTVrVFoaNuKw1LbQp1oYptjjcqZby2v/operations).
 
 You will notice that the script `verifier.js` at the end doesn't exist yet. Let us create it in the same folder:
 
 ```javascript
-const tezos = new taquito.TezosToolkit('https://florencenet.smartpy.io/');
+const tezos = new taquito.TezosToolkit('https://hangzhounet.smartpy.io/');
 
 function updateStatusUI(status, itemSelector) {
   const bar = $(itemSelector).removeClass().addClass("result-bar");
@@ -392,7 +392,7 @@ And for the `certifier.js` script:
 // You can hardcode your account settings and contract address here for local testing.
 function initUI() {
     updateUISetting({
-        provider: "https://florencenet.smartpy.io/",
+        provider: "https://hangzhounet.smartpy.io/",
         mnemonic: "twenty aware media quality beyond summer milk hurry library unknown hover permit conduct switch slogan",
         password: "TUBtLEyYi5",
         email: "hfezymib.ytwslmjd@tezos.example.org",
@@ -680,7 +680,7 @@ Then create an index.js and try the [first sample](https://tezostaquito.io/docs/
 
 ```javascript
 const { TezosToolkit } = require("@taquito/taquito");
-const Tezos = new TezosToolkit('https://florencenet.smartpy.io/');
+const Tezos = new TezosToolkit('https://hangzhounet.smartpy.io/');
 
 Tezos.tz
   .getBalance('tz1h3rQ8wBxFd8L9B3d7Jhaawu6Z568XU3xY')

@@ -307,7 +307,7 @@ More on operations on strings? Check out: [https://tezos.gitlab.io/008/michelson
 
 Let us write a smart contract using this knowledge. We want to rewrite our certification smart contract with Michelson. 
 
-Create a new file `certify.tz` in the same folder as `florencenet.sh` and paste:
+Create a new file `certify.tz` in the same folder as `hangzhounet.sh` and paste:
 
 ```
 parameter address;
@@ -326,7 +326,7 @@ code { DUP;
 You must understand the stack. Working with Michelson means working with a stack. What do we do in this part of the code? Let us take a look at the stack:
 
 ```
-$ ./florencenet.sh client typecheck script container:certify.tz -details
+$ ./hangzhounet.sh client typecheck script container:certify.tz -details
 ```
 
 This should give you the output:
@@ -428,7 +428,7 @@ PAIR };
 Let us run test smart contract:
 
 ```
-$ ./florencenet.sh client run script container:certify.tz on storage '{}' and input '"tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' --trace-stack
+$ ./hangzhounet.sh client run script container:certify.tz on storage '{}' and input '"tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' --trace-stack
 ```
 
 You can also deploy the contract and interact with it further. But as you can see, this contract will not check who is issuing a certificate.
@@ -482,7 +482,7 @@ at the beginning. `SENDER` will give us the address of the contract which is cal
 Let us do a typecheck:
 
 ```
-$ ./florencenet.sh client typecheck script container:certify.tz -details
+$ ./hangzhounet.sh client typecheck script container:certify.tz -details
 ```
 
 The output will be:
@@ -594,13 +594,13 @@ You can also use `{}` as the second branch of `IF`, or put the rest of the code 
 Now, let us test this contract:
 
 ```
-$ ./florencenet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN
+$ ./hangzhounet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN
 ```
 
 And let us test it with another `--source` which is not in the `storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"'`:
 
 ```
-$ ./florencenet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a
+$ ./hangzhounet.sh client run script container:certify.tz on storage 'Pair {} "tz1Q2zkgZENNF2g95NN7g1CtxAqKynWViSeN"' and input '"tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a"' --source tz1efDUcgRaD6WcChETnhEqW57JMxRCree8a
 ```
 
 This time it should fail. We can optimize our code and use the second branch of the `IF` and a `big_map` instead of a `map`: 
@@ -637,7 +637,7 @@ Note that you can only have one `big_map` in a contract. This limitation of `big
 Let us deploy this contract. Therefore, first check the address of your accounts/contracts with:
 
 ```
-$ ./florencenet.sh client list known addresses
+$ ./hangzhounet.sh client list known addresses
 
 Warning:
   
@@ -653,7 +653,7 @@ myFirstKey: tz1dJbDNdzM5xFVSKkwt5NVPsdgQmWBQpfng (unencrypted sk known)
 Then you can use one of your active accounts:
 
 ```
-$ ./florencenet.sh client originate contract certify for faucetWallet transferring 0 from faucetWallet running container:certify.tz --init 'Pair {} "tz1fM3iHj7qWUrUStFwDuhDmjPeiQCWwBDDZ"' --burn-cap 0.5
+$ ./hangzhounet.sh client originate contract certify for faucetWallet transferring 0 from faucetWallet running container:certify.tz --init 'Pair {} "tz1fM3iHj7qWUrUStFwDuhDmjPeiQCWwBDDZ"' --burn-cap 0.5
 ```
 
 You will receive the contract address if it is deployed:
