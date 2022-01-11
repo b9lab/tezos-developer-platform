@@ -12,7 +12,7 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-B9lab's sample project is an implementation of a contnious programmable equity offering also known as a Rolling SAFE. To see the implementation in action, please visit the [TZMINT web application](https://tzmint.b9lab.com/), which is hosted by [B9lab](https://b9lab.com/). It is better to first try out the web application before taking a closer look at the implementation description in this course.
+B9lab's sample project is an implementation of a continiuous programmable equity offering also known as a Rolling SAFE. To see the implementation in action, please visit the [TZMINT web application](https://tzmint.b9lab.com/), which is hosted by [B9lab](https://b9lab.com/). It is better to first try out the web application before taking a closer look at the implementation described in this course.
 
 <HighlightBox type="info">
 
@@ -50,7 +50,6 @@ We implemented our smart contract in [SmartPy](https://smartpy.io/). To keep thi
             )
 ```
 
-
 <HighlightBox type="tip">
 
 Need a recap on SmartPy? No worries! We recommend a look at the chapter [Writing Smart Contracts](./smart-contracts).
@@ -75,7 +74,7 @@ You can find the smart contract in the [project repository](https://github.com/b
 
 </HighlightBox>
 
-If you want to extend this smart contract to, for example, fullfil the FA2 token standard, you will need to implement additional entrypoints. You can find more information regarding the token standard in the [FA2](./fa2) section.
+If you want to extend this smart contract to, for example, fulfill the FA2 token standard, you will need to implement additional entrypoints. You can find more information regarding the token standard in the [FA2](./fa2) section.
 
 ## The `buy` function
 
@@ -247,7 +246,7 @@ Now we can look at the `buy` entrypoint and understand the conditions for callin
             sp.else:
                 self.data.phase = 1
                 self.buy_slope(sp.amount)
- ```
+```
 
 You can see, that we do not allow any action to take place after the closing phase.
 
@@ -268,14 +267,13 @@ Imagine a scenario where a user (investor) commits a large amount to buy tokens.
 
 To avoid this issue, the contract checks in which phase the buy transaction falls. In the above-described scenario, it would not accept the transaction for the whole investment amount. Instead, the investor receives all tokens that can be bought for the initial-phase price and an excess return, with which more tokens can be bought but at the price determined by the `buy` function.
 
-We basically want to differentiate between the initial and the post-MFG phase, so that the contract only allows to buy tokens at the initial price until the MFG is reached. The user will need another call to continue to buy but at the post-MFG phase price.
+We want to differentiate between the initial and the post-MFG phase, so that the contract only allows to buy tokens at the initial price until the MFG is reached. The user will need another call to continue to buy but at the post-MFG phase price.
 
 ## The `pay` function
 
 A customer can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract will issue new tokens and by default send them to the organization. Optionally, the customer can pass an address to which the tokens are sent. A pre-determined part of the received tez will be kept in the reserve and the rest will be sent to the organization.
 
 We will allow payments in the slopy phase:
-
 
 ```python
    @sp.entry_point

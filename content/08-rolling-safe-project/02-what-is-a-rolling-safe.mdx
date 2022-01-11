@@ -1,6 +1,6 @@
 ---
 title: What is a Rolling SAFE?
-description: A continous programmable equity offering developed with the Tezos stack
+description: A continuous programmable equity offering developed with the Tezos stack
 slug: /what-is-a-rolling-safe
 ---
 
@@ -87,7 +87,7 @@ In a Rolling SAFE, a **smart contract** issues the tokenized security handles sa
 
 ![The relationship between investor, DAT, and issuer](images/DAT.png)
 
-The DAT issues tokens proportionally to the amount invested. The DAT tokens represent a claim on the DAT-managed cash reserve.
+The DAT issues token proportionally to the amount invested. The DAT tokens represent a claim on the DAT-managed cash reserve.
 
 ### Pre-MFG
 
@@ -172,7 +172,7 @@ The **`sell()` function** is called by investors to sell their tokens for the ba
 
 The **`pay()` function** calculates the current average selling price of a Rolling SAFE token. The `pay()` function is called to send funds to the issuer via the smart contract and send the correct amount of tokens to investors in return as the function also triggers the issuance of new tokens. The funds are transferred to the issuer but a part of it is retained by the smart contract and used to issue new tokens, which are sent to the issuer or the investor. Calling the `pay()` function leads to an increase in the cash reserve of the smart contract, which leads to an increased value of tokens.
 
-The **`buy()` function** calculates the average price of a Rolling SAFE token in the base currency. Technically, the `buy()` function is called to send base currency to the issuer via the smart contract, which then issues new tokens in relation to the investment amount that are sent to the issuer. All funds are transferred using the smart contract's cash reserve. When an investor sends funds in base currency to the smart contract (i.e. the DAT receives a payment), a portion of the funds is sent to the **cash reserve** managed by the contract and another part goes into the **issuers/companies wallet**.
+The **`buy()` function** calculates the average price of a Rolling SAFE token in the base currency. Technically, the `buy()` function is called to send base currency to the issuer via the smart contract, which then issues new tokens in relation to the investment amount that is sent to the issuer. All funds are transferred using the smart contract's cash reserve. When an investor sends funds in base currency to the smart contract (i.e. the DAT receives a payment), a portion of the funds is sent to the **cash reserve** managed by the contract and another part goes into the **issuers/companies wallet**.
 
 The **`burn()` function** assists with "burning" tokens, i.e. taking them out of circulation. This does not technically destroy tokens, but as they become unusable the marginal value of the tokens (the lowest value of the burnt tokens) is redistributed among the remaining tokenholders via the `sell()` function. As burning tokens does technically not destroy them, the total amount of tokens issued is not affected. Thus, burning tokens can be used to influence the sell price but not the buy price.
 
@@ -180,7 +180,7 @@ The **`burn()` function** assists with "burning" tokens, i.e. taking them out of
 
 In blockchain, coin or token burning is not an unusual thing. Burning is done to take tokens out of circulation. Often this happens by sending a token intentionally to an unusable wallet address (burn address). The address is unusable because it cannot be accessed by or assigned to anyone.
 
-This is the case when working with tez. Since in the TZMINT web application the issuer mints its own tokens, there is no need for a burn address.
+This is the case when working with tez. Since in the TZMINT web application the issuer mints its tokens, there is no need for a burn address.
 
 </HighlightBox>
 

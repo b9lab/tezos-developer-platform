@@ -103,7 +103,7 @@ It is time to have a look at the `sell` **entrypoint**:
             self.sell_slope(params.amount)
 ```
 
-this seems less complex than the buy entrypoint. The reason is that we cannot change the phase by selling:
+This seems less complex than the buy entrypoint. The reason is that we cannot change the phase by selling:
 
 ```python
     def sell_initial(self, amount):
@@ -157,7 +157,7 @@ The calculation of `pay_amount` looks a bit messy because it depends on `total_t
 
 Where our `pay_amount` represents `M` in the formula and `x` is the amount of tez sent with the transaction.
 
-As you can see, the sell slope will increase if tokens are burned but the buy slope is always constant. This means that the entrypoint `burn`, if it were implemented, would allow the organization to increase the sell price.
+As you can see, the sell slope will increase if tokens are burned but the buy slope is always constant. This means that the entrypoint `burn` if it were implemented, would allow the organization to increase the sell price.
 
 Anyway, there is another mechanism where users/investors can gain profits from buying tokens: __closing__.
 
@@ -208,4 +208,4 @@ If the [closing phase](https://github.com/C-ORG/whitepaper#closing) is triggered
 
 So, the sum of the payments is the exit fee.
 
-Only the contract owner can call `close`. For the `close` transaction to be successful, the contract owner needs to send the exit fee. Note that the minimum period of time (MPT) must be reached if the organization wants to trigger the closing.
+Only the contract owner can call it `close`. For the `close` transaction to be successful, the contract owner needs to send the exit fee. Note that the minimum period of time (MPT) must be reached if the organization wants to trigger the closing.

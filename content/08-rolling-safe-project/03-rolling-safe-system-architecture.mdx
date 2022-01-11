@@ -1,5 +1,5 @@
 ---
-title: System Architecture and Data handling
+title: System Architecture and Data Handling
 description: 
 slug: /rolling-safe-system-architecture
 ---
@@ -25,7 +25,7 @@ This division of concerns allows developing both parts in parallel while decreas
 
 The [`DataHander`](https://github.com/b9lab/tezos-cso-project/blob/master/src/services/DataHandler.ts) is written in JavaScript and exposes all functions for the web application to interact with the blockchain on a high level (both read and write). For the developer working on the web application implementation, this handler allows all interaction and does not require developers to know the actual smart contract implementation.
 
-On the other side, the `DataHandler` directly calls the wrapper functions implemented by the smart contract team, which does not need to know about the processing of this data in the web application beyond the wrapper functions. The call to the wrapper functions is also implemented in the `DataHandler` - so we really drew the line _through_ it.
+On the other side, the `DataHandler` directly calls the wrapper functions implemented by the smart contract team, which does not need to know about the processing of this data in the web application beyond the wrapper functions. The call to the wrapper functions is also implemented in the `DataHandler` - so we drew the line _through_ it.
 
 With this setup, the team working on the web application does not need to be fully knowledgeable about all the blockchain-related details, while the smart contract team just needs normal JavaScript/TypeScript to implement the wrappers without knowledge regarding both frontend and backend frameworks (React, Next, Express). Not everyone needs to be a full-stack developer.
 
@@ -46,7 +46,7 @@ You can take a look at the full (original) specification document below, to get 
 
 <ExpansionPanel title="Full signature specification">
 
-Note: Methods are already grouped into contract, chain and wallet wrapper
+Note: Methods are already grouped into contract, chain, and wallet wrapper.
 
 ```javascript
 contractWrapper: contract calls, no function params, wallet will handle input
@@ -165,7 +165,7 @@ getInvestmentNumbers(): Promise<InvestmentNumbersDto> {
 
 On the web application side, this common `DataHandler` with stubs allows to immediately start with the implementation of the scenarios with their views and flows. For the smart contract development, this is a perfect blueprint to be used as expected values in unit tests allowing to start with **test-driven development** right away.
 
-Later, the stubs are replaced with the `chainWrapper` methods according the signatures:
+Later, the stubs are replaced with the `chainWrapper` methods according to the signatures:
 
 ```typescript
 
@@ -233,9 +233,9 @@ class DataHandler {
 
 ## Workflows
 
-We also used this common interface to communicate (specification) updates between the smart contract development and the application. Using automated units tests which run on any code update, any breaking change will be immediately visible. This is very important for any project, because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during the course of a project.
+We also used this common interface to communicate (specification) updates between the smart contract development and the application. Using automated units tests that run on any code update, any breaking change will be immediately visible. This is very important for any project because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during a project.
 
-We will look into the details of unit and integration tests in the [testing Section](./07-testing). You can take a look at the configuration and run results in our public [repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
+We will look into the details of the unit and integration tests in the [testing Section](./07-testing). You can take a look at the configuration and run results in our public [repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
 
 
 ## Two parts, two repositories
@@ -276,5 +276,3 @@ The wrappers are used to fetch contract and transaction data and to call the con
 * `chainWrapper`: Uses the [TzKT API](./tzkt) to fetch blockchain data, formats, and caches, and to calculate values;
 * `walletWrapper`: Uses the Beacon SDK to sign the transactions;
 * `contractWrapper`: Uses `walletWrapper` to sign the transactions and Taquito to send transactions to the Tezos node.
-
-
