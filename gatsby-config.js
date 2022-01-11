@@ -131,7 +131,7 @@ module.exports = {
     {
       resolve: "gatsby-advanced-readingtime",
       options: {
-        imageTime: 1,
+        imageTime: 0.5,
         codeTimePerLine: 0.2,
         customComponents: [
           {
