@@ -6,6 +6,13 @@ slug: /cso-platform-specification
 
 import HighlightBox from "../../src/components/HighlightBox"
 
+import {
+  ExpansionPanel,
+  ExpansionPanelList,
+  ExpansionPanelListItem
+} from 'gatsby-theme-apollo-docs';
+
+
 Due to the size of this project, we need to do some planning before starting to code. We will showcase our actual approach for the implementation of this whole project, and share our considerations and learnings.
 
 On the top level, we have divided the project into two separate parts:
@@ -36,7 +43,104 @@ chainWrapper.totalInvestments()
 chainWrapper.companyValuation()
 ```
 
-You can take a look at the [full (original) specification document](https://docs.google.com/document/d/1_7sPfupI5JVjYDt1_PoFcq1q-QQoLq1SNBt3kfY2M4U) to get a feel for our first approach - Please note that this document was our very first specification document. After we had created this document, we began to implement the DataHandler with stubs, which then became our new specification file.
+You can take a look at the full (original) specification document below, to get a feel for our first approach - Please note that this document was our very first specification document. After we had created this document, we began to implement the DataHandler with stubs, which then became our new specification file.
+
+<ExpansionPanel title="Full signature specification">
+
+```javascript
+contractWrapper: contract calls, no function params, wallet will handle input
+@returns Promise.resolve(number tokenAmount) or Promise.reject(error)
+contractWrapper.buy(number tezAmount)
+
+@return Promise.resolve(number tezAmount) or Promise.reject(error)
+contractWrapper.sell(number tokenAmount)
+
+@return Promise.resolve(number tokenAmount) or Promise.reject(error)
+contractWrapper.burn(number tokenAmount)
+
+@return Promise.resolve() or Promise.reject(error)
+contractWrapper.pay(number tezAmount) 
+
+chainWrapper: fetch contract storage and other blockchain relevant information
+@return Promise.resolve(array storage) or Promise.reject(error)
+Return value structure depends on the storage of the contract:
+[string organization, JSON {k0:v0,...}, number buyPrice, number sellPrice, number total_tokens, number burned_tokens, number MFG, number MPT, number I, number D, number b, number s]
+organization: contract administrator(address),
+company_name: name of the company,
+JSON {k0:v0,...} : token ledger
+MFG: minimal funding goal
+MPT: minimum period of time
+I: percentage of the funds being held in the cash reserve (Reserve percentage)
+D: percentage of the revenues being funneled into cash reserve (Retained Revenue percentage)
+b: buy slope
+s: sell slope
+chainWrapper.storage()
+
+@return Promise.resolve(string companyName) or Promise.reject(error)
+chainWrapper.companyName()
+
+@return Promise.resolve(number phase[0: initial, 1: slope phase]) or Promise.reject(error)
+chainWrapper.phase()
+
+@return Promise.resolve(number totalTokens) or Promise.reject(error)
+chainWrapper.totalTokens()
+
+@return Promise.resolve(number totalInvestors) or Promise.reject(error)
+chainWrapper.totalInvestors()
+
+@return Promise.resolve(number totalInvestments) or Promise.reject(error)
+chainWrapper.totalInvestments()
+
+@return Promise.resolve(number companyValuation) or Promise.reject(error)
+chainWrapper.companyValuation()
+
+@return Promise.resolve(number tez) or Promise.reject(error)
+chainWrapper.buyPrice()
+
+@return Promise.resolve(number tez) or Promise.reject(error)
+chainWrapper.sellPrice()
+
+@return Promise.resolve(number tez) or Promise.reject(error)
+chainWrapper.reserveAmount()
+
+@return Promise.resolve(string baseCurrency) or Promise.reject(error)
+chainWrapper.baseCurrency()
+
+@return Promise.resolve(number totalAllocation) or Promise.reject(error)
+chainWrapper.totalAllocation()
+
+@return Promise.resolve(number stakeAllocation) or Promise.reject(error)
+chainWrapper.stakeAllocation()
+
+@return Promise.resolve(number initialReserve) or Promise.reject(error)
+chainWrapper.initialReserve()
+
+@return Promise.resolve(array of strings terminationEvents) or Promise.reject(error)
+chainWrapper.terminationEvents()
+
+@param string address: tz address of the user
+@return bought, sold, tokens, tez
+chainWrapper.user(string address)
+
+@return Promise(array bought) or Promise.reject(error)
+[[timestamp, tezAmount, tokenAmount], ...]
+chainWrapper.user(string address).bought()
+
+@return Promise(array selled) or Promise.reject(error)
+[[timestamp, tezAmount, tokenAmount], ...]
+chainWrapper.user(string address).sold()
+
+@return Promise(number tokens) or Promise.reject(error)
+chainWrapper.user(string address).tokens()
+
+@return Promise(number tez) or Promise.reject(error)
+chainWrapper.user(string address).tezInvested()
+
+@return Promise(string administrator) or Promise.reject(error)
+chainWrapper.administrator()
+```
+
+</ExpansionPanel>
 
 An example stub for the `getInvestmentNumbers()` function in the [very first version](https://github.com/b9lab/tezos-cso-project/blob/72ce67a34d8aa99e38895595033900e00d4f7b70/src/services/DataHandler.ts#L46) is:
 
@@ -128,13 +232,10 @@ class DataHandler {
 
 ## Workflows
 
-Not everything can be perfectly defined in the beginning. For example, the [`getUserTransactionData`](https://github.com/b9lab/tezos-cso-project/blob/72ce67a34d8aa99e38895595033900e00d4f7b70/src/services/DataHandler.ts#L129) function was originally planned to return one list with all user transactions. After multiple evolutions, it [ended up](https://github.com/b9lab/tezos-cso-project/blob/main/src/services/DataHandler.ts#L356) returning two separate lists with an updated format, one for funding and one for withdrawal transactions.
+We also used this common interface to communicate (specification) updates between the smart contract development and the application. Using automated units tests which run on any code update, any breaking change will be immediately visible. This is very important, because even with the best planning, it is natural that you might need to adjust these signatures as some details evolve during the course of a project. Plan in both **time** and **processes** to keep this common interface updated.
 
-<HighlightBox type="tip">
+We will look into the details of unit and integration tests in the [testing Section](./07-testing). You can take a look at the configuration and run results in our public [repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
 
-Even with the best planning, it is natural that you will need to update this file at some point, as some details evolve during the course of a project. Plan in both **time** and **processes** to keep this common interface in sync on both sides.
-
-</HighlightBox>
 
 ## Two parts, two repositories
 
@@ -148,3 +249,31 @@ The smart contract repository is integrated into the web application repository 
 When a change on the smart contract functions is requested from the web application team, we first adjust the unit tests in the smart contract repository, then sync these to the `DataHandler` stubs, and only then begin implementing the changes on both sides.
 
 During the initial development, it was also very easy to update the stubbed functions with this split up once the smart contract and wrapper functions were ready, as the smart contract team could easily replace the stubbed data fields with the wrapper calls and push this update to the web application team to connect their functions.
+
+## Connecting System Components
+
+The component that brings the TZMINT web application and the Tezos blockchain together is the `DataHandler`. It requests the data the web application needs through wrappers, which use various Tezos APIs to interact with the blockchain and the user wallet:
+
+* [Beacon](/beacon),
+* [Taquito](./taquito), and
+* [TzKT](./tzkt).
+
+<ExpansionPanel title="Prerequisite - Building a web application with the Tezos ecosystem">
+
+**[Beacon](https://www.walletbeacon.io/)** offers an interface to connect browser, mobile, desktop, web, and/or hardware wallets with an application. Several wallets are supported by the Beacon SDK: [AirGap](https://airgap.it/), [Galleon](https://github.com/Cryptonomic/Deployments/wiki/Galleon:-Releases), [Kukai](https://wallet.kukai.app/), [Temple](https://templewallet.com/), and [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn). Thus, we use Beacon for the communication between several wallets and the TZMINT web application.
+
+**[Taquito](https://tezostaquito.io/)** is a Tezos TypeScript library that is designed for JavaScript projects and offers an API. Taquito assists us with the client development so that average users can interact with the smart contract managing the token offering through the TZMINT web application: Taquito helps send transactions to the Tezos node.
+
+**[TzKT](https://github.com/baking-bad/tzkt)** is a Tezos blockchain indexer, which reduces the time it takes to fetch and process data from the blockchain. Additionally, with TzKT high-level functionalities (e.g. filtering, sorting, and calculating historical data), that go beyond the Tezos JSON/RPC interface, become available. TzKT comes with an advanced API to facilitate data access and subscribing to blockchain data. The TZMINT web application relies on TzKT to ensure proper fetching of blockchain data.
+
+</ExpansionPanel>
+
+![System components](./images/systemcomponents.png)
+
+The wrappers are used to fetch contract and transaction data and to call the contract. The following wrappers were used:
+
+* `chainWrapper`: Uses the [TzKT API](./tzkt) to fetch blockchain data, formats, and caches, and to calculate values;
+* `walletWrapper`: Uses the Beacon SDK to sign the transactions;
+* `contractWrapper`: Uses `walletWrapper` to sign the transactions and Taquito to send transactions to the Tezos node.
+
+
