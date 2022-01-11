@@ -43,7 +43,7 @@ The database container uses PostgreSQL to store the fetched data. It contains a 
 
 ## Browser interaction
 
-If you visit and test the TZMINT web application, you can see that a wallet pop-up appears asking for confirmation each time you want to sign and send a transaction. For automation purposes, we use [Cypress.io](https://github.com/cypress-io/cypress) to visit and test the site and [Puppeteer](https://github.com/puppeteer/puppeteer) interaction with the wallet extensions.
+If you visit and test the TZMINT web application, you can see that a wallet pop-up appears asking for confirmation each time you want to sign and send a transaction. For automation purposes, we use [Cypress.io](https://github.com/cypress-io/cypress) to visit and test the site and [Puppeteer](https://github.com/puppeteer/puppeteer) for interaction with the wallet extension.
 
 Puppeteer switches between wallet pop-up and Cypress Windows to sequentially interact with the site and the wallet. This allows us to perform actions like submitting a transaction or confirming an address.
 
