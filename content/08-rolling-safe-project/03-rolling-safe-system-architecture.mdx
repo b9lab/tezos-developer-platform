@@ -1,7 +1,7 @@
 ---
-title: Web Application Specification - Planning & Workflows
+title: System Architecture and Data handling
 description: 
-slug: /cso-platform-specification
+slug: /rolling-safe-system-architecture
 ---
 
 import HighlightBox from "../../src/components/HighlightBox"
@@ -34,18 +34,20 @@ After a quick general project introduction (i.e. an explanation of the Rolling S
 
 ```javascript
 @return Promise.resolve(number totalInvestors) or Promise.reject(error)
-chainWrapper.totalInvestors()
+totalInvestors()
 
 @return Promise.resolve(number totalInvestments) or Promise.reject(error)
-chainWrapper.totalInvestments()
+totalInvestments()
 
 @return Promise.resolve(number companyValuation) or Promise.reject(error)
-chainWrapper.companyValuation()
+companyValuation()
 ```
 
 You can take a look at the full (original) specification document below, to get a feel for our first approach - Please note that this document was our very first specification document. After we had created this document, we began to implement the DataHandler with stubs, which then became our new specification file.
 
 <ExpansionPanel title="Full signature specification">
+
+Note: Methods are already grouped into contract, chain and wallet wrapper
 
 ```javascript
 contractWrapper: contract calls, no function params, wallet will handle input
@@ -232,14 +234,14 @@ class DataHandler {
 
 ## Workflows
 
-We also used this common interface to communicate (specification) updates between the smart contract development and the application. Using automated units tests which run on any code update, any breaking change will be immediately visible. This is very important, because even with the best planning, it is natural that you might need to adjust these signatures as some details evolve during the course of a project. Plan in both **time** and **processes** to keep this common interface updated.
+We also used this common interface to communicate (specification) updates between the smart contract development and the application. Using automated units tests which run on any code update, any breaking change will be immediately visible. This is very important for any project, because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during the course of a project.
 
 We will look into the details of unit and integration tests in the [testing Section](./07-testing). You can take a look at the configuration and run results in our public [repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
 
 
 ## Two parts, two repositories
 
-To further untangle these two main parts, we also use two separate repositories:
+To further untangle the smart contract implementation details from the web app, we have also split up the projects into two separate repositories:
 
 * The [web application repository](https://github.com/b9lab/tezos-cso-project), and
 * The [smart contract and wrapper repository](https://github.com/b9lab/tezos-app-project).

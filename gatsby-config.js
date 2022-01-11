@@ -131,8 +131,8 @@ module.exports = {
     {
       resolve: "gatsby-advanced-readingtime",
       options: {
-        imageTime: 2,
-        codeTimePerLine: 3,
+        imageTime: 1,
+        codeTimePerLine: 0.2,
         customComponents: [
           {
             name: 'ActionCard',
