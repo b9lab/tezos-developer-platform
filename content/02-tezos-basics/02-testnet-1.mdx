@@ -14,12 +14,7 @@ import {
 } from 'gatsby-theme-apollo-docs';
 
 
-It is now time to participate in a Tezos network.
-
-There are currently two Tezos networks:
-
-- [Mainnet](https://tzstats.com/), has been live and open since 30 June 2018, and
-- [Florencenet](https://florence.tzstats.com/), a test network that runs the same protocol as the mainnet
+It is now time to participate in a Tezos network. The [Mainnet](https://tzstats.com/) has been live and open since 30 June 2018. In addition there are several [testnets](https://teztnets.xyz/). 
 
 The **Mainnet** is the main Tezos blockchain, where Tezos tokens (tez) have real value - so play with it only when you are confident in what you are doing. 
 
@@ -70,9 +65,9 @@ Make sure you have installed [Docker](https://www.docker.com/get-started)!
 First, we are going to download the testnet script, make it executable, and run it. Open a terminal (when you see a `$` it means it is a terminal command, do not paste the `$`) and paste the following commands:
 
 ```sh
-$ wget -O florencenet.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
-$ chmod +x florencenet.sh
-$ ./florencenet.sh start --rpc-port 8732
+$ wget -O hangzhounet.sh https://gitlab.com/tezos/tezos/raw/latest-release/scripts/tezos-docker-manager.sh
+$ chmod +x hangzhounet.sh
+$ ./hangzhounet.sh start --rpc-port 8732
 ```
 As the script spins up Docker images, it first needs to download them, and this may take some time. When the images are on your machine, it will start multiple containers. You can inspect them with:
 
@@ -81,7 +76,7 @@ $ docker ps
 ```
 You should now see something similar to:
 
-![List of Docker containers](images/florencenet.png)
+![List of Docker containers](images/hangzhounet.png)
 
 <HighlightBox type="tip">
 
@@ -91,20 +86,20 @@ In case docker complains about the connection pool, run export `COMPOSE_PARALLEL
 
 <HighlightBox type="info">
 
-You can find each component's description in the previous section, [Tezos Architecture](/tezos-basics/architecture), and list supported protocols with `./florencenet.sh client list understood protocols`. Notice, only one protocol is activated at any given time. 
+You can find each component's description in the previous section, [Tezos Architecture](/tezos-basics/architecture), and list supported protocols with `./hangzhounet.sh client list understood protocols`. Notice, only one protocol is activated at any given time. 
 
 </HighlightBox>
 
 From time to time, the `tezos-docker-manager.sh` script will be updated, and, when you want the latest version, instead of downloading it again with the wget command, you can enter:
 
 ```sh
-$ ./florencenet.sh update_script
+$ ./hangzhounet.sh update_script
 ```
 
 Or 
 
 ```sh
-$ ./florencenet.sh restart
+$ ./hangzhounet.sh restart
 ```
 
 Which will stop the network, update the script, and start the network again. In case you want to disable automatic update when restarting, you can use:
@@ -115,23 +110,23 @@ $ export TEZOS_ALPHANET_DO_NOT_PULL=yes
 
 <HighlightBox type="warn">
 
-When the script is being updated, you may again need the command `chmod +x florencenet.sh` to make it executable.
+When the script is being updated, you may again need the command `chmod +x hangzhounet.sh` to make it executable.
 
 </HighlightBox>
 
 Wait a few minutes for the node container to start synchronizing with the testnet and then check its logs with:
 
 ```sh
-$ docker logs florencenet_node_1 --follow
+$ docker logs hangzhounet_node_1 --follow
 ```
 You should be able to see how it syncs up. To stop the endless logs, press <kbd>CTRL-C</kbd>.
 
-Any command starting with `./florencenet.sh client` will behave as a **tezos-client**. So, this will be our way to interact with the **node** container we started.
+Any command starting with `./hangzhounet.sh client` will behave as a **tezos-client**. So, this will be our way to interact with the **node** container we started.
 
 You can get a list of the commands with:
 
 ```sh
-$ ./florencenet.sh client man
+$ ./hangzhounet.sh client man
 ```
 <HighlightBox type="tip">
 
@@ -305,12 +300,12 @@ So by mixing these 2 paths, we end up with, `$$(message ^ {pubKey}) ^ {priKey} \
 Let us do something basic and **create a new key pair**, which our local node will know as `myFirstKey`:
 
 ```sh
-$ ./florencenet.sh client gen keys "myFirstKey"
+$ ./hangzhounet.sh client gen keys "myFirstKey"
 ```
 Now, let us take a look at the balance of the test account we just created:
 
 ```sh
-$ ./florencenet.sh client get balance for myFirstKey
+$ ./hangzhounet.sh client get balance for myFirstKey
 Warning:
   
                  This is NOT the Tezos Mainnet.
@@ -323,11 +318,11 @@ Zero tez! There is no free lunch. Because we do not even have any tez, we cannot
 
 ## Adding testnet tez (XTZ)
 
-Let us get some **testnet** tez to work with! The easiest way to get some _testnet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also a brand new wallet (public-private key pair) on Florencenet, which you will have to copy into your node container.
+Let us get some **testnet** tez to work with! The easiest way to get some _testnet_ tez is through the [faucet](https://faucet.tzalpha.net/). It will not only give you free tez but also a brand new wallet (public-private key pair) on Hangzhounet, which you will have to copy into your node container.
 
 <HighlightBox type="info">
 
-Yes, the faucet website created a private key for you and you had to download it. This means that someone, somewhere, could have a copy of your private key. That would not be safe **if we were using tez on the mainnet**. But we are using Florencenet, so we will let it slide this time.
+Yes, the faucet website created a private key for you and you had to download it. This means that someone, somewhere, could have a copy of your private key. That would not be safe **if we were using tez on the mainnet**. But we are using Hangzhounet, so we will let it slide this time.
 
 Also remember: The private key created by the faucet is **only meant for the testnet**. Thus, they are not meant to be used in the mainnet.
 
@@ -369,23 +364,23 @@ In it, all seed words, or "secrets", are contained, which we need to create the 
 In a terminal, go to the folder where the file is, and run:
 
 ```sh
-$ docker exec florencenet_node_1 whoami                              
+$ docker exec hangzhounet_node_1 whoami                              
 tezos
 # Just confirming what is the default user
 
-$ docker exec florencenet_node_1 id -g -n tezos
+$ docker exec hangzhounet_node_1 id -g -n tezos
 nogroup
 # Just confirming the group of the default user
 
-$ docker cp tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json florencenet_node_1:/home/tezos/
+$ docker cp tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json hangzhounet_node_1:/home/tezos/
 
 # Assigning the account to the tezos account
-$ docker exec florencenet_node_1 sudo chown tezos:nogroup /home/tezos/tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json
+$ docker exec hangzhounet_node_1 sudo chown tezos:nogroup /home/tezos/tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json
 ```
 Then activate an account with this wallet:
 
 ```sh
-$ ./florencenet.sh client activate account faucetWallet with /home/tezos/tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json
+$ ./hangzhounet.sh client activate account faucetWallet with /home/tezos/tz1Z47xv2h6GnFvuUUbBz3qTgoNqmiRxZNm1.json
 Node is bootstrapped.
 Operation successfully injected in the node.
 Operation hash is 'ooZjAiGJcRR3sM26DAnNB6bGbVMuoViKmVthXSAjqzVmTCJn4z5'
@@ -400,21 +395,21 @@ This sequence of operations was run:
 
 <HighlightBox type="tip">
 
-If you want to deploy a contract with this account, make sure your node is sync'd up. You can check if the node is sync'd up with `./florencenet.sh client bootstrapped`. 
+If you want to deploy a contract with this account, make sure your node is sync'd up. You can check if the node is sync'd up with `./hangzhounet.sh client bootstrapped`. 
 
 If you have difficulties syncing up, you can try to **import a [snapshot](https://snapshots-tezos.giganode.io/)**.
 
 Just download a rolling or full snapshot for the testnet, stop the node:
 
 ```bash
-$ ./florencenet.sh stop
+$ ./hangzhounet.sh stop
 ```
 
 and import it with:
 
 ```bash
-$ ./florencenet.sh clear
-$ ./florencenet.sh snapshot import FULLPATH/snapshot.full
+$ ./hangzhounet.sh clear
+$ ./hangzhounet.sh snapshot import FULLPATH/snapshot.full
 ```
 
 Please replace `FULLPATH` with the path of the file, it needs to be an **absolute path**.
@@ -422,7 +417,7 @@ Please replace `FULLPATH` with the path of the file, it needs to be an **absolut
 **IMPORTANT**: 
 
 ```bash
-./florencenet.sh clear 
+./hangzhounet.sh clear 
 ```
 
 will **remove all blockchain data**. So please, if you made good progress with the syncing up and you can estimate the time left, it will be better to **wait**. 
@@ -432,13 +427,13 @@ will **remove all blockchain data**. So please, if you made good progress with t
 We said that there is a chance that this `faucetWallet` may be compromised, so it is within the realm of the reasonable to _protect_ our tez in a local-only wallet. Let us do that and transfer some tez from `faucetWallet` to our `myFirstKey` account:
 
 ```sh
-$ ./florencenet.sh client transfer 1 from faucetWallet to myFirstKey --burn-cap 0.5
+$ ./hangzhounet.sh client transfer 1 from faucetWallet to myFirstKey --burn-cap 0.5
 ```
 
 After your transaction has been included in a block, your `myFirstKey` account should have received 1 tez, which you can check again with:
 
 ```sh
-$ ./florencenet.sh client get balance for myFirstKey
+$ ./hangzhounet.sh client get balance for myFirstKey
 1 ꜩ
 ```
 

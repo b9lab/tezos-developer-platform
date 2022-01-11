@@ -13,7 +13,7 @@ Communication works with the help of the **JSON/RPC interface**. The **tezos-nod
 Let us first list what the RPC offers:
 
 ```
-$ ./florencenet.sh client rpc list
+$ ./hangzhounet.sh client rpc list
 ```
 
 This should list you the `GET/POST` queries you can do. 
@@ -23,19 +23,19 @@ Analogous to the previous section we want to get the balance first.
 First, we need to see all the addresses in our wallet:
 
 ```
-$ ./florencenet.sh client list known addresses
+$ ./hangzhounet.sh client list known addresses
 ```
 
 Look for `myFirstKey` from the last section and use its address to get the balance, replace the `MYFIRSTKEY_ADDRESS` string in the following command with it:
 
 ```
-$ ./florencenet.sh client rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
+$ ./hangzhounet.sh client rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
 ```
 
 Now you should see the balance. But where is the JSON we are talking about? Let us add a flag and use the command again:
 
 ```
-$ ./florencenet.sh client -l rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
+$ ./hangzhounet.sh client -l rpc get /chains/main/blocks/head/context/contracts/MYFIRSTKEY_ADDRESS/balance
 ```
 
 This time you should see the HTTP requests and the JSON responses the client does. 
@@ -49,7 +49,7 @@ You can find the reference for the JSON/RPC interface at the [Tezos Developer Re
 We can use the flag `-l` for all commands from the previous section. So, if you run the command:
 
 ```
-$ ./florencenet.sh client transfer 1 from faucetWallet to myFirstKey --burn-cap 0.5
+$ ./hangzhounet.sh client transfer 1 from faucetWallet to myFirstKey --burn-cap 0.5
 ```
 
 From the last section, you will see all the queries and responses traveling in the background. 
@@ -58,7 +58,7 @@ We can also use `curl` for a request
 if you start the network and with an exposed RPC port:
 
 ```
-./florencenet.sh start --rpc-port 8732
+./hangzhounet.sh start --rpc-port 8732
 ```
 
 Let us request the balance again:
