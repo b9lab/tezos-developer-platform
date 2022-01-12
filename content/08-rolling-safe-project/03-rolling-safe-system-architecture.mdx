@@ -14,22 +14,22 @@ import {
 
 Due to the size of this project, we need to do some planning before starting to code. We will showcase our actual approach for the implementation of this whole project, and share our considerations and learnings.
 
-On the top level, we have divided the project into two separate parts:
+On the top level, we divided the project into two separate parts:
 
 * The user-facing web application, the **[TZMINT web application](https://tzmint.b9lab.com/)**, and
-* The smart contract and the **wrapper functions** to interact with it.
+* The **smart contract** and the **wrapper functions** to interact with it.
 
-This division of concerns allows developing both parts in parallel while decreasing the complexity on each side. To ensure both parts fit together in the end, we drew a hard line between these two parts. Both are only connected through one interface: the **DataHandler**.
+This division of concerns allows developing both parts in parallel while decreasing the complexity of each part. To ensure both parts fit together in the end, we drew a hard line between these two parts. Both are only connected through one interface: the **`DataHandler`**.
 
 ![Division of concerns - System split](./images/system-split-l.png)
 
-The [`DataHander`](https://github.com/b9lab/tezos-cso-project/blob/master/src/services/DataHandler.ts) is written in JavaScript and exposes all functions for the web application to interact with the blockchain on a high level (both read and write). For the developer working on the web application implementation, this handler allows all interaction and does not require developers to know the actual smart contract implementation.
+The [`DataHander`](https://github.com/b9lab/tezos-cso-project/blob/master/src/services/DataHandler.ts) is written in JavaScript and exposes all functions for the web application to interact with the blockchain on a high level (read and write). For the developer working on the implementation of the web application, this handler allows all interactions and does not require developers to know the actual smart contract implementation.
 
-On the other side, the `DataHandler` directly calls the wrapper functions implemented by the smart contract team, which does not need to know about the processing of this data in the web application beyond the wrapper functions. The call to the wrapper functions is also implemented in the `DataHandler` - so we drew the line _through_ it.
+On the other side, the `DataHandler` directly calls the wrapper functions implemented by the smart contract team, which does not need to know about data processing in the web application beyond the wrapper functions. The call to the wrapper functions is also implemented in the `DataHandler` - As you can see in the previous image, we drew the line _through_ the `DataHandler`.
 
-With this setup, the team working on the web application does not need to be fully knowledgeable about all the blockchain-related details, while the smart contract team just needs normal JavaScript/TypeScript to implement the wrappers without knowledge regarding both frontend and backend frameworks (React, Next, Express). Not everyone needs to be a full-stack developer.
+With this setup, the team working on the web application does not need to be fully knowledgeable about all the blockchain-related details, while the smart contract team just needs normal JavaScript/TypeScript to implement the wrappers without knowledge regarding both the frontend and backend frameworks (React, Next, Express). Not everyone needs to be a full-stack developer.
 
-After a quick general project introduction (i.e. an explanation of the Rolling SAFE) and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the `DataHandler` on a basic level:
+After a quick general project introduction tio understand the functioning of a Rolling SAFE and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the `DataHandler` on a basic level:
 
 ```javascript
 @return Promise.resolve(number totalInvestors) or Promise.reject(error)
@@ -42,7 +42,7 @@ totalInvestments()
 companyValuation()
 ```
 
-You can take a look at the full (original) specification document below to get a feel for our first approach - Please note that this document was our very first specification document. After we creating this document, we began to implement the `DataHandler` with stubs, which then became our new specification file.
+You can take a look at the full (original) specification document below to get a feel for the team's first approach - Please note that this document was our very first specification document. After creating this document, we began to implement the `DataHandler` with stubs, which then became our new specification file.
 
 <ExpansionPanel title="Full signature specification">
 
@@ -163,7 +163,7 @@ getInvestmentNumbers(): Promise<InvestmentNumbersDto> {
 
 ```
 
-On the web application side, this common `DataHandler` with stubs allows to immediately start with the implementation of the scenarios with their views and flows. For the smart contract development, this is a perfect blueprint to be used as expected values in unit tests allowing to start with **test-driven development** right away.
+On the web application side, this common `DataHandler` with stubs allows to immediately start with the implementation of the scenarios with their views and flows. For the smart contract development, it is a perfect blueprint to be used as expected values in unit tests. This allows to start with **test-driven development** right away.
 
 Later, the stubs are replaced with the `chainWrapper` methods according to the signatures:
 
@@ -233,22 +233,27 @@ class DataHandler {
 
 ## Workflows
 
-We also used this common interface to communicate (specification) updates between the smart contract development and the application. When using automated units tests that run on any code update, any breaking change will be immediately visible. This is very important for any project because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during a project.
+We also used this common interface to communicate (specification) updates between the smart contract development and the application. When using automated units tests that run on any code update, any breaking change becomes immediately visible. This is very important for any project because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during a project.
+
+
+<HighlightBox type="info">
 
 We will look into the details of the unit and integration tests in the [testing section](./rolling-safe-platform-tests). You can take a look at the configuration and run results in our [public repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
 
+</HighlightBox>
+
 ## Two parts, two repositories
 
-To further untangle the smart contract implementation details from the web app, we have also split up the projects into two separate repositories:
+To further untangle the smart contract implementation details from the web application, we also split up the projects into two separate repositories:
 
 * The [web application repository](https://github.com/b9lab/tezos-cso-project), and
 * The [smart contract and wrapper repository](https://github.com/b9lab/tezos-app-project).
 
-The smart contract repository is integrated into the web application repository as a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). This split into two repositories allows for separate ci/cd workflows and less friction on pull request reviews, all helping to speed up the development when working in a team.
+The smart contract repository is integrated into the web application repository as a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). This split into two repositories allows for separate continuous integration/continuous deployment (CI/CD) workflows and less friction on pull request reviews, all helping to speed up the development when working in a team.
 
 When a change on the smart contract functions is requested from the web application team, we first adjust the unit tests in the smart contract repository, then sync these to the `DataHandler` stubs, and only then begin implementing the changes on both sides.
 
-During the initial development, it was also very easy to update the stubbed functions with this split up once the smart contract and wrapper functions were ready, as the smart contract team could easily replace the stubbed data fields with the wrapper calls and push this update to the web application team to connect their functions.
+During the initial development, it was also very easy to update the stubbed functions with this division of concerns once the smart contract and wrapper functions were ready, as the smart contract team could easily replace the stubbed data fields with the wrapper calls and push this update to the web application team to connect the functions.
 
 ## Connecting system components
 
