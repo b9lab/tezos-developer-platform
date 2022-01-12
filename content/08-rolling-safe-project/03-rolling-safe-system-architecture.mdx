@@ -29,7 +29,7 @@ On the other side, the `DataHandler` directly calls the wrapper functions implem
 
 With this setup, the team working on the web application does not need to be fully knowledgeable about all the blockchain-related details, while the smart contract team just needs normal JavaScript/TypeScript to implement the wrappers without knowledge regarding both frontend and backend frameworks (React, Next, Express). Not everyone needs to be a full-stack developer.
 
-After a quick general project introduction (i.e. an explanation of the Rolling SAFE) and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the [`DataHandler`](https://github.com/b9lab/tezos-cso-project/blob/master/src/services/DataHandler.ts) on a basic level:
+After a quick general project introduction (i.e. an explanation of the Rolling SAFE) and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the `DataHandler` on a basic level:
 
 ```javascript
 @return Promise.resolve(number totalInvestors) or Promise.reject(error)
@@ -235,7 +235,7 @@ class DataHandler {
 
 We also used this common interface to communicate (specification) updates between the smart contract development and the application. When using automated units tests that run on any code update, any breaking change will be immediately visible. This is very important for any project because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during a project.
 
-We will look into the details of the unit and integration tests in the [testing Section](./07-testing). You can take a look at the configuration and run results in our [public repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
+We will look into the details of the unit and integration tests in the [testing section](./rolling-safe-platform-tests). You can take a look at the configuration and run results in our [public repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
 
 ## Two parts, two repositories
 
