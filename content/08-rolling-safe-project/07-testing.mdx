@@ -1,6 +1,6 @@
 ---
 title: Testing, Testing, Testing
-description: 
+description: Testing with the SmartPy IDE and wrapper unit tests
 slug: /rolling-safe-platform-tests
 ---
 
@@ -15,7 +15,7 @@ import {
 In this section, we will take a closer look at testing, more specifically:
 
 * Testing with the SmartPy IDE, and
-* Unit tests for the wrapper.
+* Unit tests for the wrappers.
 
 <!-- Please expand the introduction. -->
 
@@ -68,7 +68,7 @@ Now we can do some **testing for `buy`**:
     scenario += contract.sell(amount=1).run(sender = buyer1, valid=False)
 ```
 
-Remember that we expect the `sell` call to fail before the minimum funding goal (MFG) phase is over.
+Remember that we expect the `sell` call to fail before reaching the minimum funding goal (MFG), so to say pre-MFG.
 
 Why not do a few more **`buy` calls**?
 
@@ -78,7 +78,7 @@ Why not do a few more **`buy` calls**?
     scenario.verify(contract.data.price == sp.tez(1))
 ```
 
-In addition, we check that the **price does not change** in the MFG phase - This will be different after the MFG is reached:
+In addition, we check that the **price does not change** in the MFG phase - This will be different after the MFG is reached (post-MFG):
 
 ```python
     # now MFG is reached, buy more and see price increasing
@@ -88,7 +88,7 @@ In addition, we check that the **price does not change** in the MFG phase - This
     scenario.verify(contract.data.price > sp.tez(1))
 ```
 
-We expect the price to increase after some `buy` calls took place.
+We expect the price to increase after some `buy` calls take place.
 
 Why not also **sell some tokens**:
 
@@ -137,11 +137,11 @@ The last thing to test is the **closing** and the permissions for calling it:
     scenario += contract.close().run(sender = organization, amount = sp.tez(2400), now= sp.timestamp_from_utc_now().add_days(365))
 ```
 
-## Unit tests for the wrapper
+## Unit tests for the wrappers
 
 We use [Chai](https://www.chaijs.com/) for unit tests. There are different unit tests for each wrapper.
 
-The `walletWrapper` is very small, so there is not much to test besides `callCount`s of the inner functions:
+The `walletWrapper` is very small, so there is not much to test besides the `callCount`s of the inner functions:
 
 ```javascript
         it("should call only buy in the contract if buy is called", async function() {

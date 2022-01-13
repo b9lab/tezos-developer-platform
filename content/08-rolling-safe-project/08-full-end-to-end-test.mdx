@@ -1,6 +1,6 @@
 ---
-title: More Testing - A Full End-to-End Test Setup
-description: 
+title: More Testing
+description: A full end-to-end test setup
 slug: /rolling-safe-tezos-full-end-to-end-test
 ---
 
@@ -12,7 +12,7 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-<!-- Need intro sentence and description-->
+To ensure the correct functioning of the TZMINT web application, we also set up an end-to-end test. Let us dive into some details!
 
 ## Test network
 
@@ -45,19 +45,19 @@ Feeling unsure about the TzKT indexer? Take another look at the [TzKT section](.
 
 ## Database
 
-The database container uses PostgreSQL to store the fetched data. It contains a database for the web application and a database for the TzKT indexer.
+The database container uses [PostgreSQL](https://www.postgresql.org/) to store the fetched data. It contains a database for the web application and a database for the TzKT indexer.
 
 ## Browser interaction
 
-If you visit and test the TZMINT web application, you can see that a wallet pop-up appears asking for confirmation each time you want to sign and send a transaction. For automation purposes, we use [Cypress.io](https://github.com/cypress-io/cypress) to visit and test the site and [Puppeteer](https://github.com/puppeteer/puppeteer) for interaction with the wallet extension.
+If you visit and test the [TZMINT web application](https://tzmint.b9lab.com/), you can see that a wallet pop-up appears asking for confirmation each time you want to sign and send a transaction. For automation purposes, we use [Cypress.io](https://github.com/cypress-io/cypress) to visit and test the site and [Puppeteer](https://github.com/puppeteer/puppeteer) for interaction with the wallet extension.
 
 Puppeteer switches between wallet pop-up and Cypress Windows to sequentially interact with the site and the wallet. This allows us to perform actions like submitting a transaction or confirming an address.
 
-At the beginning of a test, Cypress opens a Google Chrome instance loading a previously downloaded version of the wallet extension. When the test requires to interact with the wallet, it will import the account via a mnemonic and configure the settings for the custom-created network.
+At the beginning of a test, Cypress opens a Google Chrome instance loading a previously downloaded version of the wallet extension. When the test requires interaction with the wallet, it will import the account via a mnemonic and configure the settings for the custom-created network.
 
 The TZMINT web application container (app) pulls the Cypress browser image and loads the web application volume.
 
-Once the sandbox is bootstrapped it does a fresh install of the dependencies. Then it prepares the environment used during the tests by:
+Once the sandbox is bootstrapped, it does a fresh install of the dependencies. Then it prepares the environment used during the tests by:
 
 * Reading the contract address from a helper file written by the sandbox container after the contract deployment,
 * Defining the test account mnemonic and address, and

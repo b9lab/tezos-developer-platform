@@ -1,6 +1,6 @@
 ---
 title: Web Application Stack
-description: 
+description: Interacting with the blockchain
 slug: /rolling-safe-platform-stack
 ---
 
@@ -16,7 +16,7 @@ import {
 
 We have two different types of interactions with the blockchain: __transactions__ and __queries__.
 
-As you learned in the previous modules of this course, we need to sign a transaction and send it to a node to perform it. Queries have a different nature. For queries, we are not forced to communicate with a Tezos node directly and we do not need any signatures.
+As you learned in the previous modules of this course, we need to sign a transaction and send the transaction to a node to perform it. Queries have a different nature. For queries, we are not forced to communicate with a Tezos node directly and we do not need any signatures.
 
 ## Transactions
 
@@ -170,7 +170,7 @@ Now, we need some transaction details and account balances. Fortunately, we have
         };
 ```
 
-First, we can see a lot of from the storage fetched information and we do not always expect such a value to change:
+First, we can see a lot in the storage fetched information and we do not always expect such a value to change:
 
 ```javascript
     return {
@@ -211,7 +211,7 @@ First, we can see a lot of from the storage fetched information and we do not al
         },
 ```
 
-We cannot easily fetch the sell and buy price. So for the `buyPrice`, we do a calculation for a given number of tokens and return the estimated price. This is also true for the `sellPrice`:
+We cannot easily fetch the sell and buy price. For the `buyPrice`, we do a calculation for a given number of tokens and return the estimated price. This is also true for the `sellPrice`:
 
 ```javascript
         "buyPrice": (storageData, tokens) => {
@@ -255,11 +255,11 @@ We cannot easily fetch the sell and buy price. So for the `buyPrice`, we do a ca
 
 <HighlightBox type="tip">
 
-If you want to understand the calculations, please have a look at the [Smart Contract Implementation I](./rolling-safe-smart-contract-implementation-part-1) and the [Smart Contract Implementation II](./rolling-safe-smart-contract-implementation-part-2) section.
+If you want to understand the calculations, please have a look at the previous sections [Smart Contract Implementation I](./rolling-safe-smart-contract-implementation-part-1) and [Smart Contract Implementation II](./rolling-safe-smart-contract-implementation-part-2).
 
 </HighlightBox>
 
-In your own project, you will also be face the moment when you will need to fetch multiple API endpoints to get certain information. Like in the case of the `bought` function:
+In your own project, you will also face the moment when you will need to fetch multiple API endpoints to get certain information. Like in the case of the `bought` function:
 
 ```javascript
 const bought = () => {
@@ -288,4 +288,4 @@ const bought = () => {
     }
 ```
 
-To fetch user interaction, we need to first fetch the transactions with `transactions` and then the storage with `requestStorage` to get information on the ledger change and the tez amount sent in the transaction.
+To fetch user interactions, we need to first fetch the transactions with `transactions` and then the storage with `requestStorage` to get the information on the ledger change and the tez amount sent in the transaction.
