@@ -271,7 +271,7 @@ We want to differentiate between the initial and the post-MFG phase, so that the
 
 ## The `pay` function
 
-A customer can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract will issue new tokens and by default send them to the organization. Optionally, the customer can pass an address to which the tokens are sent. A pre-determined part of the received tez will be kept in the reserve and the rest will be sent to the organization.
+A customer can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract will issue new tokens and by default send them to the organization. Optionally, the customer can pass an address to which the tokens will be sent. A pre-determined part of the received tez will be kept in the reserve and the rest will be sent to the organization.
 
 We will allow payments in the slopy phase:
 
@@ -307,7 +307,7 @@ We will allow payments in the slopy phase:
         self.data.total_tokens += sp.as_nat(token_amount.value)
 ```
 
-As you can see, it will mint the same number of tokens as if `buy()` would have been called. A part of the tez sent with the call will be kept in the contract:
+You can see, it will mint the same number of tokens as if `buy()` would have been called. A part of the tez sent with the call will be kept in the contract:
 
 ```python
         # send sp.amount - buyback_reserve to organization
