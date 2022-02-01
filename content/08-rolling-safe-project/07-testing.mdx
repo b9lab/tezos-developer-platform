@@ -63,8 +63,7 @@ def ContractTest():
     scenario += contract
 ```
 
-The test starts with the initialization of the `contract`. Most of the initial parameters are arbitrary. 
-We have some helper functions in order to test our contract:
+The test starts with the initialization of the `contract`. Most of the initial parameters are arbitrary. We have some helper functions in order to test our contract:
 
 ```python
 class TestHelper:
@@ -75,7 +74,7 @@ class TestHelper:
         # if the user is not in the ledger, the user has 0 tokens
         buyer_amount_of_tokens = 0
 
-        # check if user is in the ledger
+        # check if the user is in the ledger
         if not first:
             buyer_amount_of_tokens = scenario.compute(contract.data.ledger[buyer])
         balance = scenario.compute(contract.balance)
@@ -88,7 +87,7 @@ class TestHelper:
         payed_tez_amount = token_amount * sp.utils.mutez_to_nat(const_price)
         scenario.verify(contract.balance ==  sp.utils.nat_to_mutez(payed_tez_amount) + balance)
 
-        # check that correct amount of tokens is issued
+        # check that the correct amount of tokens is issued
         buyer_amount_of_last_buyed_tokens = scenario.compute(sp.as_nat(contract.data.ledger[buyer]- buyer_amount_of_tokens))
         scenario.verify(buyer_amount_of_last_buyed_tokens == token_amount)
 
@@ -111,11 +110,11 @@ class TestHelper:
         # if the user is not in the ledger, the user has 0 tokens
         buyer_amount_of_tokens = 0
 
-        # check if user is in the ledger
+        # check if the user is in the ledger
         if not first:
             buyer_amount_of_tokens = scenario.compute(contract.data.ledger[buyer])
 
-        # check correct that buyer has the correct amount of tokens
+        # check that buyer has the correct amount of tokens
         scenario.verify(buyer_amount_of_tokens == buyer_old_token_amount)
         total_amount = scenario.compute(contract.data.total_tokens)
         left_side = TestHelper.buy_price_helper_left(tez_amount, scenario, contract)
@@ -134,7 +133,7 @@ class TestHelper:
     
     def sell_price_helper_slope(tokens, scenario, contract):
 
-        # calculate the amount of tez needs to be sent
+        # calculate the amount of tez needed to be sent
         pay_amount = scenario.compute(sp.as_nat(contract.data.total_tokens * sp.as_nat(tokens) * contract.data.sell_slope -
                         sp.as_nat(tokens * tokens) * contract.data.sell_slope / 2
                         ) +
@@ -145,7 +144,6 @@ class TestHelper:
         # return pay_amount for the verification
         return pay_amount
 ```
-
 
 Now we can start **testing for `buy`** in the initial phase:
 
@@ -158,7 +156,7 @@ Now we can start **testing for `buy`** in the initial phase:
 
 ```
 
-Notice that we write `(sp.tez(500) + sp.mutez(1000)` explicitly because we expect `sp.mutez(1000)` to be sent back because of our `initial_price = sp.tez(1) = sp.mutez(1000000)`. Same with the other tests till we reach the MFG:
+Notice that we write `(sp.tez(500) + sp.mutez(1000)` explicitly because we expect `sp.mutez(1000)` to be sent back because of `initial_price = sp.tez(1) = sp.mutez(1000000)`. The same applies to the other tests until we reach the minimum funding goal (MFG):
 
 ```python
     # check that the price has not changed
@@ -171,7 +169,7 @@ In addition, we check that the **price does not change** in the MFG phase - This
 
 ```python
     # buy some tokens in the slopy phase
-    # verify the amount of issued tokens, the buy price
+    # verify the amount of issued tokens and the buy price
     buyer1_token_amount += buy_price_helper_slope(buyer1, tez_amount= sp.tez(50), buyer_old_token_amount= buyer1_token_amount, scenario= scenario, contract= contract)
     buyer2_token_amount += buy_price_helper_slope(buyer2, tez_amount = sp.tez(400), buyer_old_token_amount = buyer2_token_amount, scenario = scenario, contract = contract)
     buyer1_token_amount += buy_price_helper_slope(buyer1, tez_amount = sp.tez(100), buyer_old_token_amount = buyer1_token_amount, scenario = scenario, contract = contract)
@@ -183,7 +181,7 @@ In addition, we check that the **price does not change** in the MFG phase - This
     scenario.verify(contract.data.price > initial_price)
 ```
 
-The `buy_price_helper_initial` function should be clear if you look at the code and the comments. We want to explain `buy_price_helper_slope` in more detail and for that let us start with the `_left` and `_right` helper functions:
+The `buy_price_helper_initial` function should be clear if you look at the code and the comments. We want to explain `buy_price_helper_slope` in more detail. For that, let us start with the `_left` and `_right` helper functions:
 
 ```python
     @staticmethod
@@ -203,11 +201,11 @@ We want to verify the price calculation of the `buy` entrypoint in the sloppy ph
 
 Now we want to check if `x` has the correct value. 
 
-The regular way to check a calculation like this is to square the equation(keep in mind that the solution of the equation does not change if we keep `x>0`). We will square but use the square root again:
+The regular way to check a calculation like this is to square the equation - keep in mind that the solution of the equation does not change if we keep `x>0`. We will square but use the square root again:
 
 ![Calculating the buy price post-MFG](/images/buy-calculus-formula-2.png)
 
-The reason is that we use an [integer square root](https://en.wikipedia.org/wiki/Integer_square_root) in our contract. To make sure the solution is correct, we need to use the integer square root here too.
+Because we use an [integer square root](https://en.wikipedia.org/wiki/Integer_square_root) in our contract. To make sure the solution is correct, we need to use the integer square root here too.
 
 ```python
     @staticmethod
@@ -216,11 +214,11 @@ The reason is that we use an [integer square root](https://en.wikipedia.org/wiki
         # if the user is not in the ledger, the user has 0 tokens
         buyer_amount_of_tokens = 0
 
-        # check if user is in the ledger
+        # check if the user is in the ledger
         if not first:
             buyer_amount_of_tokens = scenario.compute(contract.data.ledger[buyer])
 
-        # check correct that buyer has the correct amount of tokens
+        # check that the buyer has the correct amount of tokens
         scenario.verify(buyer_amount_of_tokens == buyer_old_token_amount)
         total_amount = scenario.compute(contract.data.total_tokens)
         left_side = TestHelper.buy_price_helper_left(tez_amount, scenario, contract)
@@ -238,31 +236,31 @@ The reason is that we use an [integer square root](https://en.wikipedia.org/wiki
         return buyer_amount_of_last_buyed_tokens
 ```
 
-Notice in addition to the calculation of the both sides, we use:
+Notice that in addition to the calculation of the both sides, we use:
 
 ```python
     scenario += contract.square_root_test(x = left_side, y = right_side)
 ```
 
-where:
+Where:
 
 ```python
-    #define a private entry point for testing
+    #define a private entrypoint for testing
     @sp.entry_point(private = True)
     def square_root_test(self, params):
         sp.verify(self.square_root(params.x) == self.square_root(params.y))
 ```
 
-because or `square_root` is not an entry point and we want to test a transaction. Keep in mind that a private entry point will not be compiled and added to the contract so those are useful for testing.
+Because our `square_root` is not an entrypoint and we want to test a transaction. Keep in mind that a private entrypoint will not be compiled and added to the contract, so those are useful for testing.
 
-Also have a look how we fetch the number of the tokens issued:
+Also have a look at how we fetch the number of the tokens issued:
 
 ```python
         scenario += contract.buy().run(sender = buyer, amount = tez_amount)
         buyer_amount_of_last_buyed_tokens = scenario.compute(sp.as_nat(contract.data.ledger[buyer]- buyer_amount_of_tokens))
 ```
 
-Next we want to **sell some tokens** and check the call:
+Next, we want to **sell some tokens** and check the call:
 
 ```python
     # check that the correct amount of tez is sent if one token is sold
@@ -278,13 +276,13 @@ Next we want to **sell some tokens** and check the call:
     # call the sell entrypoint
     scenario += contract.sell(amount=token_amount).run(sender = buyer1)
 
-    # verify the correct amount is payed to the user
+    # verify that the correct amount is payed to the user
     scenario.verify(contract.balance == balance- sp.utils.nat_to_mutez(pay_amount))
 
     # update buyer1_token_amount
     buyer1_token_amount= sp.as_nat(buyer1_token_amount- token_amount)
 
-    # verify the the amount of tokens for buyer1
+    # verify the amount of tokens for buyer1
     scenario.verify(buyer1_token_amount == contract.data.ledger[buyer1])
 
 ```
@@ -292,7 +290,7 @@ Next we want to **sell some tokens** and check the call:
 This way we can also check the sell price for one token:
 
 ```python
-    # check the correct amount of tez is sent if one token is sold
+    # check that the correct amount of tez is sent if one token is sold
     # this will also verify the price for a token
     token_amount = 1
     balance = scenario.compute(contract.balance)
@@ -317,13 +315,13 @@ As you can see, the seller (i.e. previous buyer) receives 2.460328 tez for one t
 The last thing to test is the **closing** and the permissions for calling it:
 
 ```python
-    # Check closing before MPT
+    # check closing before MPT
     scenario += contract.close().run(sender = organization, valid=False, amount = sp.tez(2400), now= sp.timestamp_from_utc_now().add_days(360))
-    # Check closing with wrong account
+    # check closing with wrong account
     scenario += contract.close().run(sender = buyer1, valid=False, now= sp.timestamp_from_utc_now().add_days(365))
-    # Check closing with too less tez
+    # check closing with not enough tez
     scenario += contract.close().run(sender = organization, valid=False, amount = sp.tez(300), now= sp.timestamp_from_utc_now().add_days(365))
-    # Check closing with correct amount of tez
+    # check closing with correct amount of tez
     scenario += contract.close().run(sender = organization, amount = sp.tez(2400), now= sp.timestamp_from_utc_now().add_days(365))
 ```
 
