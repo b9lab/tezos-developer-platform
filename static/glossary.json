@@ -106,5 +106,29 @@
     {
       "term" : "Redeem",
       "description" : "When a token holder wants to \"sell\" his tokens back to the smart contract, which are then burned (destroyed) and no longer available in an open market."
+    },
+    {
+      "term" : "seed round",
+      "description" : "The very early stage of financing for a company, typically conducted not long after the company has formed.  It's often called the 'friends and family' round as they are typically the first to invest, sometimes along with Angel Investors."
+    },
+    {
+      "term" : "private equity",
+      "description" : "Private Equity is a form of private financing, away from public markets (like listing a company on a public stock exchange) When people talk about private equity they usually mean venture capital, leveraged buyouts, vulture funding (distressed investment) mezzanine finance or real estate private equity."
+    },
+    {
+      "term" : "Angel investors",
+      "description" : "Angel Investors are defined by the stage at which they invest in a company ie someone who invests in a seed round - the very early stage of a company's lifecycle.  Typically they have high personal wealth, a 'High Net Worth Individual' and are a mix of working wealthy and retired rich. Many of them have been entrepreneurs themselves and may also look for a hands-on role in the company. Angels may also loan money, rather than invest in return for equity in the business."
+    },
+    {
+      "term" : "capital structure",
+      "description" : "Capital structure is the combination of debt and equity used by a company to finance its operations and growth."
+    },
+    {
+      "term" : "dividend",
+      "description" : "A dividend is the distribution of some of a company's earnings to a class of its shareholders, as determined by the company's board of directors. Dividends may be paid out as cash or in the form of additional stock."
+    },
+    {
+      "term" : "dividend yield",
+      "description" : "The dividend yield, displayed as a percentage, is the amount of money a company pays shareholders for owning a share of its stock divided by its current stock price."
     }
   ]
