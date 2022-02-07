@@ -12,7 +12,7 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-As we saw in the [Origins of Rolling SAFEs](../01-intro-origins-of-rolling-safe.mdx)section, raising money can be tedious and consume a lot of time and energy for founders. To keep growing, a successful startup may have to go back to investors for additional funding, sometimes several times in a short period of time. Founders have a new tool at their disposal to raise capital. One that makes the process easier is even better.
+As we saw in the [Origins of Rolling SAFEs](../01-intro-origins-of-rolling-safe.mdx) section, raising money can be tedious and consume a lot of time and energy for founders. To keep growing, a successful startup may have to go back to investors for additional funding, sometimes several times in a short period of time. Founders have a new tool at their disposal to raise capital. One that makes the process easier is even better.
 
 Just as in its time, the classic SAFE largely supplanted the convertible note, the Rolling SAFE is intended to be an upgrade to the SAFE. It uses blockchain technology and tokenization to programmatically control the process and offer transparency. It automates some of the SAFE mechanisms and replaces others. It also helps founders to promote their raise directly to their community through their website.
 
@@ -30,7 +30,7 @@ Programmable equity (PEQ) is a term for using smart contract(s) to tokenize and 
 
 </ExpansionPanel>
 
-A Rolling SAFE is designed to simplify the asset raising process in comparison with a traditional SAFE or Convertible Note. However, both traditional SAFEs and convertible notes are usually used to facilitate a seed round (the trigger event often being a series A raise). In theory, a founder could use a Rolling SAFE to take care of the entire venture capital asset raising process. The founder simply sets the trigger event as any of the classic exit strategies normally looked for by an investor; a trade sale, secondary market buy-out, or IPO.
+A Rolling SAFE is designed to simplify the asset raising process in comparison with a traditional SAFE or convertible note. However, both traditional SAFEs and convertible notes are usually used to facilitate a seed round (the trigger event often being a series A raise). In theory, a founder could use a Rolling SAFE to take care of the entire venture capital asset raising process. The founder simply sets the trigger event as any of the classic exit strategies normally looked for by an investor; a trade sale, secondary market buy-out, or IPO.
 
 A Rolling SAFE can stay open continuously for investment using terms that are clearly and transparently stated. This means anyone can invest at any time. The company no longer needs to either raise capital in multiple rounds or renegotiate multiple SAFEs. As the Rolling SAFE is governed by a smart contract, it can automatically change predetermined parameters as funds flow into its treasury, effectively changing the implied valuation of the company over time. As more capital is raised, the company valuation increases automatically, benefitting investors who moved first.
 
@@ -123,10 +123,10 @@ Different types of bonding curve exist (Sigmoid and Linear) but we will not ente
 
 During this phase investors can now buy and sell their Rolling SAFE tokens. The buy and sell price of the Rolling SAFE tokens are calculated automatically thanks to the bonding curve. The post-MFG buy price is based on a function of the number of Rolling SAFE tokens issued. As more Rolling SAFE tokens are issued the implied valuation increases.
 
-![Buy and sell function](images/price-function.png)
+![Price development over time](images/price-function.png)
 
 * In this Rolling SAFE, the buy() function implements a linear relationship between the buy price and the number of Rolling SAFE tokens. 
-* The sell price is determined by the value of the stablecoins in the reserve. If an Investor sold their Rolling SAFE token back to the DAT they would receive a commensurate portion of the stablecoins in the reserve. 
+* The sell price is determined by the value of the stablecoins in the reserve. If an investor sold their Rolling SAFE token back to the DAT they would receive a commensurate portion of the stablecoins in the reserve. 
 
 While the offering is active, investors can buy, and sell Rolling SAFE tokens to others, or sell them directly back to the DAT.
 
@@ -134,7 +134,7 @@ While the offering is active, investors can buy, and sell Rolling SAFE tokens to
 
 Rolling SAFEs are closed either due to liquidity or dissolution events.
 
-When the company is sold or goes public through an IPO, the liquidity event leads to the offering ending and Investors being entitled to receive the proceeds of the sale in stablecoins. This is equivalent to the equity value represented by their Rolling SAFE token holding at the time of the sale. Importantly, investors do not receive company equity but the proceeds of the equity, investors never actually hold the company equity (this is for regulatory reasons).
+When the company is sold or goes public through an IPO, the liquidity event leads to the offering ending and investors being entitled to receive the proceeds of the sale in stablecoins. This is equivalent to the equity value represented by their Rolling SAFE token holding at the time of the sale. Importantly, investors do not receive company equity but the proceeds of the equity, investors never actually hold the company equity (this is for regulatory reasons).
 
 To officially terminate a Rolling SAFE for a liquidity event a number of things need to happen:
 
@@ -142,7 +142,7 @@ To officially terminate a Rolling SAFE for a liquidity event a number of things 
 
 * The DAT then buys back the Rolling SAFE tokens with the stablecoins from the exit fee and the reserve. Which, of course, equals the current issuance price of the Rolling SAFE tokens. 
 
-* A dissolution event, is one where the company ceases trading and is wound up, either voluntarily or involuntarily. Depending on the assets still available in the company, the maximum amount an investor can expect is the purchase price of their Rolling SAFE tokens, while the minimum is nothing. The Investors have a claim on a par with any other SAFEs and/or preferred stock.
+* A dissolution event, is one where the company ceases trading and is wound up, either voluntarily or involuntarily. Depending on the assets still available in the company, the maximum amount an investor can expect is the purchase price of their Rolling SAFE tokens, while the minimum is nothing. The investors have a claim on a par with any other SAFEs and/or preferred stock.
 
 ## Functions of a Rolling SAFE
 
@@ -161,7 +161,7 @@ The sell() function is called by the investors to sell their Rolling SAFE tokens
 As seen above the pay() function sends funds from one party to the other passing through the DAT, and to the reserve.
 
 
-The burn() function takes the Rolling SAFE token out of circulation when they are sold by Investors to the DAT. These burned Rolling SAFE tokens become unusable and their value is redistributed among the remaining investors via the sell() function. As burning tokens does technically not destroy them, the total amount of tokens issued is not affected. 
+The burn() function takes the Rolling SAFE token out of circulation when they are sold by investors to the DAT. These burned Rolling SAFE tokens become unusable and their value is redistributed among the remaining investors via the sell() function. As burning tokens does technically not destroy them, the total amount of tokens issued is not affected. 
 
 <HighlightBox type="info">
 
