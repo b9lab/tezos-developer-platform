@@ -167,22 +167,19 @@ To officially terminate a Rolling SAFE in case of a liquidity event, a number of
 
 ## Functions of a Rolling SAFE
 
-The Rolling SAFE has **four key functions** that govern the buy and sell price:
+The Rolling SAFE has **three key functions** that govern the buy and sell price:
 
 * `buy()` function
-* `sell()` function,
-* `pay()` function, and
+* `sell()` function, and
 * `burn()` function.
 
-The **`buy()` function** is called by the investor to buy the Rolling SAFE tokens from the DAT. The DAT issues new Rolling SAFE tokens in proportion to the investment amount received. The DAT uses the `pay()` function to send a portion of the funds to the reserve and the balance into the issuers/companies wallet.
+The **`buy()` function** is called by the investor to buy the Rolling SAFE Tokens from the DAT. The DAT issues new Rolling SAFE tokens in proportion to the investment amount received. The DAT keeps a portion of the funds in the reserve.
 
-The **`sell()` function** is called by the investors to sell their Rolling SAFE tokens. The DAT receives the Rolling SAFE tokens, burns them, and uses the `pay()` function to send back the corresponding amount of stablecoins held by the reserve to the investor as payment.
+The **`sell()` function** is called by the investor to sell their Rolling SAFE tokens. The DAT burns them and sends back the corresponding amount of stablecoins held by the reserve to the investor as payment.
 
-As seen above the **`pay()` function** sends funds from one party to the other passing through the DAT and to the reserve.
+The **`burn()` function** burns tokens. These burned Rolling SAFE tokens become unusable and their value is redistributed among the remaining investors through a Rolling SAFE token price increase. As burning tokens does not technically destroy them, i.e. the total amount of tokens issued is not affected. 
 
-<!-- What do you mean by "passing through the DAT"? Please rewise wording. -->
-
-The `burn()` function takes the Rolling SAFE token out of circulation when they are sold by investors to the DAT. These burned Rolling SAFE tokens become unusable and their value is redistributed among the remaining investors via the `sell()` function. As burning tokens does technically not destroy them, the total amount of tokens issued is not affected.
+<!-- What do you mean by "through a Rolling SAFE token price increase"? Please elaborate -->
 
 <HighlightBox type="info">
 
