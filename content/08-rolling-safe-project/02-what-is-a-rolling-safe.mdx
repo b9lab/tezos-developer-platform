@@ -16,9 +16,9 @@ As we saw in the [previous section](../01-intro-origins-of-rolling-safe.mdx), ra
 
 <!-- I would recommend connecting the two sentences "A successful startup may have to go back to investors for additional funding to keep growing, sometimes several times over a short period of time." and "Founders have a new tool at their disposal to raise capital. One that makes the process easier is even better." Right now they are quite disconnected, which makes the flow uneasy. -->
 
-Just as in its time, the classic Simple Agreement for Future Equity (SAFE) supplanted the convertible note, the Rolling SAFE is intended to be an upgrade to SAFEs. It uses blockchain technology and tokenization to programmatically control the offering process of a so-called programmable equity and offer transparency. It automates some of the SAFE mechanisms and replaces others. It also helps founders to promote their raise directly to their community through their website.
+Just as in its time, the classic Simple Agreement for Future Equity (SAFE) supplanted the convertible note, the Rolling SAFE is intended to be an upgrade to SAFEs. It uses blockchain technology and tokenization to programmatically control the offering process of so-called programmable equity and offer transparency. It automates some of the SAFE mechanisms and replaces others. It also helps founders to promote their raise directly to their community through their website.
 
-<!-- How is a Rolling SAFE upgrading a classic SAFE? How does it exactly use blockchain technology - I would already hint to the role of the smart contract, so that it doesn't drop from nowhere two paragraphs later and because not everyone reads an expandable. Same applies to the treasury/reserve term. -->
+<!-- How is a Rolling SAFE upgrading a classic SAFE? How does it exactly use blockchain technology - I would already hint at the role of the smart contract, so that it doesn't drop out of nowhere two paragraphs later and because not everyone reads an expandable. Same applies to the treasury/reserve term. -->
 
 <ExpansionPanel title="What is a programmable equity (PEQ) and what is a decentralized autonomous trust (DAT)?">
 
@@ -34,9 +34,9 @@ This smart contract is sometimes called **decentralized autonomous trust (DAT)**
 
 <!-- I would recommend first explaining at least briefly what a Rolling SAFE is before talking about a comparison with a SAFE or convertible note. Right now, the reader has to believe the arguments without having a clear picture of all instruments in his/her head. -->
 
-A Rolling SAFE is designed to simplify the asset raising process in comparison with a traditional SAFE or a convertible note. However, both, traditional SAFEs and convertible notes, are usually used to facilitate a seed round - the triggering event often being a series A raise. In theory, a founder could use a Rolling SAFE to take care of the entire venture capital asset raising process. The founder simply sets the triggering event as any of the classic exit strategies normally looked for by an investor: a trade sale, secondary market buyout, or IPO.
+A Rolling SAFE is designed to simplify the asset-raising process in comparison with a traditional SAFE or a convertible note. However, both, traditional SAFEs and convertible notes, are usually used to facilitate a seed round - the triggering event often being a series A raise. In theory, a founder could use a Rolling SAFE to take care of the entire venture capital asset-raising process. The founder simply sets the triggering event as any of the classic exit strategies normally looked for by an investor: a trade sale, secondary market buyout, or IPO.
 
-<!-- Is it really taking care of the entire VC asset raising process? Isn't the whole point to not have to rely on VC but having an offering open to anyone (opening up new liquidity markets as well as faster liquidity)? -->
+<!-- Is it really taking care of the entire VC asset-raising process? Isn't the whole point to not have to rely on VC but having an offering open to anyone (opening up new liquidity markets as well as faster liquidity)? -->
 
 A Rolling SAFE can stay open continuously for investment using clearly and transparently stated terms. This means anyone can invest at any time. The company no longer needs to either raise capital in multiple rounds or renegotiate multiple SAFEs. As the Rolling SAFE is governed by a smart contract, it can automatically change predetermined parameters as funds flow into its treasury effectively changing the implied valuation of the company over time. As more capital is raised, the company valuation increases automatically, benefitting early investors.
 
@@ -47,27 +47,27 @@ A Rolling SAFE can stay open continuously for investment using clearly and trans
 Thanks to the use of bonding curves, a Rolling SAFE can have the following properties:
 
 * **Unlimited token supply:** There is no theoretical limit to the number of Rolling SAFE tokens that can be minted, i.e. generated;
-* **Predictable:** The buy and sell prices of Rolling SAFE tokens increase and decrease inline with the number of Rolling SAFE tokens minted or burned;
+* **Predictable:** The buy and sell prices of Rolling SAFE tokens increase and decrease in line with the number of Rolling SAFE tokens minted or burned;
 * **Linear:** The price of the second Rolling SAFE token minted (the value `n`) is less than the third Rolling SAFE token minted (i.e. `n+1`) and more than the first Rolling SAFE token minted (i.e. `n-1`);
 * **Liquid:** Rolling SAFE tokens can be immediately bought or sold at any time. After the lock-up period expires, the bonding curve acts as an automated market maker. The smart contract (i.e. DAT) acts as the counterparty for the transaction and needs to always hold enough in the reserve to buy Rolling SAFE tokens back.
 
-<!-- In regard to the bullet point "linear": I believe we should change it to the sell price, because the buy price is constant as long as the MFG is not met. -->
+<!-- In regard to the bullet point "linear": I believe we should change it to the sell price because the buy price is constant as long as the MFG is not met. -->
 
 The Rolling SAFE also has the provision to reward key stakeholders. Founders can reserve an equity allocation for users, customers, partners, employees, community members, etc. This can all be done under the Rolling SAFE rather than having to create and administer a separate scheme.
 
 ### Why would an investor be interested to invest in a startup via a Rolling SAFE?
 
-Here we meet the two main categories of investors: individual investors (angels, friends, and family) and the venture capital (VC) firms.
+Here we meet the two main categories of investors: individual investors (angels, friends, and family) and venture capital (VC) firms.
 
-**Individual investors** are accustomed to sourcing their investments through word of mouth, email lists, crowdfunding platforms, or angel networks. They might find a natural advantage with the Rolling SAFE as they can have access to it from the moment they encounter the company's capital raising website. At this point, they can start doing their due diligence with the information provided by the startup, and quickly decide if they want to invest or not. The discovery process and investment opportunity is bundled together making the overall process smooth and straight forward.
+**Individual investors** are accustomed to sourcing their investments through word of mouth, email lists, crowdfunding platforms, or angel networks. They might find a natural advantage with the Rolling SAFE as they can have access to it from the moment they encounter the company's capital raising website. At this point, they can start doing their due diligence with the information provided by the startup, and quickly decide if they want to invest or not. The discovery process and investment opportunity are bundled together making the overall process smooth and straightforward.
 
-For **VC firms**, who need to report to their own investors and who usually manage larger portfolios of investments, a benefit comes from a new function offered by the Rolling SAFE: the secondary market. By providing liquidity for this type of investment it allows VC firms to revisit regularly which companies to keep, remove, or add to their portfolio. This allows VC firms to efficiently redeploy capital and maintain their risk/reward ratios.
+For **VC firms**, who need to report to their investors and who usually manage larger portfolios of investments, a benefit comes from a new function offered by the Rolling SAFE: the secondary market. By providing liquidity for this type of investment it allows VC firms to revisit regularly which companies to keep, remove, or add to their portfolio. This allows VC firms to efficiently redeploy capital and maintain their risk/reward ratios.
 
 <!-- Is it really a function to be able to sell and buy tokens in a secondary market? Or is it more of a functionality/option to further grow your ROI? -->
 
 <HighlightBox type="warn">
 
-**Local tax and securities regulations** are key elements to investigate for any startup looking into issuing a Rolling SAFE. **No startup should use this type of instrument prior to receiving comprehensive legal advice.**
+**Local tax and securities regulations** are key elements to investigate for any startup looking into issuing a Rolling SAFE. **No startup should use this type of instrument before receiving comprehensive legal advice.**
 
 </HighlightBox>
 
@@ -104,7 +104,7 @@ The base currency is usually a stablecoin, e.g. a [wrapped USDC (wUSDC)](https:/
 
 ### Pre-MFG
 
-The issuer set a target amount of capital to be raised, a minimum funding goal (MFG). As long as this target is not met the Rolling SAFE remains in the Pre-MFG stage. In this phase, **all Rolling SAFE tokens are offered at the same price**, the initial price, and all stablebcoins received through the Rolling SAFE token sale are escrowed by the DAT.
+The issuer set a target amount of capital to be raised, a minimum funding goal (MFG). As long as this target is not met the Rolling SAFE remains in the Pre-MFG stage. In this phase, **all Rolling SAFE tokens are offered at the same price** (i.e. the initial price) and all stablebcoins received through the Rolling SAFE token sale are escrowed by the DAT.
 
 <!-- Scenario not included: What if an investor wants to redeem their investment pre-MFG? Of course, it is not incentivized but can happen. I would recommend including a short explanation here or it seems like you are locked in with your investment as long as the MFG isn't reached, which I believe sounds rather like disincentivizing early investors but a Rolling SAFE should do the opposite. -->
 
@@ -124,27 +124,27 @@ A defined portion of the stablecoins moves into the reserve and the other portio
 
 <ExpansionPanel title="What is the bonding curve?">
 
-The core concept of a bonding curve is relatively straight forward: buy and sell prices of a token are determined by its token supply. The more tokens are put into circulation (minted and not burned), the higher the token price. This basically means that when five tokens have been issued and a sixth is issued, the price increases. If you burn one of the six tokens, the price would decrease for all of them.
+The core concept of a bonding curve is relatively straightforward: buy and sell prices of a token are determined by its token supply. The more tokens are put into circulation (minted and not burned), the higher the token price. This means that when five tokens have been issued and a sixth is issued, the price increases. If you burn one of the six tokens, the price would decrease for all of them.
 
-The bonding curves allow for a fixed and predetermined price discovery mechanism implemented in the smart contract and controlled by teh smart contract's functions (`buy()` function, `burn()` function, `sell()` function, `pay()` function) and the size of its reserve.
+The bonding curves allow for a fixed and predetermined price discovery mechanism implemented in the smart contract and controlled by the smart contract's functions (`buy()` function, `burn()` function, `sell()` function, `pay()` function) and the size of its reserve.
 
-<!-- I would recommend deleting the functions in pharanthesis as you address them later and just mentioning it is linked to the functions of the smart contract and the reserve size. -->
+<!-- I would recommend deleting the functions in pharentheses as you address them later and just mentioning it is linked to the functions of the smart contract and the reserve size. -->
 
-Different types of bonding curve exist (Sigmoid and linear bonding curves), but we will not enter into more details here. What you can keep in mind is that the choice of one bonding curve over another influences the incentive for early or late investors.
+Different types of bonding curves exist (Sigmoid and linear bonding curves), but we will not enter into more details here. What you can keep in mind is that the choice of one bonding curve over another influences the incentive for early or late investors.
 
-<!-- I would strongly discourage from introducing something like a Sigmoid bonding curve in just a pharenthesis. This would require an expandable or further explanantion. Why even mention that there are different types? I would strongly recommend focusing on explaining the bonding curve for the Rolling SAFE instead. If you want to keep it, then you should elaborate how the incentive changes for different types and why. -->
+<!-- I would strongly discourage introducing something like a Sigmoid bonding curve in just a pharentheses. This would require an expandable or further explanation. Why even mention that there are different types? I would strongly recommend focusing on explaining the bonding curve for the Rolling SAFE instead. If you want to keep it, then you should elaborate on how the incentive changes for different types and why. -->
 
 </ExpansionPanel>
 
-During this phase investors can buy and sell their Rolling SAFE tokens. The buy and sell price of the Rolling SAFE tokens are calculated automatically with the bonding curve. The **post-MFG buy price** is based on a function of the number of Rolling SAFE tokens issued; as more Rolling SAFE tokens are issued, the implied valuation (i.e.) increases.
+During this phase, investors can buy and sell their Rolling SAFE tokens. The buy and sell price of the Rolling SAFE tokens are calculated automatically with the bonding curve. The **post-MFG buy price** is based on a function of the number of Rolling SAFE tokens issued; as more Rolling SAFE tokens are issued, the implied valuation (i.e.) increases.
 
 ![Price development over time](images/price-function.png)
 
-<!-- Here I would rather recommend using the image for the buy function and move thsi image to where linear price development is discussed. -->
+<!-- Here I would rather recommend using the image for the buy function and moving this image to where linear price development is discussed. -->
 
 In Rolling SAFE sample web application:
 
-* The buy() function implements a linear relationship between the buy price and the number of Rolling SAFE tokens, and
+* The `buy()` function implements a linear relationship between the buy price and the number of Rolling SAFE tokens, and
 * The sell price is determined by the value of the stablecoins in the reserve. If an investor sells their Rolling SAFE token back to the DAT, they receive a commensurate portion of the stablecoins in the reserve.
 
 <!-- But we don't use stablecoins? -->
@@ -155,13 +155,13 @@ While the offering is active, investors can buy and sell Rolling SAFE tokens to 
 
 ### Termination
 
-Rolling SAFEs are closed either due to a liquidity or a dissolution event. For example, when the company is sold or goes public with an IPO, the liquidity event leads to the offering ending and investors being entitled to receive the proceeds of the sale in stablecoins, which is equivalent to the equity value represented by teh investor's Rolling SAFE token holding at the time of the sale. Importantly, investors do not receive company equity but the proceeds of the equity, investors never actually hold the company equity for regulatory reasons.
+Rolling SAFEs are closed either due to a liquidity or a dissolution event. For example, when the company is sold or goes public with an IPO, the liquidity event leads to the offering ending and investors being entitled to receive the proceeds of the sale in stablecoins, which is equivalent to the equity value represented by the investor's Rolling SAFE token holding at the time of the sale. Importantly, investors do not receive company equity but the proceeds of the equity, investors never actually hold the company equity for regulatory reasons.
 
 To officially terminate a Rolling SAFE in case of a liquidity event, a number of things need to happen:
 
 * The issuer pays an **exit fee** to the DAT. The exit fee is equal to the current issuance price of Rolling SAFE tokens multiplied by the number of outstanding Rolling SAFE tokens, minus the value of the stablecoins held in reserve by the DAT;
 * The DAT then buys back the Rolling SAFE tokens with the stablecoins from the exit fee and the reserve. Which, of course, equals the current issuance price of the Rolling SAFE tokens;
-* A dissolution event, is one where the company ceases trading and is wound up, either voluntarily or involuntarily. Depending on the assets still available in the company, the maximum amount an investor can expect is the purchase price of their Rolling SAFE tokens, while the minimum is nothing. The investors have a claim on a par with any other SAFEs and/or preferred stock.
+* A dissolution event is one where the company ceases trading and is wound up, either voluntarily or involuntarily. Depending on the assets still available in the company, the maximum amount an investor can expect is the purchase price of their Rolling SAFE tokens, while the minimum is nothing. The investors have a claim on a par with any other SAFEs and/or preferred stock.
 
 <!-- "* The DAT then buys back the Rolling SAFE tokens with the stablecoins from the exit fee and the reserve. Which, of course, equals the current issuance price of the Rolling SAFE tokens;" -> What equals the current price? Please specify. -->
 
@@ -185,7 +185,7 @@ The **`burn()` function** burns tokens. These burned Rolling SAFE tokens become 
 
 In blockchain, coin or token burning is not an unusual thing. Burning is done to take tokens out of circulation. Often this happens by sending a token intentionally to an unusable wallet address (i.e. burn address). The address is unusable because it cannot be accessed by or assigned to anyone.
 
-**Note:** Since in the TZMINT web application the issuer mints its own Rolling SAFE tokens, there is no need for a burn address. 
+**Note:** Since in the TZMINT web application the issuer mints its Rolling SAFE tokens, there is no need for a burn address. 
 
 </HighlightBox>
 
