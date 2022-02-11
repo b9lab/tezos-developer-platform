@@ -87,7 +87,7 @@ Let us now have a closer look at the different stages of a Rolling SAFE.
 During the initialization, the issuer (i.e. the company) decides on the terms of the offering by **defining a few key parameters**:
 
 * The initial valuation, which is effectively a valuation floor - the minimum amount the issuer is prepared to value the company (post-money) to accept an investment, 
-* The percentage of the company equity it would like to offer to external investors,
+* The percentage of the company's equity it would like to offer to external investors,
 * The initial price per Rolling SAFE token, and therefore, the number of Rolling SAFE tokens the company wants to issue,
 * A ticker name to the Rolling SAFE token (e.g. "TZM"),
 * A target minimum amount of capital to be raised, the minimum funding goal (MFG),
@@ -160,8 +160,9 @@ Rolling SAFEs are closed either due to a liquidity or a dissolution event. For e
 To officially terminate a Rolling SAFE in case of a liquidity event, a number of things need to happen:
 
 * The issuer pays an **exit fee** to the DAT. The exit fee is equal to the current issuance price of Rolling SAFE tokens multiplied by the number of outstanding Rolling SAFE tokens, minus the value of the stablecoins held in reserve by the DAT;
-* The DAT then buys back the Rolling SAFE tokens with the stablecoins from the exit fee and the reserve. Which, of course, equals the current issuance price of the Rolling SAFE tokens;
-* A dissolution event is one where the company ceases trading and is wound up, either voluntarily or involuntarily. Depending on the assets still available in the company, the maximum amount an investor can expect is the purchase price of their Rolling SAFE tokens, while the minimum is nothing. The investors have a claim on a par with any other SAFEs and/or preferred stock.
+* The DAT then buys back the Rolling SAFE tokens with the stablecoins from the exit fee and the reserve. Which, of course, equals the current issuance price of the Rolling SAFE tokens.
+
+A **dissolution event** is one where the company ceases trading and is wound up, either voluntarily or involuntarily. Depending on the assets still available in the company, the maximum amount an investor can expect is the purchase price of their Rolling SAFE tokens, while the minimum is nothing. The investors have a claim on a par with any other SAFEs and/or preferred stock.
 
 <!-- "* The DAT then buys back the Rolling SAFE tokens with the stablecoins from the exit fee and the reserve. Which, of course, equals the current issuance price of the Rolling SAFE tokens;" -> What equals the current price? Please specify. -->
 
@@ -177,7 +178,7 @@ The **`buy()` function** is called by the investor to buy the Rolling SAFE Token
 
 The **`sell()` function** is called by the investor to sell their Rolling SAFE tokens. The DAT burns them and sends back the corresponding amount of stablecoins held by the reserve to the investor as payment.
 
-The **`burn()` function** burns tokens. These burned Rolling SAFE tokens become unusable and their value is redistributed among the remaining investors through a Rolling SAFE token price increase. As burning tokens does not technically destroy them, i.e. the total amount of tokens issued is not affected. 
+The **`burn()` function** burns tokens. These burned Rolling SAFE tokens become unusable and their value is redistributed among the remaining investors through a Rolling SAFE token price increase. As burning tokens does not technically destroy them, the total amount of tokens issued is not affected. 
 
 <!-- What do you mean by "through a Rolling SAFE token price increase"? Please elaborate -->
 
