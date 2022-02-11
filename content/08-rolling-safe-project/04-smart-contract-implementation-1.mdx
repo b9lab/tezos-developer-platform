@@ -300,7 +300,7 @@ We will allow payments in the slopy phase:
             ) - self.data.total_tokens
         )
 
-        # give those tokes to the organisation
+        # give those tokens to the organization
         self.data.ledger[self.data.organization] = sp.as_nat(token_amount.value)
                 
         # increase total amount of the tokens
