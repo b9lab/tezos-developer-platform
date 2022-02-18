@@ -20,7 +20,7 @@ As you learned in the previous modules of this course, we need to sign a transac
 
 ## Transactions
 
-We call the entrypoints like you learned to do so in the [Taquito section](./taquito). You can see in the [contract wrapper](https://github.com/b9lab/tezos-cso-project):
+We call the entrypoints like you learned to do so in the [Taquito section](./taquito). You can see in the [contract wrapper](https://github.com/b9lab/tezos-app-project/blob/master/src/contract/contract.js):
 
 ```javascript
     return {
@@ -71,7 +71,7 @@ Please take a look at the [Beacon section](./beacon) if you are not familiar wit
 
 ## Queries
 
-TzKT API is used to fetch information from the Tezos blockchain. You can find the methods the TZMINT web application implements in the [chainWrapper](https://github.com/b9lab/tezos-cso-project) code.
+TzKT API is used to fetch information from the Tezos blockchain. You can find the methods the TZMINT web application implements in the [chainWrapper](https://github.com/b9lab/tezos-app-project/blob/master/src/chain/chain.js) code.
 
 <HighlightBox type="tip">
 
@@ -113,9 +113,9 @@ We need different API endpoints to fetch all the information displayed in the [T
         ...
 ```
 
-`chainWrapper` uses [axios](https://github.com/axios/axios) as HTTP client for the queries.
+`chainWrapper` uses [axios](https://github.com/axios/axios) as HTTP client for the queries. You will see that some functions have optional parameters like the `level` for the storage we request. 
 
-The endpoint to get the storage of a contract is `/contracts/${contractAddress}/storage`. We include a `level` and `levelRequest` because we also want to fetch the storage for a given block level. In addition, we want to be able to fetch the changes in the storage, so there is a `requestStorageHistory` method.
+The endpoint to get the storage of a contract is `/contracts/${contractAddress}/storage`. We include a `level` and `levelRequest` because we also want to fetch the storage for a given block level. In addition, we want to be able to fetch the changes in the storage, so there is a `requestStorageHistory` method. For an example, we fetch the price history in order to display it on the platform.
 
 Let us check other methods for the endpoints:
 
@@ -139,6 +139,13 @@ Let us check other methods for the endpoints:
                 });
 
         },
+```
+
+Above you will again see the use of optional parameters. `transactions` will return a list of transactions sent to the contract address, where `sender` and `entrypoint` can be used to filter for a specific sender address or a specific entrypoint called in the transactions. 
+
+We need to fetch balances for various purposes:
+
+```javascript
         balance = (address) => {
             return axios.get(`${apiEndpoint}v1/accounts/${address}/balance_history`)
                 .then((response) => {
@@ -148,6 +155,11 @@ Let us check other methods for the endpoints:
                     throw new Error(error);
                 });
         },
+```
+
+and we will fetch some transaction details, like the tez amount sent by the transaction:
+
+```javascript
         payedAmount = (hash) => {
             return axios.get(`${apiEndpoint}v1/operations/transactions/${hash}`)
                 .then((response) => {
@@ -159,63 +171,53 @@ Let us check other methods for the endpoints:
         }
 ```
 
-Now, we need some transaction details and account balances. Fortunately, we have a helper function, which is used to avoid unnecessary queries:
+We want to avoid unnecessary queries, so we use a helper function:
 
 ```javascript
-        cashedData = (cashedStorage, storageFunction, functionToCash) => {
-            if (cashedStorage) {
-                return functionToCash(cashedStorage);
+        cachedData = (cachedStorage, storageFunction, functionToCache) => {
+            if (cachedStorage) {
+                return functionToCache(cachedStorage);
             }
-            return storageFunction().then(functionToCash);
+            return storageFunction().then(functionToCache);
         };
 ```
 
-First, we can see a lot in the storage fetched information and we do not always expect such a value to change:
+which will check if a new query for the data is wanted. It is enough to fetch some values once because we know the contract logic and we do not expect those values be changed over time, like various parameters about the reserve or phases.
+
+We can make more assumptions about when we expect something to be changed and decrease the number of queries at the API endpoint further. This logic is implemented in the web application part, because we do not want to mix what is separated. Web application part has a DB and can store the `storageData` and therefore it will decide when to fetch new data. So in the wrapper we will offer an optional parameter `storageData` and if the application decides to use old data instead of requesting new data, it will pass the old data kept in a DB:
 
 ```javascript
-    return {
-        "storage": requestStorage,
-        "totalTokens": (storageData) => {
-            return cashedData(storageData, requestStorage, (data) => {
-                return parseInt(data.total_tokens, 10);
-            });
-        },
-        "totalInvestments": (storageData) => {
-            return cashedData(storageData, requestStorage, (data) => {
-                return parseInt(data.total_investment, 10);
-            });
-        },
         "mfg": (storageData) => {
-            return cashedData(storageData, requestStorage, (data) => {
+            return cachedData(storageData, requestStorage, (data) => {
                 return parseInt(data.MFG, 10);
             });
         },
         "sellSlope": (storageData) => {
-            return cashedData(storageData, requestStorage, (data) => {
+            return cachedData(storageData, requestStorage, (data) => {
                 return parseInt(data.s, 10);
             });
         },
-
         ...
-
         "companyValuation": (storageData) => {
-            return cashedData(storageData, requestStorage, (data) => {
+            return cachedData(storageData, requestStorage, (data) => {
                 return parseInt(data.company_v, 10);
             });
         },
         "phase": (storageData) => {
-            return cashedData(storageData, requestStorage, (data) => {
+            return cachedData(storageData, requestStorage, (data) => {
                 return parseInt(data.phase, 10);
             });
 
         },
 ```
 
+so you will see the option for caching in the wrapper even for those values which will change over time. 
+
 We cannot easily fetch the sell and buy price. For the `buyPrice`, we do a calculation for a given number of tokens and return the estimated price. This is also true for the `sellPrice`:
 
 ```javascript
         "buyPrice": (storageData, tokens) => {
-            return cashedData(storageData, requestStorage, (data) => {
+            return cachedData(storageData, requestStorage, (data) => {
                 const firstPart = data.b * data.total_tokens * tokens / 2,
                     secondPart = data.b * tokens * (parseInt(data.total_tokens, 10) + tokens) / 2,
                     tempPrice = Math.ceil((firstPart + secondPart)*10)/10;
@@ -263,9 +265,12 @@ In your own project, you will also face the moment when you will need to fetch m
 
 ```javascript
 const bought = () => {
+        // first fetch transactions calling buy entrypoint
         return transactions(address, "buy").then((data) => {
             return Promise.all(data.map((transaction) => {
+                // go through the calls
                 return requestStorage(transaction.level).then((currentState) => {
+                    // then request the storage at the moment of this buy call
                     return requestStorage(transaction.level - 1).then((oldState) => {
                         const oldTokens = typeof oldState.ledger[address] === "undefined"
                                 ? 0
@@ -274,8 +279,10 @@ const bought = () => {
                                 ? 0
                                 : currentState.ledger[address];
 
+                        // check the amount of tokens bought
                         transaction.tokens = currentTokens - oldTokens;
 
+                        // check if there was a transaction for the excess sent back
                         return sentBack(address, transaction.hash).then((adjustment) => {
                             transaction.amount -= adjustment;
 
@@ -288,4 +295,4 @@ const bought = () => {
     }
 ```
 
-To fetch user interactions, we need to first fetch the transactions with `transactions` and then the storage with `requestStorage` to get the information on the ledger change and the tez amount sent in the transaction.
+This function will return a list of token purchases for a user. We do not keep track of this list in the web application, so we have to generate it from the blockchain. First we look for transactions calling the buy entrypoint sent by the user. Then we request the storage before and after such a call to see the amount of tokens added in the ledger for the user. In addition we check if an excess was sent back because we want to return the correct amount of tez payed for the amount of tokens.
