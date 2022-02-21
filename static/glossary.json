@@ -9,12 +9,12 @@
     },
     {
       "term" : "Programmable equity",
-      "description" : "Programmable equity (PEQ) is a term for using smart contract(s) to tokenize and control part (or the entirety) of a company’s equity. A Rolling SAFE is a programmable equity offering."
+      "description" : "A term for using smart contract(s) to tokenize and control part, or the entirety, of a company’s equity. A Rolling SAFE is a programmable equity offering."
 
     },
     {
       "term" : "PEQ",
-      "description" : "Programmable equity (PEQ) is a term for using Smart Contract(s) to tokenize and control part (or the entirety) of a company’s equity. A Rolling SAFE is a programmable equity offering."
+      "description" : "A term for using smart contract(s) to tokenize and control part, or the entirety, of a company’s equity. A Rolling SAFE is a programmable equity offering."
     },
     {
       "term" : "Rolling Simple Agreement for Future Equity",
@@ -30,11 +30,11 @@
     },
     {
       "term" : "Convertible notes",
-      "description" : "A convertible note is short-term debt that converts into equity. In the context of a seed financing, the debt typically automatically converts into shares of preferred stock upon the closing of a series A round of financing."
+      "description" : "A convertible note is a short-term debt that can be converted into equity."
     },
     {
       "term" : "Fixed-size equity rounds",
-      "description" : "A financing round in which investors purchase a fixed size of equity (stock) in a company, the size is pre-defined and is usually preferred stock."
+      "description" : "A financing round in which investors purchase a fixed size of equity (stock) in a company, the size is pre-defined and usually, it is preferred stock."
     },
     {
       "term" : "Cash flow",
@@ -46,7 +46,7 @@
     },
     {
       "term" : "Liquidity",
-      "description" : "Describes the the availability of liquid assets to a market or company, i.e. how fast an asset can be sold and bought without a strong price increase or decrease."
+      "description" : "Describes the availability of liquid assets to a market or company, i.e. how fast an asset can be sold and bought without a strong price increase or decrease."
     },
     {
       "term" : "High-resolution fundraising",
@@ -57,8 +57,8 @@
       "description" : "Financial mechanisms based on investor funding."
     },
     {
-      "term" : "dilution",
-      "description" : "The decrease in existing shareholders' ownership percentage of a company as a result of the company issuing new equity. New equity increases the total shares outstanding which has a dilutive effect on the ownership percentage of existing shareholders."
+      "term" : "Dilution",
+      "description" : "A value reduction of existing shares, i.e. decrease in existing shareholders' ownership percentage of a company, as a result of the company issuing new equity."
     },
     {
       "term" : "TZM",
@@ -78,66 +78,69 @@
     },
     {
       "term" : "Market maker",
-      "description" : "A firm or individual who actively quotes two-sided markets in a particular security, providing bids and offers (known as asks) along with the market size of each. Market makers provide liquidity and depth to markets and profit from the difference in the bid-ask spread. They may also make trades for their own accounts, which are known as principal trades."
+      "description" : "A company or individual who actively quotes two-sided markets in a particular security, providing bids and offers known as asks along with the market size of each. Market makers provide liquidity and depth to markets and profit from the difference in the bid-ask spread."
     },
     {
       "term" : "Venture capitalist",
-      "description" : "Private equity investor that provides companies in their early stages with capital."
+      "description" : "Private equity investor that provides companies with capital in their early stages."
     },
     {
       "term" : "Initial coin offering",
-      "description" : "Initial coin offering, or initial currency offering, when a company raises capital by selling a cryptocurrency, which investors buy expecting the value of the cryptocurrency to increase, or to exchange the cryptocurrency for services."
+      "description" : "When a company raises capital by selling a cryptocurrency, which investors buy expecting a value increase or to exchange the cryptocurrency for services."
     },
     {
       "term" : "ICO",
-      "description" : "Initial coin offering, or initial currency offering, when a company raises capital by selling a cryptocurrency, which investors buy expecting the value of the cryptocurrency to increase, or to exchange the cryptocurrency for services."
+      "description" : "When a company raises capital by selling a cryptocurrency, which investors buy expecting a value increase or to exchange the cryptocurrency for services."
     },
     {
       "term" : "Initial public offering",
-      "description" : "The process of offering shares of a private corporation to the public in a new stock issuance. An IPO allows a company to raise capital from public investors. The transition from a private to a public company can be an important time for Private Investors to fully realize gains from their investment as it typically includes a share premium for current Private Investors. Meanwhile, it also allows public investors to participate in the offering."
+      "description" : "The process of offering shares of a private corporation to the public in a new stock issuance. It allows a company to raise capital from public investors."
     },
     {
       "term" : "IPO",
-      "description" : "The process of offering shares of a private corporation to the public in a new stock issuance. An IPO allows a company to raise capital from public investors. The transition from a private to a public company can be an important time for Private Investors to fully realize gains from their investment as it typically includes a share premium for current Private Investors. Meanwhile, it also allows public investors to participate in the offering."
+      "description" : "The process of offering shares of a private corporation to the public in a new stock issuance. It allows a company to raise capital from public investors."
     },
     {
       "term" : "Institutional investor",
-      "description" : "Company or organization that invests money on behalf of other people. Mutual funds, pensions, and insurance companies are examples. The group is also viewed as more sophisticated than the average retail investor and, in some instances, they are subject to less restrictive regulations."
+      "description" : "Company or organization that invests money on behalf of other people, for example, mutual funds, pensions, and insurance companies."
     },
     {
       "term" : "Redeem",
       "description" : "When a token holder wants to \"sell\" his tokens back to the smart contract, which are then burned (destroyed) and no longer available in an open market."
     },
     {
-      "term" : "seed round",
-      "description" : "The very early stage of financing for a company, typically conducted not long after the company has formed.  It's often called the 'friends and family' round as they are typically the first to invest, sometimes along with Angel Investors."
+      "term" : "Seed round",
+      "description" : "Very early stage of financing for a company typically conducted not long after the company has formed."
     },
     {
-      "term" : "private equity",
-      "description" : "Private Equity is a form of private financing, away from public markets (like listing a company on a public stock exchange) When people talk about private equity they usually mean venture capital, leveraged buyouts, vulture funding (distressed investment) mezzanine finance or real estate private equity."
+      "term" : "Private equity",
+      "description" : "Form of private financing, away from public markets."
     },
     {
       "term" : "Angel investors",
-      "description" : "Angel Investors are defined by the stage at which they invest in a company ie someone who invests in a seed round - the very early stage of a company's lifecycle.  Typically they have high personal wealth, a 'High Net Worth Individual' and are a mix of working wealthy and retired rich. Many of them have been entrepreneurs themselves and may also look for a hands-on role in the company. Angels may also loan money, rather than invest in return for equity in the business."
+      "description" : "Defined by the stage at which they invest in a company, i.e. someone who invests in a seed round."
     },
     {
-      "term" : "capital structure",
-      "description" : "Capital structure is the combination of debt and equity used by a company to finance its operations and growth."
+      "term" : "Capital structure",
+      "description" : "Combination of debt and equity used by a company to finance its operations and growth."
     },
     {
-      "term" : "dividend",
-      "description" : "A dividend is the distribution of some of a company's earnings to a class of its shareholders, as determined by the company's board of directors. Dividends may be paid out as cash or in the form of additional stock."
+      "term" : "Dividend",
+      "description" : "Distribution of some of a company's earnings to a class of its shareholders, as determined by the company's board of directors."
     },
     {
-      "term" : "dividend yield",
-      "description" : "The dividend yield, displayed as a percentage, is the amount of money a company pays shareholders for owning a share of its stock divided by its current stock price."
+      "term" : "Dividend yield",
+      "description" : "Amount of money a company pays shareholders for owning a share of its stock divided by its current stock price."
     },
     {
-      "term" : "escrowed",
-      "description" : "To escrow: place in custody or trust until a specified condition has been fulfilled"
+      "term" : "Escrow",
+      "description" : "Place in custody or trust until a specified condition has been fulfilled."
     },
     {
+      "term" : "Decentralized Autonomous Trust",
+      "description" : "Smart contract that issues a tokenized security, handles sales and buybacks, and assists managing part, or the entirety, of a company's equity."
+    }    {
       "term" : "DAT",
-      "description" : "The Decentralized Autonomous Trust: The smart contract(s) that tokenize and control part (or the entirety) of the Company's equity."
+      "description" : "Smart contract that issues a tokenized security, handles sales and buybacks, and assists managing part, or the entirety, of a company's equity."
     }
   ]
