@@ -36,63 +36,9 @@ If you are wondering why the sell price is lower than the buy price, make sure t
 
 </HighlightBox>
 
-## Calculating the sell price
+## Entrypoint
 
-Compared to the buy price calculation, this time it is a bit more complex because we do not have a linear price function for the sell price. The sell slope will change over time - this function is also called by `buy_slope`:
-
-```python
-    # s calculus after each transaction
-    def modify_sell_slope(self, send_back):
-        sp.if self.data.total_tokens != 0:
-           self.data.s = 2 * sp.utils.mutez_to_nat(sp.balance - send_back) / (self.data.total_tokens * self.data.total_tokens)
-```
-
-The value of `sp.balance` is the balance of the contract __after the transaction is received but before we send any tez back to the user__. So the helper function needs to know the amount of tez sent back.
-
-The sell slope depends on the reserve, which is represented by the contract balance:
-
-![The formula to calculate the sell price](images/sell-calculus-formula-3.png)
-
-`a` represents the total amount of tokens issued.
-
-## Burning tokens
-
-Now we can have a look at `burn`:
-
-```python
-    @sp.entry_point
-    def burn(self, params):
-        self.burn_intern(params.amount)
-        self.modify_sell_slope()
-```
-
-Because burning is a part of the selling process, we will define an internal function to burn tokens:
-
-```python          
-    # internal burn function will be called by the entrypoints burn and sell
-    def burn_intern(self, amount):
-        # check if the address owns tokens
-        sp.if self.data.ledger.contains(sp.sender):
-            # check if the address owns enough tokens
-            sp.if self.data.ledger[sp.sender] >= sp.as_nat(amount):
-                # "burn"
-                self.data.ledger[sp.sender] = sp.as_nat(self.data.ledger[sp.sender] - sp.as_nat(amount))
-                self.data.burned_tokens += sp.as_nat(amount)
-```
-
-<ExpansionPanel title="What is understood by burning tokens? ">
-
-When a token is supposed to be removed from circulation, one can "burn" them. Often, burning is done by sending tokens to an unusable wallet address, a so-called burn address. Tokens can then no longer be accessed or assigned to an address. This is the case when working with tez.
-
-Since in the TZMINT web application the issuer mints its own tokens, there is no need for a burn address.
-
-</ExpansionPanel>
-
-In the above code, an important thing to notice is that we do not modify the total number of tokens issued if we burn a token. Thus, the buy price is not affected.
-
-## Entrypoints
-
-It is time to have a look at the `sell` **entrypoint**:
+Let us have a look at the `sell` **entrypoint**:
 
 ```python
     @sp.entry_point
@@ -117,14 +63,16 @@ This seems less complex than the buy entrypoint. The reason is that we cannot ch
                     "pay_amount", 
                     sp.utils.mutez_to_nat(self.data.price) * sp.as_nat(amount)
                 )
-                # burn the amount of tokens selled
+                # burn the amount of tokens sold
                 self.burn_intern(amount)
                 # send pay_amount tez to the sender of the transaction
                 sp.send(sp.sender, sp.utils.nat_to_mutez(pay_amount.value))
                 self.modify_sell_slope(sp.utils.nat_to_mutez(pay_amount.value))
 ```
 
-In the initial phase, one can sell a token and get 100% of the buy price, which will remain the same until the MFG is reached.
+In the initial phase, one can sell a token and get 100% of the buy price, which will remain the same until the MFG is reached. We do not use the `sell_slope` in the initial phase, because the price is fixed but we will keep it updated. 
+
+In the post-MFG phase, we will use the `sell_slope` to calculate the amount of tez to be sent:
 
 ```python
     def sell_slope(self, amount):
@@ -144,7 +92,7 @@ In the initial phase, one can sell a token and get 100% of the buy price, which 
                         self.data.burned_tokens * self.data.burned_tokens /
                         sp.as_nat(2 * (self.data.total_tokens - self.data.burned_tokens) )
                 )
-                # burn the amount of tokens selled
+                # burn the amount of tokens sold
                 self.burn_intern(amount)
                 # send pay_amount tez to the sender of the transaction
                 sp.send(sp.sender, sp.utils.nat_to_mutez(pay_amount.value))
@@ -155,9 +103,63 @@ The calculation of `pay_amount` looks a bit messy because it depends on `total_t
 
 ![The formula to calculate the pay amount](images/sell-calculus-formula-7.png)
 
-In the formula, our `pay_amount` represents `M` and `x` is the amount of tez sent with the transaction.
+In the formula, our `pay_amount` represents `M`, `x` is the amount of tez sent with the transaction, `x'` is the amount of burned tokens and `a` represents the total amount of tokens issued.
 
-As you can see, the sell slope will increase if tokens are burned but the buy slope is always constant. This means that the entrypoint `burn` if implemented, allows for the organization to increase the sell price.
+As you can see, the sell slope will increase if tokens are burned but the buy slope is always constant. This means that the entrypoint `burn`, allows for the organization to increase the sell price.
+
+You can see that the contract `burn`s the amount of tokens sold. 
+
+## Calculating the sell slope
+
+Compared to the buy price calculation, this time it is a bit more complex because we do not have a linear price function for the sell price. The sell slope will change over time. The sell slope depends on the reserve, which is represented by the contract balance:
+
+![The formula to calculate the sell price](images/sell-calculus-formula-3.png)
+
+`a` represents the total amount of tokens issued. 
+
+```python
+    # s calculus after each transaction
+    def modify_sell_slope(self, send_back):
+        sp.if self.data.total_tokens != 0:
+           self.data.s = 2 * sp.utils.mutez_to_nat(sp.balance - send_back) / (self.data.total_tokens * self.data.total_tokens)
+```
+
+The value of `sp.balance` is the balance of the contract __after the transaction is received but before the contract sends any tez back to the user__. So the helper function needs to know the amount of tez sent back.
+
+## Burning tokens
+
+Because burning is a part of the selling process, we will define an internal function to burn tokens:
+
+```python          
+    # internal burn function will be called by the entrypoints burn and sell
+    def burn_intern(self, amount):
+        # check if the address owns tokens
+        sp.if self.data.ledger.contains(sp.sender):
+            # check if the address owns enough tokens
+            sp.if self.data.ledger[sp.sender] >= sp.as_nat(amount):
+                # "burn"
+                self.data.ledger[sp.sender] = sp.as_nat(self.data.ledger[sp.sender] - sp.as_nat(amount))
+                self.data.burned_tokens += sp.as_nat(amount)
+```
+
+In addition the contract offers a `burn` entrypoint, in case a token holder wants to burn it's tokens:
+
+```python
+    @sp.entry_point
+    def burn(self, params):
+        self.burn_intern(params.amount)
+        self.modify_sell_slope()
+```
+
+<ExpansionPanel title="What is understood by burning tokens? ">
+
+When a token is supposed to be removed from circulation, one can "burn" them. Often, burning is done by sending tokens to an unusable wallet address, a so-called burn address. Tokens can then no longer be accessed or assigned to an address. This is the case when working with tez.
+
+Since in the TZMINT web application the issuer mints its own tokens, there is no need for a burn address.
+
+</ExpansionPanel>
+
+In the above code, an important aspect to notice is that we do not modify the total number of tokens issued if we burn a token. Thus, the buy price is not affected.
 
 Anyway, there is another mechanism by which users/investors can gain profits from buying tokens: __closing__.
 
@@ -208,4 +210,13 @@ If the [closing phase](https://github.com/C-ORG/whitepaper#closing) is triggered
 
 So, the sum of the payments is the exit fee.
 
-Only the contract owner can call `close`. For the `close` transaction to be successful, the contract owner needs to send the exit fee. Note that the minimum period of time (MPT) must be reached if the organization wants to trigger the closing.
+Only the contract owner can call `close`. For the `close` transaction to be successful, the contract owner needs to send the exit fee. Note that the minimum period of time (MPT) must be reached if the organization wants to trigger the closing. 
+
+Notice that if the data in the ledger increases in size, closing will cost more beacuse of:
+
+```python
+        sp.for account in self.data.ledger.items():
+            sp.send(account.key, sp.utils.nat_to_mutez(account.value * closing_sell_price.value))
+```
+
+We do not expect this to be a problem because one needs to pay tez to increase the size of the ledger. Alternatively we can create another entrypoint which can be called by the investors to get their tez.
