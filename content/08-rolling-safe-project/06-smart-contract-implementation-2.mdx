@@ -47,7 +47,7 @@ Compared to the buy price calculation, this time it is a bit more complex becaus
            self.data.s = 2 * sp.utils.mutez_to_nat(sp.balance - send_back) / (self.data.total_tokens * self.data.total_tokens)
 ```
 
-The value of `sp.balance` is the balance of the contract __after we receive the transaction but before we send any tez back to the user__. So the helper function needs to know the amount of tez sent back.
+The value of `sp.balance` is the balance of the contract __after the transaction is received but before we send any tez back to the user__. So the helper function needs to know the amount of tez sent back.
 
 The sell slope depends on the reserve, which is represented by the contract balance:
 
