@@ -1,7 +1,7 @@
 ---
-title: System Architecture and Data Handling
-description: Implementing the TZMINT web application
-slug: /rolling-safe-system-architecture
+title: Smart Contract Implementation I
+description: Implementing the buy function
+slug: /rolling-safe-smart-contract-implementation-part-1
 ---
 
 import HighlightBox from "../../src/components/HighlightBox"
@@ -12,271 +12,279 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-Due to the size of this project, we need to do some planning before starting to code. We will showcase our actual approach for the implementation of this whole project, and share our considerations and learnings.
-
-On the top level, we divided the project into two separate parts:
-
-* The user-facing web application, the **[TZMINT web application](https://tzmint.b9lab.com/)**, and
-* The **smart contract** and the **wrapper functions** to interact with it.
-
-This division of concerns allows developing both parts in parallel while decreasing the complexity of each part. To ensure both parts fit together in the end, we drew a hard line between these two parts. Both are only connected through one interface: the **`DataHandler`**.
-
-![Division of concerns - System split](./images/system-split-l.png)
-
-The [`DataHander`](https://github.com/b9lab/tezos-cso-project/blob/master/src/services/DataHandler.ts) is written in JavaScript and exposes all functions for the web application to interact with the blockchain on a high level (read and write). For the developer working on the implementation of the web application, this handler allows all interactions and does not require developers to know the actual smart contract implementation.
-
-On the other side, the `DataHandler` directly calls the wrapper functions implemented by the smart contract team, which does not need to know about data processing in the web application beyond the wrapper functions. The call to the wrapper functions is also implemented in the `DataHandler` - As you can see in the previous image, we drew the line _through_ the `DataHandler`.
-
-With this setup, the team working on the web application does not need to be fully knowledgeable about all the blockchain-related details, while the smart contract team just needs normal JavaScript/TypeScript to implement the wrappers without knowledge regarding both the frontend and backend frameworks (React, Next, Express). Not everyone needs to be a full-stack developer.
-
-After a quick general project introduction tio understand the functioning of a Rolling SAFE and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the `DataHandler` on a basic level:
-
-```javascript
-@return Promise.resolve(number totalInvestors) or Promise.reject(error)
-totalInvestors()
-
-@return Promise.resolve(number totalInvestments) or Promise.reject(error)
-totalInvestments()
-
-@return Promise.resolve(number companyValuation) or Promise.reject(error)
-companyValuation()
-```
-
-You can take a look at the full (original) specification document below to get a feel for the team's first approach - Please note that this document was our very first specification document. After creating this document, we began to implement the `DataHandler` with stubs, which then became our new specification file.
-
-<ExpansionPanel title="Full signature specification">
-
-Note: Methods are already grouped into contract, chain, and wallet wrapper.
-
-```javascript
-contractWrapper: contract calls, no function params, wallet will handle input
-@returns Promise.resolve(number tokenAmount) or Promise.reject(error)
-contractWrapper.buy(number tezAmount)
-
-@return Promise.resolve(number tezAmount) or Promise.reject(error)
-contractWrapper.sell(number tokenAmount)
-
-@return Promise.resolve(number tokenAmount) or Promise.reject(error)
-contractWrapper.burn(number tokenAmount)
-
-@return Promise.resolve() or Promise.reject(error)
-contractWrapper.pay(number tezAmount) 
-
-chainWrapper: fetch contract storage and other blockchain relevant information
-@return Promise.resolve(array storage) or Promise.reject(error)
-Return value structure depends on the storage of the contract:
-[string organization, JSON {k0:v0,...}, number buyPrice, number sellPrice, number total_tokens, number burned_tokens, number MFG, number MPT, number I, number D, number b, number s]
-organization: contract administrator(address),
-company_name: name of the company,
-JSON {k0:v0,...} : token ledger
-MFG: minimal funding goal
-MPT: minimum period of time
-I: percentage of the funds being held in the cash reserve (Reserve percentage)
-D: percentage of the revenues being funneled into cash reserve (Retained Revenue percentage)
-b: buy slope
-s: sell slope
-chainWrapper.storage()
-
-@return Promise.resolve(string companyName) or Promise.reject(error)
-chainWrapper.companyName()
-
-@return Promise.resolve(number phase[0: initial, 1: slope phase]) or Promise.reject(error)
-chainWrapper.phase()
-
-@return Promise.resolve(number totalTokens) or Promise.reject(error)
-chainWrapper.totalTokens()
-
-@return Promise.resolve(number totalInvestors) or Promise.reject(error)
-chainWrapper.totalInvestors()
-
-@return Promise.resolve(number totalInvestments) or Promise.reject(error)
-chainWrapper.totalInvestments()
-
-@return Promise.resolve(number companyValuation) or Promise.reject(error)
-chainWrapper.companyValuation()
-
-@return Promise.resolve(number tez) or Promise.reject(error)
-chainWrapper.buyPrice()
-
-@return Promise.resolve(number tez) or Promise.reject(error)
-chainWrapper.sellPrice()
-
-@return Promise.resolve(number tez) or Promise.reject(error)
-chainWrapper.reserveAmount()
-
-@return Promise.resolve(string baseCurrency) or Promise.reject(error)
-chainWrapper.baseCurrency()
-
-@return Promise.resolve(number totalAllocation) or Promise.reject(error)
-chainWrapper.totalAllocation()
-
-@return Promise.resolve(number stakeAllocation) or Promise.reject(error)
-chainWrapper.stakeAllocation()
-
-@return Promise.resolve(number initialReserve) or Promise.reject(error)
-chainWrapper.initialReserve()
-
-@return Promise.resolve(array of strings terminationEvents) or Promise.reject(error)
-chainWrapper.terminationEvents()
-
-@param string address: tz address of the user
-@return bought, sold, tokens, tez
-chainWrapper.user(string address)
-
-@return Promise(array bought) or Promise.reject(error)
-[[timestamp, tezAmount, tokenAmount], ...]
-chainWrapper.user(string address).bought()
-
-@return Promise(array selled) or Promise.reject(error)
-[[timestamp, tezAmount, tokenAmount], ...]
-chainWrapper.user(string address).sold()
-
-@return Promise(number tokens) or Promise.reject(error)
-chainWrapper.user(string address).tokens()
-
-@return Promise(number tez) or Promise.reject(error)
-chainWrapper.user(string address).tezInvested()
-
-@return Promise(string administrator) or Promise.reject(error)
-chainWrapper.administrator()
-```
-
-</ExpansionPanel>
-
-An example stub for the `getInvestmentNumbers()` function in the [very first version](https://github.com/b9lab/tezos-cso-project/blob/72ce67a34d8aa99e38895595033900e00d4f7b70/src/services/DataHandler.ts#L46) is:
-
-```typescript
-// General Investment Info
-
-getInvestmentNumbers(): Promise<InvestmentNumbersDto> {
-    return new Promise((resolve, reject) => {
-        const data: InvestmentNumbersDto = {
-            totalInvestment: '$2,000',
-            investorsCount: 238,
-            tokensCount: 37,
-            unlockingDate: new Date("2021-07-30 12:05:33.574+00")
-        };
-
-        resolve(data);
-    });
-}
-
-```
-
-On the web application side, this common `DataHandler` with stubs allows to immediately start with the implementation of the scenarios with their views and flows. For the smart contract development, it is a perfect blueprint to be used as expected values in unit tests. This allows to start with **test-driven development** right away.
-
-Later, the stubs are replaced with the `chainWrapper` methods according to the signatures:
-
-```typescript
-
-class DataHandler {
-
-    /**
-     * Gets the general investment numbers
-     */
-    async getInvestmentNumbers(): Promise<InvestmentNumbersDto> {
-        const start = new Date(process.env.DEPLOYMENT_DATE || "2021-07-21T14:02:43Z");
-        const end = new Date();
-        const steps = 30;
-
-        const storage = await chain.storage();
-        const [
-            companyName, 
-            buyPrice, 
-            sellPrice, 
-            minimumFundingGoal, 
-            totalInvestments, 
-            investorsCount, 
-            totalTokens, 
-            reserveAmount, 
-            sellSlope,
-            buySlope, 
-            unlockingDate,
-            burnedTokensCount,
-            phase,
-            priceHistory
-        ] = await Promise.all([
-            chain.companyName(storage), 
-            chain.buyPrice(storage, 1),
-            chain.sellPrice(1),
-            chain.mfg(storage),
-            chain.totalInvestments(storage),
-            chain.totalInvestors(storage),
-            chain.totalTokens(storage),
-            chain.reserveAmount(),
-            chain.sellSlope(storage),
-            chain.buySlope(storage),
-            chain.unlockingDate(storage),
-            chain.burnedTokens(storage),
-            chain.phase(storage),
-            chain.priceHistory(start, end, steps)
-        ]);
-
-        return {
-            companyName: companyName,
-            tokenBuyPrice: +buyPrice,
-            tokenSellPrice: +sellPrice,
-            minimumFundingGoal: +minimumFundingGoal,
-            unlockingDate: unlockingDate,
-            totalInvestment: +totalInvestments,
-            investorsCount: +investorsCount,
-            tokensCount: +totalTokens,
-            burnedTokensCount: +burnedTokensCount,
-            reserveAmount: +reserveAmount,
-            buySlope: +buySlope,
-            sellSlope: +sellSlope,
-            isMFGReached: !!+phase,
-            prices: priceHistory
-        };
-    }
-```
-
-## Workflows
-
-We also used this common interface to communicate (specification) updates between the smart contract development and the application. When using automated units tests that run on any code update, any breaking change becomes immediately visible. This is very important for any project because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during a project.
-
+B9lab's sample project is an implementation of a continiuous programmable equity offering also known as a Rolling SAFE. To see the implementation in action, please visit the [TZMINT web application](https://tzmint.b9lab.com/), which is hosted by [B9lab](https://b9lab.com/). It is better to first try out the web application before taking a closer look at the implementation described in this course.
 
 <HighlightBox type="info">
 
-We will look into the details of the unit and integration tests in the [testing section](./rolling-safe-platform-tests). You can take a look at the configuration and run results in our [public repository on GitHub](https://github.com/b9lab/tezos-app-project/actions).
+Before working on this section, make sure to go through the [introduction section](./what-is-a-rolling-safe) to understand the underlying mechanisms of this novel funding instrument.
+
+For a close look at the formulas used for calculation, we recommend consulting the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper#annex) by Thibauld Favre. In this section, we will present an implementation of the whitepaper's ideas, our **TZMINT project**.
 
 </HighlightBox>
 
-## Two parts, two repositories
+We implemented our smart contract in [SmartPy](https://smartpy.io/). The tokens are represented as a simple map to keep things simple. In addition, we will store everything we want to keep track of on-chain:
 
-To further untangle the smart contract implementation details from the web application, we also split up the projects into two separate repositories:
+```python
+       self.init(
+            organization       = organization,                                     # contract administrator
+            ledger             = sp.map(l = {organization: sp.as_nat(preminted)}), # token ledger
+            price              = initial_price,                                    # initial price before MFG
+            total_tokens       = preminted,
+            burned_tokens      = burned_tokens,
+            MFG                = MFG,                                              # minimal funding goal
+            MPT                = sp.timestamp(...),                                # minimum period of time
+            b                  = b,                                                # buy slope
+            s                  = s,                                                # sell slope
+            I                  = I,                # percentage of the funds being held in the cash reserve
+            D                  = D,                # percentage of the revenues being funneled into cash reserve
+            minimumInvestment  = minimumInvestment,
+            company_v          = company_valuation,
+            base_currency      = base_currency,
+            total_allocation   = total_allocation,
+            stake_allocation   = stake_allocation, 
+            termination_events = termination_events,
+            govRights          = govRights,
+            company_name       = company_name,
+            phase              = 0,                                                # starting under MFG
+            total_investment   = sp.tez(0)
+            )
+```
 
-* The [web application repository](https://github.com/b9lab/tezos-cso-project), and
-* The [smart contract and wrapper repository](https://github.com/b9lab/tezos-app-project).
+<HighlightBox type="tip">
 
-The smart contract repository is integrated into the web application repository as a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). This split into two repositories allows for separate continuous integration/continuous deployment (CI/CD) workflows and less friction on pull request reviews, all helping to speed up the development when working in a team.
+Need a recap on SmartPy? No worries! We recommend a look at the chapter [Writing Smart Contracts](./smart-contracts) in this course.
 
-When a change on the smart contract functions is requested from the web application team, we first adjust the unit tests in the smart contract repository, then sync these to the `DataHandler` stubs, and only then begin implementing the changes on both sides.
+</HighlightBox>
 
-During the initial development, it was also very easy to update the stubbed functions with this division of concerns once the smart contract and wrapper functions were ready, as the smart contract team could easily replace the stubbed data fields with the wrapper calls and push this update to the web application team to connect the functions.
+## Contract entrypoints
 
-## Connecting system components
+The contract has **five entrypoints**:
 
-The component that brings the TZMINT web application and the Tezos blockchain together is the `DataHandler`. It requests the data the web application needs through wrappers, which use various Tezos APIs to interact with the blockchain and the user wallet:
+* `buy()`,
+* `sell()`,
+* `pay()`,
+* `burn()`, and
+* `close()`.
 
-* [Beacon](/beacon),
-* [Taquito](./taquito), and
-* [TzKT](./tzkt).
+In this section, we will begin with an explanation of the `buy()` and `pay()` functions. Afterwards, in the [next section](./rolling-safe-smart-contract-implementation-part-2), we will talk about the `sell()` and `close()` functions (also known as closing function). 
 
-<ExpansionPanel title="Prerequisite - Building a web application with the Tezos ecosystem">
+<HighlightBox type="info">
 
-**[Beacon](https://www.walletbeacon.io/)** offers an interface to connect browser, mobile, desktop, web, and/or hardware wallets with an application. Several wallets are supported by the Beacon SDK: [AirGap](https://airgap.it/), [Galleon](https://github.com/Cryptonomic/Deployments/wiki/Galleon:-Releases), [Kukai](https://wallet.kukai.app/), [Temple](https://templewallet.com/), and [Spire](https://chrome.google.com/webstore/detail/spire/gpfndedineagiepkpinficbcbbgjoenn). Thus, we use Beacon for the communication between several wallets and the TZMINT web application.
+You can find the smart contract in the [project repository](https://github.com/b9lab/tezos-cso-project).
 
-**[Taquito](https://tezostaquito.io/)** is a Tezos TypeScript library that is designed for JavaScript projects and offers an API. Taquito assists us with the client development so that average users can interact with the smart contract managing the token offering through the TZMINT web application: Taquito helps send transactions to the Tezos node.
+</HighlightBox>
 
-**[TzKT](https://github.com/baking-bad/tzkt)** is a Tezos blockchain indexer, which reduces the time it takes to fetch and process data from the blockchain. Additionally, with TzKT, high-level functionalities that go beyond the Tezos JSON/RPC interface become available, such as filtering, sorting, and calculating historical data. TzKT comes with an advanced API to facilitate data access and subscribing to blockchain data. The TZMINT web application relies on TzKT to ensure proper fetching of blockchain data.
+If you want to extend this smart contract to, for example, fulfill the FA2 token standard, you will need to implement additional entrypoints. You can find more information on the token standard in the [FA2 section](./fa2).
 
-</ExpansionPanel>
+## The `buy()` function
 
-![System components](./images/systemcomponents.png)
+`buy()` will calculate the number of tokens for the sent amount of tez and it will mint these tokens. In addition, it should send back the excess amount.
 
-The wrappers are used to fetch contract and transaction data and to call the contract. The following wrappers were used:
+There are **two phases** in the offering regarding the buy price:
 
-* `chainWrapper`: Uses the [TzKT API](./tzkt) to fetch blockchain data, formats, and caches, and to calculate values;
-* `walletWrapper`: Uses the Beacon SDK to sign the transactions;
-* `contractWrapper`: Uses `walletWrapper` to sign the transactions and Taquito to send transactions to the Tezos node.
+1. The **initial phase**: Before the minimum funding goal (MFG) is reached, the buy price is constant; 
+2. The **slopy phase** (i.e. post-MFG phase): Once the MFG is reached, the buy price will increase for each issued token.
+
+## Entrypoint
+
+Let us first have a look at the `buy()` entrypoint and understand the conditions for calling the initial or slope buy function:
+
+```python
+    # buy some tokens with sender's tez
+    @sp.entry_point
+    def buy(self):
+    #check the phase, dont sell or buy if closed
+        sp.if self.data.phase != 2:
+            # if token in intialization phase, the price is fixed and all funds are escrowed
+            sp.if self.data.total_investment < self.data.MFG:
+                # check the excess above MFG and send back
+                sp.if sp.utils.mutez_to_nat(self.data.MFG - sp.amount - self.data.total_investment) < 0:
+                    sp.send(sp.sender, sp.amount - self.data.MFG + self.data.total_investment)
+                    self.buy_initial(self.data.MFG - self.data.total_investment)
+                sp.else:
+                    self.buy_initial(sp.amount)
+            # if initialization phase is past
+            sp.else:
+                self.data.phase = 1
+                self.buy_slope(sp.amount)
+```
+
+You can see that we do not allow any action to take place after the closing phase.
+
+We check for excess in two different instances:
+
+* The excess in the `buy()` function;
+* The excess in the `buy_initial` and `buy_slope` function.
+
+The excess check in the `buy()` function makes sure one buy transaction does not surpass the MFG. The excess in the `buy_initial` and `buy_slope` function calculates the excess amount of tez after a buy transaction, so to say, your change.
+
+## Initial phase
+
+The buy price is determined during the **initial phase** by the following lines in the contract code:
+
+```python
+    # initial phase, the price is fix
+    def buy_initial(self, amount):
+        # calculate amount of tokens from sp.amount and the price
+        token_amount = sp.local(
+            "token_amount", 
+            sp.ediv(
+                amount, 
+                self.data.price
+                ).open_some("Fatal Error: Price is zero")
+            )
+```
+
+In this phase, the calculation is `token_amount = amount/self.data.price`, where `amount` represents the number of tokens (in tez) sent with the transaction and `self.data.price` is the current price of the token.
+
+After the calculation, `buy_initial` will check if any tokens can be issued. Then it will add the calculated number of tokens to the ledger linking them to the transaction sender. In case no record of the user exists, it will create an entry. The comments in the code should suffice as an explanation:
+
+```python
+        # fail if no tokens can be issued with this amount of tez
+        sp.if sp.fst(token_amount.value) == sp.as_nat(0):
+            sp.failwith("No token can be issued, please send more tez")
+            
+        # check if the address owns tokens
+        sp.if self.data.ledger.contains(sp.sender):
+            # add amount of the tokens into the ledger
+            self.data.ledger[sp.sender] += sp.fst(token_amount.value)
+        sp.else:
+            # put amount of the tokens into the ledger
+            self.data.ledger[sp.sender] = sp.fst(token_amount.value)
+            
+        # increase total amount of the tokens
+        self.data.total_tokens += sp.fst(token_amount.value)
+
+        # keep received funds in this contract as buyback reserve
+        # but send back the excess
+        sp.if sp.utils.mutez_to_nat(sp.snd(token_amount.value)) > 0:
+            sp.send(sp.sender, sp.snd(token_amount.value))
+
+        # track how much is invested
+        self.data.total_investment = self.data.total_investment + amount - sp.snd(token_amount.value)
+```
+
+Before calculating the recent value of the total investments, the excess is calculated and sent back to the user.
+
+## Post-MFG phase
+
+Now, let us have a look at the **post-MFG phase**, so to say the "slopy phase" for the `buy()` function.
+
+This time the calculation for the `token_amount` is more complex because of the linear price increase. We have to calculate the [area of the trapezium](https://github.com/C-ORG/whitepaper#buy-calculus) under the price function.
+
+![Calculating the buy price post-MFG](/images/buy-calculus.png)
+
+Next, the contract does a **reserve calculation** to determine the amount of the excess, which is sent back to the transaction sender. In addition each time someone buys a token, a part of the tez amount in the transaction will be kept for the buyback reserve:
+
+```python
+    # after initial phase, the price will increase
+    def buy_slope(self, amount):
+        # calculate amount of tokens from amount of tez
+        # see https://github.com/C-ORG/whitepaper#buy-calculus
+
+        token_amount = sp.local(
+            "token_amount", 
+            self.square_root(
+                2 * sp.utils.mutez_to_nat(amount) /self.data.b + 
+                self.data.total_tokens * self.data.total_tokens
+                ) - self.data.total_tokens
+            )
+
+        tez_amount = sp.local(
+            "tez_amount",
+            sp.as_nat(token_amount.value) * self.data.total_tokens * self.data.b   /2 + 
+            (sp.as_nat(token_amount.value) + self.data.total_tokens) * sp.as_nat(token_amount.value) * self.data.b/2
+            )
+
+        send_back = sp.local(
+            "send_back",
+            amount - sp.utils.nat_to_mutez(tez_amount.value)
+            )
+        # send tez that is too much
+        sp.if sp.utils.mutez_to_nat(send_back.value) > 0:
+            sp.send(sp.sender, send_back.value)
+
+        # track how much is invested
+        self.data.total_investment += sp.utils.nat_to_mutez(tez_amount.value)
+
+        # fail if no tokens can be issued with this amount of tez
+        sp.if sp.as_nat(token_amount.value) == sp.as_nat(0):
+            sp.failwith("No token can be issued, please send more tez")
+            
+        # calculate buyback reserve from amount I*amount/100
+        buyback_reserve = sp.local(
+            "buyback_reserve", 
+            sp.utils.nat_to_mutez(self.data.I * tez_amount.value / sp.as_nat(100))
+            )
+        
+        company_pay = sp.local(
+            "company_pay",
+            amount - buyback_reserve.value
+            )
+
+        # send (100-I) * amount/100 of the received tez to the organization
+        sp.send(self.data.organization, company_pay.value)
+        # this will keep I * amount/100 in this contract as buyback reserve
+            
+        # check if the address owns tokens
+        sp.if self.data.ledger.contains(sp.sender):
+            self.data.ledger[sp.sender] += sp.as_nat(token_amount.value)
+        sp.else:
+            self.data.ledger[sp.sender] = sp.as_nat(token_amount.value)
+                 
+        # increase total amount of the tokens
+        self.data.total_tokens += sp.as_nat(token_amount.value)
+
+        # set new price
+        self.data.price = sp.utils.nat_to_mutez(self.data.b * self.data.total_tokens)
+        self.modify_sell_slope(send_back.value + company_pay.value)
+```
+
+<HighlightBox type="info">
+
+At the end of a `buy_slope` call, the contract updates the sell slope. This is something we address in the [next section](./rolling-safe-smart-contract-implementation-part-2).
+
+</HighlightBox>
+
+## The `pay()` function
+
+A customer can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract will issue new tokens and send them to the organization. A pre-determined part of the received tez will be kept in the reserve and the rest will be sent to the organization. You can see, it will mint the same number of tokens as if `buy()` would have been called. A part of the tez sent with the call will be kept in the contract.
+
+We will allow payments only in the slopy phase:
+
+```python
+   @sp.entry_point
+    def pay(self):
+        # check that the initial phase is over but not closed
+        sp.verify(self.data.phase == 1)
+        # see https://github.com/C-ORG/whitepaper#-revenues---pay
+        buyback_reserve = sp.local(
+            "local_amount", 
+            sp.utils.nat_to_mutez(
+                sp.utils.mutez_to_nat(sp.amount) * self.data.D / 100
+                )
+            )
+        # send sp.amount - buyback_reserve to organization
+        d = sp.amount - buyback_reserve.value
+        sp.send(self.data.organization, d)
+
+        # create the same amount of tokens a buy call would do
+        token_amount = sp.local(
+        "token_amount", 
+        self.square_root(
+            2 * sp.utils.mutez_to_nat(d) /self.data.b + 
+            self.data.total_tokens * self.data.total_tokens
+            ) - self.data.total_tokens
+        )
+
+        # give those tokens to the organization
+        self.data.ledger[self.data.organization] = sp.as_nat(token_amount.value)
+                
+        # increase total amount of the tokens
+        self.data.total_tokens += sp.as_nat(token_amount.value)
+        # send sp.amount - buyback_reserve to organization
+        d = sp.amount - buyback_reserve.value
+        sp.send(self.data.organization, d)
+```
+
+Let us now take a look at the `sell()` function.
