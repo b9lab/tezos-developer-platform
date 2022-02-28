@@ -85,10 +85,10 @@ In the post-MFG phase, we will use the `sell_slope` to calculate the amount of t
                 pay_amount = sp.local(
                     "pay_amount", 
                     sp.as_nat(
-                        self.data.total_tokens * sp.as_nat(amount) * self.data.s - 
-                        sp.as_nat(amount * amount) * self.data.s / 2 
+                        self.data.total_tokens * sp.as_nat(amount) * self.data.sell_slope - 
+                        sp.as_nat(amount * amount) * self.data.sell_slope / 2 
                         ) + 
-                        self.data.s * sp.as_nat(amount) * 
+                        self.data.sell_slope * sp.as_nat(amount) * 
                         self.data.burned_tokens * self.data.burned_tokens /
                         sp.as_nat(2 * (self.data.total_tokens - self.data.burned_tokens) )
                 )
@@ -99,7 +99,7 @@ In the post-MFG phase, we will use the `sell_slope` to calculate the amount of t
                 self.modify_sell_slope(sp.utils.nat_to_mutez(pay_amount.value))
 ```
 
-The calculation of `pay_amount` looks a bit messy because it depends on `total_tokens`, `self.data.s`(the sell slope), `params.amount` (the amount of tez sent with the transaction), and `self.data.burned_tokens`:
+The calculation of `pay_amount` looks a bit messy because it depends on `total_tokens`, `self.data.sell_slope`, `params.amount` (the amount of tez sent with the transaction), and `self.data.burned_tokens`:
 
 ![The formula to calculate the pay amount](images/sell-calculus-formula-7.png)
 
@@ -121,7 +121,7 @@ Compared to the buy price calculation, this time it is a bit more complex becaus
     # s calculus after each transaction
     def modify_sell_slope(self, send_back):
         sp.if self.data.total_tokens != 0:
-           self.data.s = 2 * sp.utils.mutez_to_nat(sp.balance - send_back) / (self.data.total_tokens * self.data.total_tokens)
+           self.data.sell_slope = 2 * sp.utils.mutez_to_nat(sp.balance - send_back) / (self.data.total_tokens * self.data.total_tokens)
 ```
 
 The value of `sp.balance` is the balance of the contract __after the transaction is received but before the contract sends any tez back to the user__. So the helper function needs to know the amount of tez sent back.
