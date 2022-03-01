@@ -25,29 +25,34 @@ For a close look at the formulas used for calculation, we recommend consulting t
 We implemented our smart contract in [SmartPy](https://smartpy.io/). The tokens are represented as a simple map to keep things simple. In addition, we will store everything we want to keep track of on-chain:
 
 ```python
-       self.init(
-            organization       = organization,                                     # contract administrator
-            ledger             = sp.map(l = {organization: sp.as_nat(preminted)}), # token ledger
-            price              = initial_price,                                    # initial price before MFG
-            total_tokens       = preminted,
-            burned_tokens      = burned_tokens,
-            MFG                = MFG,                                              # minimal funding goal
-            MPT                = sp.timestamp(...),                                # minimum period of time
-            b                  = b,                                                # buy slope
-            s                  = s,                                                # sell slope
-            I                  = I,                # percentage of the funds being held in the cash reserve
-            D                  = D,                # percentage of the revenues being funneled into cash reserve
+        self.init(
+            organization  = organization,                                     # contract administrator
+            ledger        = sp.map(l = {organization: sp.as_nat(preminted)}), # token ledger
+            price         = initial_price,                                    # initial price before MFG
+            total_tokens  = preminted,
+            burned_tokens = burned_tokens,
+            MFG           = MFG,                                              # minimal funding goal
+            MPT           = sp.timestamp(...), # minimum period of time
+            
+            # percentage of the funds being held in the cash reserve
+            funds_ratio_for_reserve    = funds_ratio_for_reserve,
+            # percentage of the revenues being funneled into cash reserve
+            revenues_ratio_for_reserve = revenues_ratio_for_reserve,
+
+            buy_slope     = buy_slope,
+            sell_slope    = sell_slope,
             minimumInvestment  = minimumInvestment,
             company_v          = company_valuation,
             base_currency      = base_currency,
             total_allocation   = total_allocation,
-            stake_allocation   = stake_allocation, 
+            stake_allocation   = stake_allocation,
             termination_events = termination_events,
             govRights          = govRights,
             company_name       = company_name,
-            phase              = 0,                                                # starting under MFG
+            phase              = 0,                                              # starting under MFG
             total_investment   = sp.tez(0)
             )
+
 ```
 
 <HighlightBox type="tip">
@@ -85,13 +90,40 @@ There are **two phases** in the offering regarding the buy price:
 1. The **initial phase**: Before the minimum funding goal (MFG) is reached, the buy price is constant; 
 2. The **slopy phase** (i.e. post-MFG phase): Once the MFG is reached, the buy price will increase for each issued token.
 
-<HighlightBox type="tip">
+## Entrypoint
 
-If these phases do not sound familiar, take another look at the [introduction section](./what-is-a-rolling-safe) elaborating on Rolling SAFEs, especially _Stages in a Rolling SAFE_.
+Let us first have a look at the `buy()` entrypoint and understand the conditions for calling the initial or slope buy function:
 
-</HighlightBox>
+```python
+    # buy some tokens with sender's tez
+    @sp.entry_point
+    def buy(self):
+    #check the phase, dont sell or buy if closed
+        sp.if self.data.phase != 2:
+            # if token in intialization phase, the price is fixed and all funds are escrowed
+            sp.if self.data.total_investment < self.data.MFG:
+                # check the excess above MFG and send back
+                sp.if sp.utils.mutez_to_nat(self.data.MFG - sp.amount - self.data.total_investment) < 0:
+                    sp.send(sp.sender, sp.amount - self.data.MFG + self.data.total_investment)
+                    self.buy_initial(self.data.MFG - self.data.total_investment)
+                sp.else:
+                    self.buy_initial(sp.amount)
+            # if initialization phase is past
+            sp.else:
+                self.data.phase = 1
+                self.buy_slope(sp.amount)
+```
 
-## The buy price
+You can see that we do not allow any action to take place after the closing phase.
+
+We check for excess in two different instances:
+
+* The excess in the `buy()` function;
+* The excess in the `buy_initial` and `buy_slope` function.
+
+The excess check in the `buy()` function makes sure one buy transaction does not surpass the MFG. The excess in the `buy_initial` and `buy_slope` function calculates the excess amount of tez after a buy transaction, so to say, your change.
+
+## Initial phase
 
 The buy price is determined during the **initial phase** by the following lines in the contract code:
 
@@ -139,7 +171,15 @@ After the calculation, `buy_initial` will check if any tokens can be issued. The
 
 Before calculating the recent value of the total investments, the excess is calculated and sent back to the user.
 
-Now, let us have a look at the **post-MFG phase**, so to say the "slopy phase" for the `buy()` function:
+## Post-MFG phase
+
+Now, let us have a look at the **post-MFG phase**, so to say the "slopy phase" for the `buy()` function.
+
+This time the calculation for the `token_amount` is more complex because of the linear price increase. We have to calculate the [area of the trapezium](https://github.com/C-ORG/whitepaper#buy-calculus) under the price function.
+
+![Calculating the buy price post-MFG](/images/buy-calculus.png)
+
+Next, the contract does a **reserve calculation** to determine the amount of the excess, which is sent back to the transaction sender. In addition each time someone buys a token, a part of the tez amount in the transaction will be kept for the buyback reserve:
 
 ```python
     # after initial phase, the price will increase
@@ -150,32 +190,21 @@ Now, let us have a look at the **post-MFG phase**, so to say the "slopy phase" f
         token_amount = sp.local(
             "token_amount", 
             self.square_root(
-                2 * sp.utils.mutez_to_nat(amount) /self.data.b + 
+                2 * sp.utils.mutez_to_nat(amount) /self.data.buy_slope + 
                 self.data.total_tokens * self.data.total_tokens
                 ) - self.data.total_tokens
             )
 
         tez_amount = sp.local(
             "tez_amount",
-            sp.as_nat(token_amount.value) * self.data.total_tokens * self.data.b   /2 + 
-            (sp.as_nat(token_amount.value) + self.data.total_tokens) * sp.as_nat(token_amount.value) * self.data.b/2
+            sp.as_nat(token_amount.value) * self.data.total_tokens * self.data.buy_slope/2 + 
+            (sp.as_nat(token_amount.value) + self.data.total_tokens) * sp.as_nat(token_amount.value) * self.data.buy_slope/2
             )
 
         send_back = sp.local(
             "send_back",
             amount - sp.utils.nat_to_mutez(tez_amount.value)
             )
-```
-
-This time the calculation for the `token_amount` is more complex because of the linear price increase. We have to calculate the [area of the triangle](https://github.com/C-ORG/whitepaper#buy-calculus) under the price function.
-
-![Calculating the buy price post-MFG](/images/buy-calculus.png)
-
-You can find the same calculation in the [Javascript code](https://github.com/b9lab/tezos-cso-project) too.
-
-Next, the contract does a **reserve calculation** to determine the amount of the excess, which is sent back in the next lines:
-
-```python
         # send tez that is too much
         sp.if sp.utils.mutez_to_nat(send_back.value) > 0:
             sp.send(sp.sender, send_back.value)
@@ -212,62 +241,15 @@ Next, the contract does a **reserve calculation** to determine the amount of the
         self.data.total_tokens += sp.as_nat(token_amount.value)
 
         # set new price
-        self.data.price = sp.utils.nat_to_mutez(self.data.b * self.data.total_tokens)
+        self.data.price = sp.utils.nat_to_mutez(self.data.buy_slope * self.data.total_tokens)
         self.modify_sell_slope(send_back.value + company_pay.value)
 ```
-
-Each time someone buys a token, a part of the tez amount in the transaction will be kept for the buyback reserve.
 
 <HighlightBox type="info">
 
 At the end of a `buy_slope` call, the contract updates the sell slope. This is something we address in the [next section](./rolling-safe-smart-contract-implementation-part-2).
 
 </HighlightBox>
-
-## Entrypoint
-
-Now we can look at the `buy()` entrypoint and understand the conditions for calling the initial or slope buy function:
-
-```python
-    # buy some tokens with sender's tez
-    @sp.entry_point
-    def buy(self):
-    #check the phase, dont sell or buy if closed
-        sp.if self.data.phase != 2:
-            # if token in intialization phase, the price is fixed and all funds are escrowed
-            sp.if self.data.total_investment < self.data.MFG:
-                # check the excess above MFG and send back
-                sp.if sp.utils.mutez_to_nat(self.data.MFG - sp.amount - self.data.total_investment) < 0:
-                    sp.send(sp.sender, sp.amount - self.data.MFG + self.data.total_investment)
-                    self.buy_initial(self.data.MFG - self.data.total_investment)
-                sp.else:
-                    self.buy_initial(sp.amount)
-            # if initialization phase is past
-            sp.else:
-                self.data.phase = 1
-                self.buy_slope(sp.amount)
-```
-
-You can see that we do not allow any action to take place after the closing phase.
-
-## Handling excess in the `buy()` function
-
-We do an additional check for the **excess**, which gets sent back. The excess in the `buy()` function is a different one than the excess in the `buy_initial` and `buy_slope` functions.
-
-We check for excess in two different instances:
-
-* The excess in the `buy()` function;
-* The excess in the `buy_initial` and `buy_slope` function.
-
-The excess check in the `buy()` function makes sure one buy transaction does not surpass the MFG. The excess in the `buy_initial` and `buy_slope` function calculates the excess amount of tez after a buy transaction, so to say, your change.
-
-_Why do we differentiate when it comes to excess?_
-
-Imagine a scenario where a user (investor) commits a large amount to buy tokens. Due to the investment being very large the MFG is technically reached and surpassed with the investor's one transaction. How should the contract react?
-
-To avoid this issue, the contract checks in which phase the buy transaction falls. In the above-described scenario, it would not accept the transaction for the whole investment amount. Instead, the investor receives all tokens that can be bought for the initial-phase price and an excess return, with which more tokens can be bought but at a price determined by the `buy()` function.
-
-We want to differentiate between the initial and the post-MFG phase, so that the contract only allows to buy tokens at the initial price until the MFG is reached. The user will need another call to continue to buy but at the post-MFG phase price.
 
 ## The `pay()` function
 
@@ -284,7 +266,7 @@ We will allow payments in the slopy phase:
         buyback_reserve = sp.local(
             "local_amount", 
             sp.utils.nat_to_mutez(
-                sp.utils.mutez_to_nat(sp.amount) * self.data.D / 100
+                sp.utils.mutez_to_nat(sp.amount) * self.data.revenues_ratio_for_reserve / 100
                 )
             )
         # send sp.amount - buyback_reserve to organization
@@ -295,7 +277,7 @@ We will allow payments in the slopy phase:
         token_amount = sp.local(
         "token_amount", 
         self.square_root(
-            2 * sp.utils.mutez_to_nat(d) /self.data.b + 
+            2 * sp.utils.mutez_to_nat(d) /self.data.buy_slope + 
             self.data.total_tokens * self.data.total_tokens
             ) - self.data.total_tokens
         )
@@ -311,7 +293,7 @@ You can see, it will mint the same number of tokens as if `buy()` would have bee
 
 ```python
         # send sp.amount - buyback_reserve to organization
-        d = sp.amount - buyback_reserve.value
+        amount_to_sent = sp.amount - buyback_reserve.value
         sp.send(self.data.organization, d)
 ```
 

@@ -449,7 +449,7 @@ We can make more assumptions about when we expect something to be changed and de
         },
         "sellSlope": (storageData) => {
             return cachedData(storageData, requestStorage, (data) => {
-                return parseInt(data.s, 10);
+                return parseInt(data.sell_slope, 10);
             });
         },
         ...
@@ -473,8 +473,8 @@ We cannot easily fetch the sell and buy price. For the `buyPrice`, we do a calcu
 ```javascript
         "buyPrice": (storageData, tokens) => {
             return cachedData(storageData, requestStorage, (data) => {
-                const firstPart = data.b * data.total_tokens * tokens / 2,
-                    secondPart = data.b * tokens * (parseInt(data.total_tokens, 10) + tokens) / 2,
+                const firstPart = data.buy_price * data.total_tokens * tokens / 2,
+                    secondPart = data.buy_price * tokens * (parseInt(data.total_tokens, 10) + tokens) / 2,
                     tempPrice = Math.ceil((firstPart + secondPart)*10)/10;
 
 
