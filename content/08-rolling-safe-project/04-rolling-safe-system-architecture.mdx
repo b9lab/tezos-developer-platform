@@ -27,9 +27,122 @@ The [`DataHander`](https://github.com/b9lab/tezos-cso-project/blob/master/src/se
 
 On the other side, the `DataHandler` directly calls the wrapper functions implemented by the smart contract team, which does not need to know about data processing in the web application beyond the wrapper functions. The call to the wrapper functions is also implemented in the `DataHandler` - As you can see in the previous image, we drew the line _through_ the `DataHandler`.
 
-With this setup, the team working on the web application does not need to be fully knowledgeable about all the blockchain-related details, while the smart contract team just needs normal JavaScript/TypeScript to implement the wrappers without knowledge regarding both the frontend and backend frameworks (React, Next, Express). Not everyone needs to be a full-stack developer.
+With this setup, the team working on the web application does not need to be fully knowledgeable about all the blockchain-related details, while the smart contract team just needs normal JavaScript/TypeScript to implement the wrappers without knowledge regarding both the frontend and backend frameworks. Not everyone needs to be a full-stack developer.
 
-After a quick general project introduction tio understand the functioning of a Rolling SAFE and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the `DataHandler` on a basic level:
+## System Components
+
+A quick overview of the individual components of the system. Further details about their configuration and implementation can be found in the upcoming [Web Application Stack](/rolling-safe-platform-stack) section.
+
+### Next.js server
+
+The web application itself runs on a server, serving web requests from web browsers. We will use [Next.js](https://nextjs.org/), which is an application server framework made to work with [React](https://reactjs.org/).
+
+One of the big concerns when building a web application which interacts with the blockchain is where the actual blockchain interaction happens: On the server, or on the client. Luckily, with Tezos, this is very flexible: Since we can run the [TzKT indexer](/tzkt), exposing a REST Api (or use a public one), we can easily query data from the client and the server using the same implementation.
+
+For sending transactions, we have two options:
+
+* Create a transaction on the client utilizing the user's wallet, using [Beacon](/beacon).
+* Create and manage the user keys serverside and send the transactions from the server (hot wallet service).
+
+We are following the first option, to keep full wallet control with the user and reduce the security risk of an unauthorized wallet access.
+
+<HighlightBox type="info">
+
+The smart contract is still the heart of the whole project. The web application only facilitates the interaction with the smart contract. Theoretically, a user could directly query the smart contract to fetch data, and craft a transaction manually to buy and sell. This would be very tedious, but is possible.
+
+When implementing a hot wallet service though, users could **not** send transactions by themselves, therefore if your web application becomes unavailable, only querying data will be possible.
+
+</HighlightBox>
+
+We will use the public TzKT API (and thereby also the public Tezos node), available at `https://api.hangzhou2net.tzkt.io/`, and store this url as a configuration variable to begin with. We can then easily switch this to our own Indexer service later on, by just changing this url.
+
+### Data query flow
+
+Since we can query both from the client as well as the server in general, we implement the DataHandler and it's underlying wrappers to also support both use cases (with an exception of the WalletWrapper / Beacon integration, as this only runs on the client). We can then use the same DataHandler functions everywhere, regardless of it being called from the client UI, or any server function. This means, overall, we can support two different flows of data:
+
+
+**Server-side data fetching**
+
+**TODO: UML Sequence diagram 1**
+
+When fetching the data Server-side, the request to the TzKT Api is made from the server directly, and the result is put into the response when it is being rendered on the server. Note that this means, the query to the TzKT Api must be completed before the server can start to send the response, therefore a long response time on the TzKT Api will also cause a long response time from the server. To overcome this, you could first render the page without data (to quickly respond), then use Ajax to query the data from the server and update the page. We will look into how to implement this in the upcoming [Web Application Stack](/rolling-safe-platform-stack) section.
+
+
+**Client-side data fetching**
+
+**TODO: UML Sequence diagram 2**
+
+When fetching the data Client-side, the user's browser is sending the request directly to the TzKT Api, and also has to process the result on its own. This processing on the client is the main difference to the aforementioned Server-side fetching with Ajax, where the server can preprocess the data.
+
+
+### User authentication and database
+
+Theoretically, for the blockchain interaction, we do not need to keep track of any user accounts in our application. When a user creates a new transaction, the user's wallet will take care of the account management and keys. When querying user data, we can read the user's account address through the Beacon SDK (as shown in the `connectWallet()` function in the [Beacon section](/beacon)). We could also allow users to login with their wallet, using their account address as identifier - this is a common approach.
+
+However, this means users need to have a wallet installed and configured to sign up, which depending on the target audience of the TZMINT web application might be something you want to assist the user with **after** signing up. Also, a detail we have excluded in this sample project is a full [know your customer (kyc)](https://en.wikipedia.org/wiki/Know_your_customer) process, which usually requires the user to enter personal information to confirm their identity and is required for legal reasons on such a financial project. We will showcase a different approach, which allows users to sign up and login just with their email address or their Google Account (no password), then collect personal information and finally, adding an extra convenience feature for the user. For this, we will use [NextAuth.js](https://next-auth.js.org/), which is a flexible authentication framework. **Briefly explained**, we are supporting the following two authentication mechanisms:
+
+* Login by mail. The user enters their email address, which is stored on the server along with a token. An email is sent to the email address, including a login link which relates to the token. When the user clicks the link, the server checks the token and stores the authentication information (session) in a user cookie.
+* Login with a third-party account, using [OAuth 2.0](https://oauth.net/2/). We will implement login with Google using this feature as example.
+
+As personal information, we want to collect the username and country of the user - these two are choosen arbitrarily, just to show how to implement this feature. In order to store the token and the personal information, we will need a database. We add a basic **postgresql database**, only for this purpose.
+
+Additionally, we store the user's account address in our database. This allows us to implement an extra convenience feature: When the user is logged in, we can fetch user data (balance, transaction history, etc.) without interacting with the user's wallet. Thus, the user can login from any device, without the need to connect/unlock their wallet, but still access their own investment information, since we only query these from the blockchain. Just for sending a transaction, the user will need to actually activate their wallet.
+
+
+### UI Frontend
+
+Besides React, we are using [Tailwind CSS](https://tailwindcss.com/) as a simple css framework. The core idea of tailwind is to expose css functionality through composable base classes, removing the need to write specific object/component scoped css, instead allowing to add properties through generalised utility classes. We won't go into the details of how to use Tailwind in this course, but if you have never used it before, we strongly recommend to [try it out](https://tailwindcss.com/docs/installation).
+
+Furthermore, we use [Apexcharts](https://apexcharts.com/) for the chart display.
+
+
+## Git Repository overview
+
+Before we continue to look into the details of our components, we need to take a quick look at the important folders in the Git Repository, to get an overview of their use:
+
+[Tezos CSO Project repository](https://github.com/b9lab/tezos-cso-project)
+
+```
+tezos-cso-project/
+├─ cypress/                 Support files for the end-to-end tests
+├─ database/                Web app database migrations
+├─ docker/                  Docker scripts and cofig for the end-to-end tests
+├─ pages/                   Web app content pages
+├─ public/                  Web app static files (images)
+├─ src/                     Web app source folder
+│  ├─ components/           React components
+│  ├─ constants             Constants incl. navigation
+│  ├─ helpers               Helpers (formatting)
+│  ├─ middlewares           Auth.js config
+│  ├─ models                Database models (ORM)
+│  ├─ services              Services (Handlers)
+│  │  ├─ DataHandler.ts     The DataHandler, our main data interface
+│  │  └─ UserHandler.ts     Handler for user management (create, update, delete)
+│  └─ utils                 Extra hooks and param type definitions
+├─ styles/                  Web app css styles
+├─ tests/                   Web app tests (excl. end-to-end tests)
+└─ tezos-app-project/       The smart contract + wrapper sub project (submodule)
+
+```
+
+The [Tezos App Project repository](https://github.com/b9lab/tezos-app-project/), which is included as [Git Submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules), contains the following folders:
+
+```
+tezos-app-project/
+├─ config/
+│  ├─ configuration.js      Main configuration file
+├─ sample/                  Sample .html and js file, showing basic usage
+├─ src/                  
+│  ├─ chain/                ChainWrapper
+│  ├─ contract/             ContractWrapper, Smart contract and deployment script
+│  ├─ wallet/               WalletWrapper
+├─ test/                    Unit tests
+```
+
+
+## Defining the DataHandler interfaces
+
+After a quick general project introduction to understand the functioning of a Rolling SAFE and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the `DataHandler` on a basic level:
 
 ```javascript
 @return Promise.resolve(number totalInvestors) or Promise.reject(error)
