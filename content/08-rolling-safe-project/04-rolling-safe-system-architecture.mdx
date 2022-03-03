@@ -12,6 +12,7 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
+
 Due to the size of this project, we need to do some planning before starting to code. We will showcase our actual approach for the implementation of this whole project, and share our considerations and learnings.
 
 On the top level, we divided the project into two separate parts:
@@ -48,13 +49,17 @@ We are following the first option, to keep full wallet control with the user and
 
 <HighlightBox type="info">
 
-The smart contract is still the heart of the whole project. The web application only facilitates the interaction with the smart contract. Theoretically, a user could directly query the smart contract to fetch data, and craft a transaction manually to buy and sell. This would be very tedious, but is possible.
+The smart contract is still the heart of the whole project. The web application only facilitates the interaction with the smart contract. In theory, a user could directly query the smart contract to fetch data, and create a transaction manually to buy and sell. This would be quite tedious, but it is possible.
 
 When implementing a hot wallet service though, users could **not** send transactions by themselves, therefore if your web application becomes unavailable, only querying data will be possible.
 
 </HighlightBox>
 
-We will use the public TzKT API (and thereby also the public Tezos node), available at `https://api.hangzhou2net.tzkt.io/`, and store this url as a configuration variable to begin with. We can then easily switch this to our own Indexer service later on, by just changing this url.
+We will use the public TzKT API, and thus also the public Tezos node, available at `https://api.hangzhou2net.tzkt.io/`. Later on, we can then easily switch this to our own Indexer service by changing this url.
+
+### Smart contract and wrappers
+
+The smart contract and the wrappers functions are implemented in a separate project, which is integrated into the main project, allowing the web application to import the wrappers.
 
 ### Data query flow
 
@@ -98,34 +103,46 @@ Furthermore, we use [Apexcharts](https://apexcharts.com/) for the chart display.
 
 ## Git Repository overview
 
-Before we continue to look into the details of our components, we need to take a quick look at the important folders in the Git Repository, to get an overview of their use:
+Before continuing to look into the details of our specification and implementation approach, we should take a quick look at the important folders in the Git Repository, to get an overview of their use.
 
-[Tezos CSO Project repository](https://github.com/b9lab/tezos-cso-project)
+<HighlightBox type="tip">
+
+In the following sections, we will show excerpts of the source code to illustrate various functions, but we recommend to also look into the corresponding source files along.
+
+
+</HighlightBox>
+
+### Web application project
+
+[GitHub repository](https://github.com/b9lab/tezos-cso-project)
 
 ```
 tezos-cso-project/
-├─ cypress/                 Support files for the end-to-end tests
+├─ cypress/                 Support files for end to end tests
 ├─ database/                Web app database migrations
-├─ docker/                  Docker scripts and cofig for the end-to-end tests
+├─ docker/                  Docker cofig for the end to end tests
 ├─ pages/                   Web app content pages
 ├─ public/                  Web app static files (images)
-├─ src/                     Web app source folder
+├─ src/
 │  ├─ components/           React components
 │  ├─ constants             Constants incl. navigation
-│  ├─ helpers               Helpers (formatting)
+│  ├─ helpers               Formatting helpers
 │  ├─ middlewares           Auth.js config
 │  ├─ models                Database models (ORM)
 │  ├─ services              Services (Handlers)
-│  │  ├─ DataHandler.ts     The DataHandler, our main data interface
-│  │  └─ UserHandler.ts     Handler for user management (create, update, delete)
+│  │  ├─ DataHandler.ts     Our main data interface
+│  │  └─ UserHandler.ts     Handler for user management
 │  └─ utils                 Extra hooks and param type definitions
 ├─ styles/                  Web app css styles
 ├─ tests/                   Web app tests (excl. end-to-end tests)
-└─ tezos-app-project/       The smart contract + wrapper sub project (submodule)
+└─ tezos-app-project/       The smart contract project
+(Not all are files shown)
 
 ```
 
-The [Tezos App Project repository](https://github.com/b9lab/tezos-app-project/), which is included as [Git Submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules), contains the following folders:
+### Smart contract project
+
+The separate [GitHub repository](https://github.com/b9lab/tezos-app-project/) is included as [Git Submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) in the Web application project.
 
 ```
 tezos-app-project/
@@ -133,14 +150,20 @@ tezos-app-project/
 │  ├─ configuration.js      Main configuration file
 ├─ sample/                  Sample .html and js file, showing basic usage
 ├─ src/                  
-│  ├─ chain/                ChainWrapper
-│  ├─ contract/             ContractWrapper, Smart contract and deployment script
-│  ├─ wallet/               WalletWrapper
+│  ├─ chain/
+│  │  └─ chain.js           Chain wrapper
+│  ├─ contract/
+│  │  ├─ contract.js        Contract wrapper
+│  │  ├─ deployment.sh      Deployment script
+│  │  ├─ TZMINT.py          Smart contract (smartpy)
+│  │  └─ TZMINT.tz          Compiled smart contract
+│  ├─ wallet/
+│  │  └─ wallet.js          Wallet wrapper
 ├─ test/                    Unit tests
+(Not all are files shown)
 ```
 
-
-## Defining the DataHandler interfaces
+## Interface specifications
 
 After a quick general project introduction to understand the functioning of a Rolling SAFE and the development of the base user stories, both teams worked together on the specification of the function signatures and the return data for the `DataHandler` on a basic level:
 
