@@ -37,7 +37,7 @@ A quick overview of the individual components of the system. Further details abo
 
 The web application itself runs on a server, serving web requests from web browsers. We will use [Next.js](https://nextjs.org/), which is an application server framework made to work with [React](https://reactjs.org/).
 
-One of the big concerns when building a web application which interacts with the blockchain is where the actual blockchain interaction happens: On the server, or on the client. Luckily, with Tezos, this is very flexible: Since we can run the [TzKT indexer](/tzkt), exposing a REST Api (or use a public one), we can easily query data from the client and the server using the same implementation.
+One important concern when building a web application connected to a blockchain is to specify where the actual blockchain interaction should happen: On the server, or on the client. Luckily, on Tezos this is very flexible: To query data, we can run our own [TzKT indexer](/tzkt), or use a public one, to query blockchain data through its REST Api, which works from both the client and the server using the same implementation.
 
 For sending transactions, we have two options:
 
@@ -346,7 +346,7 @@ class DataHandler {
 
 ## Workflows
 
-We also used this common interface to communicate (specification) updates between the smart contract development and the application. When using automated units tests that run on any code update, any breaking change becomes immediately visible. This is very important for any project because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during a project.
+We also used this common interface to communicate (specification) updates between the smart contract development and the application. When using automated unit tests that run on any code update, any breaking change becomes immediately visible. This is very important for any project because even with the best planning, it is natural that you might need to adjust your interface signatures as some details evolve during a project.
 
 
 <HighlightBox type="info">
