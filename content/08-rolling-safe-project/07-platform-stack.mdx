@@ -36,9 +36,9 @@ which calls `next dev`, starting the server in development mode (includes live r
 We cover each of these concerns with one example in the following.
 
 
-## Platform architecture basics
+## Web application architecture basics
 
-We use [Next.js](https://nextjs.org/) as base for the web platform. Next.js is a React framework build on nodejs, which runs your application server and allows for a very modular and dynamic composition and configuration of our application. It understands (but does not enforce) an [MVC](https://developer.mozilla.org/en-US/docs/Glossary/MVC) approach, routing files, data connections, server/client side rendering and the use of (react) components in the UI.
+As outliend in the [system architecture section](/rolling-safe-system-architecture), we use [Next.js](https://nextjs.org/) as server framework for the web application. Next.js is a React framework build on nodejs, which runs your application server and allows for a very modular and dynamic composition and configuration of our application. It understands (but does not enforce) an [MVC](https://developer.mozilla.org/en-US/docs/Glossary/MVC) approach, routing files, data connections, server/client side rendering and the use of (react) components in the UI.
 
 <HighlightBox type="tip">
 
@@ -121,11 +121,11 @@ Additionally, to load this Layout, we need to create another file in our `pages`
 import Layout from '../src/components/layout'
 
 export default function MyApp({ Component, pageProps }) {
-  return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
-  )
+    return (
+      <Layout>
+          <Component {...pageProps} />
+      </Layout>
+    )
 }
 
 ```
@@ -199,7 +199,7 @@ You can create and add further components like this, if you want to see an examp
 
 ### Reading data from the blockchain
 
-As described in the [Architecture section](/rolling-safe-system-architecture), we use an object called `DataHandler` as interface between our platform application and the underlying `chainWrapper` and `contractWrapper`. From the platform point of view, this DataHandler is transparently hiding the actual blockchain interaction and simply returns a Promise which will resolve to the data. For example, to fetch the company valuation, we use the following function in the DataHandler:
+As described in the [Architecture section](/rolling-safe-system-architecture), we use the `DataHandler` as interface between our platform application and the underlying `chainWrapper` and `contractWrapper`. From the platform point of view, this DataHandler is transparently hiding the actual blockchain interaction and simply returns a Promise which will resolve to the data. For example, to fetch the company valuation, we use the following function in the DataHandler:
 
 ```javascript
 async getCompanyValuation(): Promise<CompanyValuationDto> {
@@ -211,26 +211,127 @@ async getCompanyValuation(): Promise<CompanyValuationDto> {
     }
 ```
 
-which in turn calls `companyValuation()` on the `chainWrapper`. 
+which then calls `companyValuation()` on the `chainWrapper`. We can call use this function directly from our React components. To extend our initial Home page sample with this, we first need to import the DataHandler, using:
 
-**TODO: Explain how basic data fetching would work here**
+```javascript
+import DataHandler from "../src/services/DataHandler";
+```
 
-### Wrapping data fetch into an API
+Then, to fetch data from it, we instantiate a new DataHandler object and call the `getCompanyValuation` function:
 
-**TODO: Explain data fetch api wrapping**
+```javascript
+const dataHandler = new DataHandler();
+await dataHandler.getCompanyValuation().valuation;
+```
+
+However, since this is calling an asynchronous function, we can not run this within the component constructor. Next.js provides a specific function for this case, which fetches the data on the server:
+
+```javascript
+export async function getServerSideProps(context) {
+  return {
+    props: {}
+  }
+}
+```
+
+Integrating this into our page results in the following final code:
+
+```javascript
+import DataHandler from "../src/services/DataHandler";
+
+export default function Home(props) {
+    return (
+        <div className="home">
+            Company valuation: {props.companyValuation}
+        </div>
+    );
+}
+
+export async function getServerSideProps(context) {
+    const dataHandler = new DataHandler();
+    const data = await dataHandler.getCompanyValuation();
+  return {
+    props: {
+        companyValuation: data?.valuation.toString()
+    }
+  }
+}
+```
+
+which renders the following page:
+
+![Page showing company valuation](./images/ps-sc-page-valuation.png)
 
 
-## Advanced platform features
+### Server and Client Side Data Fetching (SSR, SSG and CSR)
 
-### Server and Client Side Data Fetching (CSR, SSG and SSR)
+Next.js supports different ways to actually render your data. So far, we have seen how to use [Server-side rendering (SSR)](https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props), which fetches the data on the server on each request, and then renders the page with it.
 
-Next.js supports different places to actually render your data. On the first level, we can seperate between [Server-side rendering (SSR)](https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props) and [Client-side rendering (CSR)](https://nextjs.org/docs/basic-features/data-fetching/client-side). Both will render on each request.
-Additionally, Next.js also supports Static-site generation (SSG), which allows to fetch data on build time.
+Alternatively, Next.js also allows you to use [Static-site generation (SSG)](https://nextjs.org/docs/basic-features/data-fetching/get-static-props), which fetches the data **during build time**, and then renders it as static value. To use SSG, you can use the same approach as demonstrated for SSR, but name the function `getStaticProps(context)` instead of `getServerSideProps(context)` - that's it!
 
-When using Client-side rendering, it is recommended to use [SWR](https://swr.vercel.app/docs/with-nextjs), which is a React hook library created by the Next.js team exactly for this purpose. Using SWR also allows to combine Server-side and Client-side rendering: You can use SSR or SSG to pre-render the page content, then update it client-side with CSR. This is very useful for our application, because we have some data that should not change, but still be fetched from the blockchain, like the initial settings on our smart contract (Base currency, termination events, initial rserve, etc). To improve SEO and page load speed, we can inline this data statically when building the page (SSG), and then **update** the values Client-side when viewing the page (CSR).
+Finally, we can also implement Client-side rendering. For this, Next.js recommends to use [SWR](https://swr.vercel.app/docs/with-nextjs), which is a React hook library created by the Next.js team exactly for this purpose. Using SWR requires an additional modification: It wants to read the data from our server via a REST Api, sending JSON data. So, we have to create an Api endpoint in our Next.js server, wrapping our data fetch call and returning a proper HTTP response. We add a new file in `/pages/api/company-valuation.ts` with:
 
-To use SSG, we need to add a function to the page, called `getStaticProps()`, which returns the initial data as props object. We have used this on the `cafe-details.tsx` page:
+```javascript
+import type { NextApiRequest, NextApiResponse } from 'next';
+import DataHandler from '../../src/services/DataHandler';
+import { CompanyValuationDto } from '../../src/utils/dtos';
 
+/**
+ * Get company valuation API
+ */
+export default async function companyValuationHandler(
+  req: NextApiRequest,
+  res: NextApiResponse<CompanyValuationDto>
+) {
+    const { method } = req;
+
+    const dataHandler = new DataHandler();
+
+    return new Promise<void>(resolve => {
+
+        const handleSuccess = (data: CompanyValuationDto) => {
+            res.status(200).json(data);
+            resolve();
+        };
+
+        const handleError = (error: Error) => {
+            console.error(error);
+            res.status(500).end(`An error has occurred`);
+            resolve();
+        }
+
+        switch (method) {
+            case 'GET':
+                dataHandler.getCompanyValuation().then(handleSuccess).catch(handleError);
+                break;
+            default:
+                res.setHeader('Allow', ['GET']);
+                res.status(405).end(`Method ${method} Not Allowed`);
+                resolve();
+        }
+    });
+}
+
+```
+
+This api will then be exposed on `/api/company-valuation`. To integrate this in our page, Next.js supplies a special function `useSWR`, which is **not asynchronous**, so we can call it in the constructor. Our home page with Client-side data fetching:
+
+```javascript
+import useSWR from "swr";
+import DataHandler from "../src/services/DataHandler";
+
+export default function Home(props) {
+    const { data } = useSWR("/api/company-valuation");
+
+    return (
+        <div className="home">
+            Company valuation: {data?.valuation?.toString()}
+        </div>
+    );
+}
+```
+
+Using SWR also allows to combine Server-side and Client-side rendering: You can use SSR or SSG to pre-render the page content, then update it client-side. We are using this for the page displaying the Cafe parameters within our application. These parameters are configured on the smart contract during deployment. Next.js will fetch them during build, and then check for an update from the client, but after the page has been rendered. For this, we first supply the SSG function `getStaticProps` as before:
 ```javascript
 export async function getStaticProps() {
     const dataHandler = new DataHandler();
@@ -239,7 +340,7 @@ export async function getStaticProps() {
 }
 ```
 
-Then, the main page function can receive this props object and use it. The initial data is then passed as second parameter to the function `useSWR`, which wraps all the update magic.
+Then,we pass this data as second parameter to the `useSWR()` function, which wraps all the update magic.
 
 ```javascript
 export default function CafeDetails(props: CafeDetailsProps) {
@@ -247,7 +348,9 @@ export default function CafeDetails(props: CafeDetailsProps) {
     const { data, error } = useSWR(CAFE_PARAMETERS_API_ENDPOINT, { initialData: props.initialData });
 
     return (
+        // ...
         <div>Termination events: {data.terminationEvents.toString()}</div>
+        // ...
     );
 }
 ```
