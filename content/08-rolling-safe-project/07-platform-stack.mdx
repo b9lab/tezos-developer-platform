@@ -192,7 +192,7 @@ Which then results in this rendering in the browser:
 
 ![Welcome Page using Layout and Components](./images/ps-sc-page-home-3.png)
 
-You can create and add further components like this, if you want to see an example for passing multiple custom properties to a component, you can take a look at the [CtaCard Component](https://github.com/b9lab/tezos-cso-project/blob/main/src/components/CtaCard.tsx).
+You can create and add further components like this, if you want to see an example for passing multiple custom properties to a component, you can take a look at the [CtaCard Component](https://github.com/b9lab/tezos-cso-project/blob/master/src/components/CtaCard.tsx).
 
 
 **TODO: NOTE ABOUT DIFFERENCES IN REPO**
@@ -318,7 +318,6 @@ This api will then be exposed on `/api/company-valuation`. To integrate this in 
 
 ```javascript
 import useSWR from "swr";
-import DataHandler from "../src/services/DataHandler";
 
 export default function Home(props) {
     const { data } = useSWR("/api/company-valuation");
@@ -357,23 +356,73 @@ export default function CafeDetails(props: CafeDetailsProps) {
 
 Inside our React component, we directly access `data.terminationEvents` to access the data. SWR will initially supply the value received from `getStaticProps()`, and the page will be rendered with the data received at build time. It is sent with this to the Client, displayed, and then the `CAFE_PARAMETERS_API_ENDPOINT` url is used to fetch fresh data, which then updates the data Client-side. Note that this endpoint is still pointing to the server, so the Client is loading the actual update data through our server - but updating the page itself on the Client.
 
-### Authentication and User features
+<!-- ### Authentication and User features -->
 
-**TODO: explain Authjs**
 
 ### User Wallet interaction
 
-**TODO: explain User wallet interaction**
+Interaction with the user's wallet is done through the wallet wrapper ([/src/wallet/wallet.js](https://github.com/b9lab/tezos-app-project/blob/main/src/wallet/wallet.js)), which wraps the Beacon SDK and passes the configuration to initialize it. The code is very similar to what we have seen in the [Beacon Section](/beacon) in the previous module:
+
+```
+// ...
+wallet = new options.SDK(walletOptions),
+        forcePermissionRequest = () => {
+            return wallet
+                .client
+                .requestPermissions({
+                    "network": {
+                        "type": options.network,
+                        "rpcUrl": options.url
+                    }
+                })
+                .then(() => {
+                    return wallet;
+                })
+// ...
+```
+
+The actual instantiation and configuration of the options happens in the main export file of the project, the file [index.ts](https://github.com/b9lab/tezos-app-project/blob/main/index.ts) in the projects root folder:
+
+```
+import { TezosToolkit } from "@taquito/taquito";
+import { BeaconWallet } from "@taquito/beacon-wallet";
+import { walletWrapper } from "./src/wallet/wallet.js";
+import { chainWrapper } from "./src/chain/chain.js";
+import { contractWrapper } from "./src/contract/contract.js";
+import { configuration } from "./config/configuration.js";
+
+const config = configuration();
+
+let contract: any = null;
+
+if (typeof window !== 'undefined') {
+    let wallet = walletWrapper({
+        SDK: BeaconWallet,
+        network: config.chain,
+        name: "TZMINT",
+        url: config.provider
+    });
+    contract = contractWrapper({
+        SDK: TezosToolkit,
+        wallet,
+        contractAddress: config.contractAddress,
+        provider: config.provider
+    });
+}
+
+export const chain = chainWrapper(config);
+
+export { contract };
+```
+
+We do configure the `walletWrapper`, but instead of making it available as export like the `chainWrapper` and `contractWrapper`, we pass it directly into the contract wrapper, which will make use of it where needed.
 
 
 ## Behind the DataHandler: Interacting with the blockchain
 
-So far, we stopped to dig deeper into the data flow in this Module when reaching the DataHandler, because this is our wrapper object, hiding the blockchain complexity behind it. To understand the full stack flow and the integrations with the other SDKs and frameworks, we need to look further, behind the DataHandler.
+So far, we stopped to dig deeper into the data flow in this Section when reaching the DataHandler, because this is our interface object, hiding the blockchain complexity behind it. To understand the full stack flow and the integrations with the other SDKs and frameworks, we need to look further, behind the DataHandler into the wrappers.
 
-We have two different types of interactions with the blockchain: __Queries__ and __transactions__.
-
-As you learned in the previous modules of this course, we need to sign a transaction and send the transaction to a node to perform it. Queries have a different nature. For queries, we are not forced to communicate with a Tezos node directly and we do not need any signatures.
-
+We still differentiate between two different types of interactions with the blockchain: __Queries__ and __transactions__. Since we just looked into user wallet interaction, we will follow up and begin with looking into how transactions are handled.
 
 
 ### Transactions
@@ -622,7 +671,7 @@ If you want to understand the calculations, please have a look at the previous s
 
 ### Fetching from multiple endpoints
 
-In your own project, you will also face the moment when you will need to fetch multiple API endpoints to get certain information. Like in the case of the `bought` function:
+At some point, you might need to fetch data from multiple API endpoints, especially when you need to aggregate related data to get certain information. Like in the case of the `bought` function:
 
 ```javascript
 const bought = () => {
