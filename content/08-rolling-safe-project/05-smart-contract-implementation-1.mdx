@@ -270,14 +270,14 @@ We will allow payments in the slopy phase:
                 )
             )
         # send sp.amount - buyback_reserve to organization
-        d = sp.amount - buyback_reserve.value
-        sp.send(self.data.organization, d)
+        amount_to_sent = sp.amount - buyback_reserve.value
+        sp.send(self.data.organization, amount_to_sent)
 
         # create the same amount of tokens a buy call would do
         token_amount = sp.local(
         "token_amount", 
         self.square_root(
-            2 * sp.utils.mutez_to_nat(d) /self.data.buy_slope + 
+            2 * sp.utils.mutez_to_nat(amount_to_sent) /self.data.buy_slope + 
             self.data.total_tokens * self.data.total_tokens
             ) - self.data.total_tokens
         )
@@ -294,7 +294,7 @@ You can see, it will mint the same number of tokens as if `buy()` would have bee
 ```python
         # send sp.amount - buyback_reserve to organization
         amount_to_sent = sp.amount - buyback_reserve.value
-        sp.send(self.data.organization, d)
+        sp.send(self.data.organization, amount_to_sent)
 ```
 
 Let us now take a look at the `sell()` function.
