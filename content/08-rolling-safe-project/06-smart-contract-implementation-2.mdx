@@ -16,7 +16,7 @@ Now let us talk about the [`sell()` function](https://github.com/C-ORG/whitepape
 
 ## The `sell()` function
 
-The `sell()` function determines the sell price after the MFG is reached. `sell` will calculate the amount of tez for the sent number of tokens when a user wants to sell the offering's tokens.
+The `sell()` function determines the sell price after the MFG is reached. `sell` calculates the amount of tez for the sent number of tokens when a user wants to sell the offering's tokens.
 
 There are not two phases, but only one when it comes to the sell price: the **slopy phase** (post-MFG). Once the MFG is reached, the sell price increases based on how the cash reserve develops.
 
@@ -70,9 +70,9 @@ This seems less complex than the buy entrypoint. The reason is that we cannot ch
                 self.modify_sell_slope(sp.utils.nat_to_mutez(pay_amount.value))
 ```
 
-In the initial phase, one can sell a token and get 100% of the buy price, which will remain the same until the MFG is reached. We do not use the `sell_slope` in the initial phase, because the price is fixed but we will keep it updated. 
+In the initial phase, one can sell a token and get 100% of the buy price, which remains the same until the MFG is reached. We do not use the `sell_slope` in the initial phase, because the price is fixed but we keep it updated. 
 
-In the post-MFG phase, we will use the `sell_slope` to calculate the amount of tez to be sent:
+In the post-MFG phase, we use the `sell_slope` to calculate the amount of tez to be sent:
 
 ```python
     def sell_slope(self, amount):
@@ -101,21 +101,21 @@ In the post-MFG phase, we will use the `sell_slope` to calculate the amount of t
 
 The calculation of `pay_amount` looks a bit messy because it depends on `total_tokens`, `self.data.sell_slope`, `params.amount` (the amount of tez sent with the transaction), and `self.data.burned_tokens`:
 
-![The formula to calculate the pay amount](images/sell-calculus-formula-7.png)
+![Formula to calculate the pay amount](images/sell-calculus-formula-7.png)
 
-In the formula, our `pay_amount` represents `M`, `x` is the amount of tez sent with the transaction, `x'` is the amount of burned tokens and `a` represents the total amount of tokens issued.
+In the formula, our `pay_amount` represents `M`, `x` is the amount of tez sent with the transaction, `x'` is the number of burned tokens, and `a` represents the total number of tokens issued.
 
-As you can see, the sell slope will increase if tokens are burned but the buy slope is always constant. This means that the entrypoint `burn`, allows for the organization to increase the sell price.
+As you can see, the sell slope increases if tokens are burned but the buy slope is always constant. This means that the entrypoint `burn` allows for the organization to increase the sell price.
 
-You can see that the contract `burn`s the amount of tokens sold. 
+You can see that the contract `burn`s the number of tokens sold. 
 
 ## Calculating the sell slope
 
-Compared to the buy price calculation, this time it is a bit more complex because we do not have a linear price function for the sell price. The sell slope will change over time. The sell slope depends on the reserve, which is represented by the contract balance:
+Compared to the buy price calculation, this time it is a bit more complex because we do not have a linear price function for the sell price. The sell slope changes over time. The sell slope depends on the reserve, which is represented by the contract balance:
 
-![The formula to calculate the sell price](images/sell-calculus-formula-3.png)
+![Formula to calculate the sell price](images/sell-calculus-formula-3.png)
 
-`a` represents the total amount of tokens issued. 
+`a` represents the total number of tokens issued. 
 
 ```python
     # s calculus after each transaction
@@ -124,11 +124,11 @@ Compared to the buy price calculation, this time it is a bit more complex becaus
            self.data.sell_slope = 2 * sp.utils.mutez_to_nat(sp.balance - send_back) / (self.data.total_tokens * self.data.total_tokens)
 ```
 
-The value of `sp.balance` is the balance of the contract __after the transaction is received but before the contract sends any tez back to the user__. So the helper function needs to know the amount of tez sent back.
+The value of `sp.balance` is the balance of the contract __after the transaction is received but before the contract sends any tez back to the user__. So the helper function needs to know the number of tez sent back.
 
 ## Burning tokens
 
-Because burning is a part of the selling process, we will define an internal function to burn tokens:
+Because burning is a part of the selling process, we define an internal function to burn tokens:
 
 ```python          
     # internal burn function will be called by the entrypoints burn and sell
@@ -142,7 +142,7 @@ Because burning is a part of the selling process, we will define an internal fun
                 self.data.burned_tokens += sp.as_nat(amount)
 ```
 
-In addition the contract offers a `burn` entrypoint, in case a token holder wants to burn it's tokens:
+In addition, the contract offers a `burn` entrypoint, in case a token holder wants to burn its tokens:
 
 ```python
     @sp.entry_point
@@ -212,7 +212,7 @@ So, the sum of the payments is the exit fee.
 
 Only the contract owner can call `close`. For the `close` transaction to be successful, the contract owner needs to send the exit fee. Note that the minimum period of time (MPT) must be reached if the organization wants to trigger the closing. 
 
-Notice that if the data in the ledger increases in size, closing will cost more beacuse of:
+Notice that if the data in the ledger increases in size, closing costs more beacuse of:
 
 ```python
         sp.for account in self.data.ledger.items():

@@ -12,17 +12,17 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
-B9lab's sample project is an implementation of a continiuous programmable equity offering also known as a Rolling SAFE. To see the implementation in action, please visit the [TZMINT web application](https://tzmint.b9lab.com/), which is hosted by [B9lab](https://b9lab.com/). It is better to first try out the web application before taking a closer look at the implementation described in this course.
+B9lab's sample project is an implementation of a continiuous programmable equity offering also known as a Rolling SAFE. To see the implementation in action, please visit the [TZMINT web application](https://tzmint.b9lab.com/) hosted by [B9lab](https://b9lab.com/). It is better to first try out the web application before taking a closer look at the implementation described in this course.
 
 <HighlightBox type="info">
 
 Before working on this section, make sure to go through the [introduction section](./what-is-a-rolling-safe) to understand the underlying mechanisms of this novel funding instrument.
 
-For a close look at the formulas used for calculation, we recommend consulting the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper#annex) by Thibauld Favre. In this section, we will present an implementation of the whitepaper's ideas, our **TZMINT project**.
+For a close look at the formulas used for calculation, we recommend consulting the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper#annex) by Thibauld Favre. In this section, we present an implementation of the whitepaper's ideas, our **TZMINT project**.
 
 </HighlightBox>
 
-We implemented our smart contract in [SmartPy](https://smartpy.io/). The tokens are represented as a simple map to keep things simple. In addition, we will store everything we want to keep track of on-chain:
+We implemented our smart contract in [SmartPy](https://smartpy.io/). The tokens are represented as a simple map to keep things simple. In addition, we store everything we want to keep track of on-chain:
 
 ```python
         self.init(
@@ -71,11 +71,11 @@ The contract has **five entrypoints**:
 * `burn()`, and
 * `close()`.
 
-In this section, we will begin with an explanation of the `buy()` and `pay()` functions. Afterwards, in the [next section](./rolling-safe-smart-contract-implementation-part-2), we will talk about the `sell()` and `close()` functions (also known as closing function). 
+In this section, we begin with an explanation of the `buy()` and `pay()` functions. Afterwards, in the [next section](./rolling-safe-smart-contract-implementation-part-2), we will talk about the `sell()` and `close()` functions, also known as closing function.
 
 <HighlightBox type="info">
 
-You can find the smart contract in the [project repository](https://github.com/b9lab/tezos-cso-project).
+You can find the smart contract in the [project's GitHub repository](https://github.com/b9lab/tezos-cso-project).
 
 </HighlightBox>
 
@@ -83,12 +83,12 @@ If you want to extend this smart contract to, for example, fulfill the FA2 token
 
 ## The `buy()` function
 
-`buy()` will calculate the number of tokens for the sent amount of tez and it will mint these tokens. In addition, it should send back the excess amount.
+`buy()` calculates the number of tokens for the sent amount of tez and it mints these tokens. In addition, it should send back the excess amount.
 
 There are **two phases** in the offering regarding the buy price:
 
 1. The **initial phase**: Before the minimum funding goal (MFG) is reached, the buy price is constant; 
-2. The **slopy phase** (i.e. post-MFG phase): Once the MFG is reached, the buy price will increase for each issued token.
+2. The **slopy phase** (i.e. post-MFG phase): Once the MFG is reached, the buy price increases for each issued token.
 
 ## Entrypoint
 
@@ -118,12 +118,12 @@ You can see that we do not allow any action to take place after the closing phas
 
 We check for excess in two different instances:
 
-* The excess in the `buy()` function;
+* The excess in the `buy()` function, and
 * The excess in the `buy_initial` and `buy_slope` function.
 
-The excess check in the `buy()` function makes sure one buy transaction does not surpass the MFG. The excess in the `buy_initial` and `buy_slope` function calculates the excess amount of tez after a buy transaction, so to say, your change.
+The excess check in the `buy()` function makes sure that a buy transaction does not surpass the MFG. The excess in the `buy_initial` and `buy_slope` function calculates the excess amount of tez after a buy transaction, so to say, your change.
 
-## Initial phase
+## Initial phase - Pre-MFG
 
 The buy price is determined during the **initial phase** by the following lines in the contract code:
 
@@ -142,7 +142,7 @@ The buy price is determined during the **initial phase** by the following lines 
 
 In this phase, the calculation is `token_amount = amount/self.data.price`, where `amount` represents the number of tokens (in tez) sent with the transaction and `self.data.price` is the current price of the token.
 
-After the calculation, `buy_initial` will check if any tokens can be issued. Then it will add the calculated number of tokens to the ledger linking them to the transaction sender. In case no record of the user exists, it will create an entry. The comments in the code should suffice as an explanation:
+After the calculation, `buy_initial` checks if any tokens can be issued. Then it adds the calculated number of tokens to the ledger linking them to the transaction sender. In case no record of the user exists, it creates an entry. The comments in the code should suffice as an explanation:
 
 ```python
         # fail if no tokens can be issued with this amount of tez
@@ -179,7 +179,7 @@ This time the calculation for the `token_amount` is more complex because of the 
 
 ![Calculating the buy price post-MFG](/images/buy-calculus.png)
 
-Next, the contract does a **reserve calculation** to determine the amount of the excess, which is sent back to the transaction sender. In addition each time someone buys a token, a part of the tez amount in the transaction will be kept for the buyback reserve:
+Next, the contract does a **reserve calculation** to determine the amount of the excess, which has to be sent back to the transaction sender. In addition, each time someone buys a token, a part of the tez amount in the transaction is kept for the buyback reserve:
 
 ```python
     # after initial phase, the price will increase
@@ -253,9 +253,9 @@ At the end of a `buy_slope` call, the contract updates the sell slope. This is s
 
 ## The `pay()` function
 
-A customer can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract will issue new tokens and by default send them to the organization. Optionally, the customer can pass an address to which the tokens will be sent. A pre-determined part of the received tez will be kept in the reserve and the rest will be sent to the organization.
+A user can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract issues new tokens and by default send them to the organization. Optionally, the user can pass an address to which the tokens are sent. A pre-determined part of the received tez is kept in the reserve and the rest is sent to the organization.
 
-We will allow payments in the slopy phase:
+We allow payments in the slopy phase:
 
 ```python
    @sp.entry_point
@@ -289,7 +289,7 @@ We will allow payments in the slopy phase:
         self.data.total_tokens += sp.as_nat(token_amount.value)
 ```
 
-You can see, it will mint the same number of tokens as if `buy()` would have been called. A part of the tez sent with the call will be kept in the contract:
+You can see, it mints the same number of tokens as if `buy()` would have been called. A part of the tez sent with the call is kept in the contract:
 
 ```python
         # send sp.amount - buyback_reserve to organization
