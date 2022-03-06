@@ -4,7 +4,7 @@ module.exports = [
   `${here}00-landingpage`,
   `${here}01-intro-origins-of-rolling-safe`,
   `${here}02-what-is-a-rolling-safe`,
-  `${here}04-get-started`,  
+  `${here}03-get-started`,  
   `${here}04-rolling-safe-system-architecture`,
   `${here}05-smart-contract-implementation-1`,
   `${here}06-smart-contract-implementation-2`,
