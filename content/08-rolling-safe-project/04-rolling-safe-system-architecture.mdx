@@ -74,8 +74,7 @@ Since we can in general query both from the client and the server, we implement 
 * Server-side data fetching, and
 * Client-side data fetching.
 
-<!-- **TODO: UML Sequence diagram 1**
-Tackle and delete to do -->
+![Server-side data fetching flow](./images/ps-flow-1.png)
 
 When **fetching the data server-side**, the request to the TzKT API is made from the server directly and the result is put into the response when it is being rendered on the server. Note that this means, the query to the TzKT API must be completed before the server can start sending the response, therefore, a long response time on the TzKT API also causes a long response time from the server. To overcome this, you could first render the page without data (to quickly respond), then use Ajax to query the data from the server and update the page.
 
@@ -85,8 +84,7 @@ We will look into how to implement this in the upcoming [Web Application Stack](
 
 </HighlightBox>
 
-<!-- 
-**TODO: UML Sequence diagram 2** -->
+![Client-side data fetching flow](./images/ps-flow-2.png)
 
 When **fetching the data client-side**, the user's browser sends the request directly to the TzKT API and has to also process the result on its own. This processing on the client is the main difference to the aforementioned server-side fetching with Ajax, where the server can pre-process the data.
 
