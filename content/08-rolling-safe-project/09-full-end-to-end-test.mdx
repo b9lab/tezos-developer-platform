@@ -12,30 +12,56 @@ import {
   ExpansionPanelListItem
 } from 'gatsby-theme-apollo-docs';
 
+
 To ensure the correct functioning of the TZMINT web application, we also set up an end-to-end test. Let us dive into some details!
 
-## Test network
+## Test scope
 
-We use [Docker Compose](https://docs.docker.com/compose/) to create a network composed by:
+Within our end-to-end test, we want to go through the whole stack of our platform, from the user click on a button, down to the query/invocation on the smart contract, and back up to displaying the results to the user. This means, besides to our Next.js application and its dependencies (database), we also need:
 
-* Three TzKT containers,
-* A container with the Flextesa sandbox, and
-* A container for the TZMINT web application.
+* A browser test framework, which can simulate the user and verify the results
+* Our own Tezos node, indexer and indexer api endpoint
+* A setup script to deploy our smart contract
+* A way to setup and interact with the user wallet
+* An orchestration to manage the configuration and start of our tests
 
-![Stack in the docker dashboard!](./images/stack-docker-dashboard.png)
+The tests should then in general cover the whole flow of visiting the web app with the browser, logging in, and creating and sending transactions to change the contract state. Additionally, we also want to verify the correct behaviour of the smart contract and the web app by reading the state after such changes.
 
-## Flextesa sandbox
+So for example, we want to be able to write a test which creates a new user, buys 10 TZM tokens and then confirms that these 10 TZM tokens are shown in the users account and transaction list.
 
-We use the [Flextesa image](https://hub.docker.com/r/tqtezos/flextesa/tags?page=1&ordering=last_updated) to create a sandbox environment. After the sandbox starts and the node responds, the bootstrap process starts:
+## Tools and Components
 
-* The Tezos client is configured;
-* Alice and Bob's secret keys are imported;
-* The contract is deployed and the address becomes available;
-* Another test account is created and funded, used to sign `buy` and `sell` transactions.
+A quick overview of the tools we are using:
 
-## TzKT
+* [Flextesa](https://tezos.gitlab.io/flextesa/) as base environment, which allows us to run a tezos sandbox with [Docker](https://www.docker.com/)
+* [Docker Compose](https://docs.docker.com/compose/) to orchestrate the containers
+* [Cypress](https://www.cypress.io/) as javascript end-to-end test framework
+* [TzKT](https://github.com/baking-bad/tzkt) indexer with api
 
-A TzKT indexer (tzkt-sync) is configured to extract data from the node in the sandbox. In addition, a TzKT API container exposes data to the TZMINT web application.
+Furthermore, we use various bash scripts to prepare the test environment. Following up, we will take a look at the features of these tools.
+
+### Flextesa
+
+The flextesa library provides us a docker image, which runs a Tezos sandbox network that is highly customizable: You can run multiple nodes, bakers, accusers, and endorsers within that network, and create various scenarious to thoroughly test the Tezos blockchain and it's behaviour. This sandbox is also used in the continuous integration tests of [Tezos](https://gitlab.com/tezos/tezos) itself.
+
+You can find a few example configurations and further information on its use in the [flextesa developer documentation](https://tezos.gitlab.io/developer/flextesa.html#examples)
+
+### Docker Compose
+
+Docker Compose is a tool that allows you to run and manage multiple containers as a stack. Our tools and components are running in individual docker containers, which are started by docker compose. It also helps configuring the virtual network, which allows the containers to communicate with each other. The configuration for such a stack is stored in a _docker compose_ file, usually but not always named `docker-compose.yml`. You can follow the [Docker Compose Guide](https://docs.docker.com/compose/) for a quick overview and intro into Docker Compose.
+
+### Cypress
+
+The Cypress framework combines browser automation tooling (similar to [Selenium](https://www.selenium.dev/)), a test framework (like [Mocha](https://mochajs.org/)) and additional helpers for assertions and mocking (like [Chai](https://www.chaijs.com/) and [Sinon](https://sinonjs.org/)), all in one package.
+
+A good intro into the use of Cypress is the [official getting started guide](https://docs.cypress.io/guides/getting-started/installing-cypress).
+
+### TzKT
+
+To run our own indexer with Api, we need two separate Docker images, provided by [Baking Bad](https://baking-bad.org/docs/):
+
+* [tzkt-sync](https://hub.docker.com/r/bakingbad/tzkt-sync), which runs the indexing service
+* [tzkt-api](https://hub.docker.com/r/bakingbad/tzkt-api), which connects to the sync container and exposes the REST Api
 
 <HighlightBox type="tip">
 
@@ -43,24 +69,540 @@ Feeling unsure about the TzKT indexer? Take another look at the [TzKT section](.
 
 </HighlightBox>
 
-## Database
+## Test Stack
 
-The database container uses [PostgreSQL](https://www.postgresql.org/) to store the fetched data. It contains a database for the web application and a database for the TzKT indexer.
+Overall, our Stack will run the following containers:
 
-## Browser interaction
+* A container with the Flextesa sandbox
+* Two TzKT containers
+* A container for the TZMINT web application, running within Cypress
+* A postgres database for both the web application and the indexer
 
-If you visit and test the [TZMINT web application](https://tzmint.b9lab.com/), you can see that a wallet pop-up appears asking for confirmation each time you want to sign and send a transaction. For automation purposes, we use [Cypress.io](https://github.com/cypress-io/cypress) to visit and test the site and [Puppeteer](https://github.com/puppeteer/puppeteer) for interaction with the wallet extension.
+![Stack in the docker dashboard!](./images/stack-docker-dashboard.png)
 
-Puppeteer switches between wallet pop-up and Cypress Windows to sequentially interact with the site and the wallet. This allows us to perform actions like submitting a transaction or confirming an address.
+The configuration for the stack and the individual containers can be found in the `/docker` folder in the [repository](https://github.com/b9lab/tezos-cso-project/tree/master/docker).
 
-At the beginning of a test, Cypress opens a Google Chrome instance loading a previously downloaded version of the wallet extension. When the test requires interaction with the wallet, it will import the account via a mnemonic and configure the settings for the custom-created network.
+### Flextesa sandbox container
 
-The TZMINT web application container (app) pulls the Cypress browser image and loads the web application volume.
+For the flextesa sandbox, we don't need a complicated configuration with multiple nodes or endorsers, but just a basic setup to be able to process transactions and advance the blockchain. However, we need to perform a bit of bootstrapping:
 
-Once the sandbox is bootstrapped, it does a fresh install of the dependencies. Then it prepares the environment used during the tests by:
+* Setup the default Alice and Bob accounts with known secret keys
+* Deploy the smart contract
+* Create and fund another test account, which is used to sign `buy` and `sell` transactions within the tests
 
-* Reading the contract address from a helper file written by the sandbox container after the contract deployment,
-* Defining the test account mnemonic and address, and
-* Configuring the API endpoint and the RPC node endpoint.
+We have wrapped these steps in a bootstrap script, found in `/docker/scripts/sandbox/bootstrap-sandbox.sh` with the following content:
 
-Then the unit and the end-to-end tests are executed.
+```bash
+#!/bin/bash
+
+set -x
+
+source /opt/scripts/prepare-env.sh
+
+echo "Bootstrap: Waiting for port 20000 to become reachable"
+timeout 30 sh -c 'while ! curl -s localhost:20000; do sleep 1; done'
+
+if [ $? -eq 0 ]
+then
+  echo "Bootstrap: Sandbox ready, port 20000 available"
+else
+  echo "Bootstrap: Sandbox bootstrap failed($?), port 20000 not reachable"
+  exit 1
+fi
+
+echo "Bootstrap: Sandbox bootstrap (1/2) - setup accounts"
+export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=yes
+tezos-client --endpoint http://localhost:20000 bootstrapped
+tezos-client --endpoint http://localhost:20000 config update
+tezos-client import secret key alice unencrypted:edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq --force
+tezos-client import secret key bob unencrypted:edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt --force
+sleep 5
+
+echo "Bootstrap: Sandbox bootstrap (2/2) - deploy contract"
+cd opt/contract
+CONTRACT_ADDRESS=`sh ./deployment.sh | egrep -m1 -o 'KT.{34}\b'`
+
+cat > /opt/shared/contract-address.txt <<EOF 
+$CONTRACT_ADDRESS
+EOF
+
+tezos-client transfer 10000 from bob to $TEST_ACCOUNT_ADDRESS --burn-cap 0.06425
+
+cat <<EOF >/opt/sandbox-ready
+EOF
+
+echo "Bootstrap: Completed"
+```
+
+We use the [timeout command](https://linux.die.net/man/1/timeout) together with a loop that uses curl to continuously query localhost on port 20000, waiting for the flextesa sandbox startup to complete
+
+```bash
+timeout 30 sh -c 'while ! curl -s localhost:20000; do sleep 1; done'
+```
+
+Afterwards, we use the tezos-client to bootstrap the node and connect the client to it, with
+
+```bash
+tezos-client --endpoint http://localhost:20000 bootstrapped
+tezos-client --endpoint http://localhost:20000 config update
+```
+
+To deploy the contract, we need to setup the alice and bob account, which allows us to use the [existing deployment script](https://github.com/b9lab/tezos-app-project/blob/main/src/contract/deployment.sh) from the subrepository. We _grep_ the contract address from the output of the deployment process, storing it in a separate text file (`/opt/shared/contract-address.txt`). The folder `/opt/shared/` is shared between the flextesa and the cypress containers.
+
+Finally, once everything is complete, we create an empty file in `/opt/sandbox-ready`, to signal the bootstrap process is complete. This will be used later by the following process step to wait for completion of the bootstrap process.
+
+### TzKT container
+
+The indexer service (`tzkt-sync`) needs to be configured to read it's data from our sandbox node, instead of the public node, by adjusting `/app/appsettings.json` file within the container. The [default config](https://github.com/baking-bad/tzkt/blob/master/Tzkt.Sync/appsettings.json#L7) contains
+
+```json
+"TezosNode": {
+    "Endpoint": "https://mainnet-tezos.giganode.io/",
+    "Timeout": 60
+}
+```
+
+which we need to adjust to point to the sandbox container on port 20000.
+
+On the api service (`tzkt-api`), we have to configure the port we want to expose the api on, by setting an environment variable:
+
+```
+TZKT_API_KESTREL__ENDPOINTS__HTTP__URL=http://0.0.0.0:5000
+```
+
+### Cypress container
+
+The Cypress container needs to run our application to perfom the tests. We use a specific cypress image (`cypress/browsers:node12.14.1-chrome85-ff81`), which includes a headless chrome browser with a fixed chrome version. 
+
+The first step to do within the container is to install all dependencies and build our source. Then, we need to configure and start the app, followed by running the test suite. We use the [npm ci](https://docs.npmjs.com/cli/v8/commands/npm-ci) command, which is similar to running `npm install`, but usually faster and specifically meant to run in automated environments - it will always perform a fresh dependency installation, by fetching the packages with the version stored in the `package-lock.json` file. Finally, we can start the test suite with `npm test`.
+
+These steps are wrapped into the file `/docker/scripts/cypress/run-tests.sh` ([view in repository](https://github.com/b9lab/tezos-cso-project/blob/master/docker/scripts/cypress/run-tests.sh)). It also configures the environment variables needed for the app itself and to load the blockchain account into the wallet (address and mnemonic). We read the deployed contract address from the shared file at `/opt/shared/contract-address.txt` into an environment variable with:
+
+```bash
+export NEXT_PUBLIC_CONTRACT_ADDRESS=`cat /opt/shared/contract-address.txt`
+```
+
+Additionally, we configure the Node and TzKT Api urls, setting `NEXT_PUBLIC_NODE_PROVIDER` and `NEXT_PUBLIC_INDEXER_API_ENDPOINT` environment variables accordingly.
+
+
+### Database container
+
+The database container uses [PostgreSQL](https://www.postgresql.org/). It contains a database for the web application and a database for the TzKT indexer. We use an official [standard postgres image](https://hub.docker.com/_/postgres).
+
+
+
+## Cypress test implementation
+
+Cypress tests are written in javascript files, which can contain one or multiple test scenarios. The syntax and use is very similar to other testing frameworks. Let's take a lookt at a sample test from the [cypress getting started guide](https://docs.cypress.io/guides/getting-started/writing-your-first-test#Step-4-Make-an-assertion):
+
+```javascript
+describe('My First Test', () => {
+  it('clicking "type" navigates to a new url', () => {
+    cy.visit('https://example.cypress.io')
+
+    cy.contains('type').click()
+
+    // Should be on a new URL which includes '/commands/actions'
+    cy.url().should('include', '/commands/actions')
+  })
+})
+```
+
+This creates a test group _My First Test_, with a single test _clicking "type" navigates to a new url_. When this test runs, it will:
+
+* Navigate to `https://example.cypress.io`
+* Search for an element containing the string `type` and click on this element
+* Check (assert), that the browser url (after navigation) includes `/commands/actions`
+ 
+<HighlightBox type="info">
+
+`describe`, `it` and `should` might look familiar to you - these are actually not provided by cypress itself, but functions from the included testing libraries [Mocha](https://mochajs.org/) and [Chai](http://www.chaijs.com/).
+
+</HighlightBox>
+
+
+### Page tests
+
+Our tests are located in the folder `/cypress/integration/`, where you will find the following files:
+
+```
+cypress/integration/
+├─ 00-wallet.spec.js                Browser wallet setup
+├─ 01-protected_pages.spec.js       Page access and profile test
+├─ 02-signin.spec.js                Signin via mail test
+├─ 03-price.spec.js                 Price data (queries) test
+└─ 00-transaction.spec.js           Transaction test (buy and sell)
+```
+
+Let's take a look at an excerpt from the `01-protected_pages.spec.js` test, to understand how we can interact with our application in a test.
+
+**Protected pages** are pages which require the user to be logged in, eg. the `/profile` page, which is shown after user login. To identify whether the login form is shown, we can look into the DOM of our site searching for the element displaying the login form. Looking at the DOM with our browser inspector, we can see that we have wrapped the login form into a class called `.signin`, which is a child class of the `.page` container:
+
+![DOM tree showing login container](./images/test-dom-login.png)
+
+We can get this element with `cy.get('.page .signin')`. Additionally, we should use `should('be.visible')`, to make sure the element is not hidden. We wrap this in a little helper function `isLoginPage()`:
+
+```javascript
+const isLoginPage = () => {
+    cy.get('.page .signin').should('be.visible');
+}
+```
+
+We can call this from within any test, and the test will throw if the page signing is not visible.
+
+Now, to complete the actual test, we instruct Cypress to visit the `/profile` page, and check for it to open the login:
+
+```javascript
+describe('Accessing protected pages without login', () => {
+
+    it('Visiting the profile page I should be redirected to login page', () => {
+        cy.visit('/profile');
+        isLoginPage();
+    })
+})
+```
+
+<!-- TODO: Explain the mocked login test -->
+
+
+## Browser wallet interaction
+
+If you visit and test the [TZMINT web application](https://tzmint.b9lab.com/), you can see that a wallet pop-up appears asking for confirmation each time you want to sign and send a transaction. This popup is triggered by the Beacon SDK interacting with the browsers wallet, which is installed as a browser extension. We need to interact with this popup to confirm each transaction we want to send. Furthermore, before we can do that, we need to setup our account and allow the TZMINT application to access our wallet. Basically, we need to automate the steps shown in the [get started section](/get-started).
+
+Unfortunately, this is not a simple task, due to a few limitations:
+
+The plugin needs to be installed into the browser used by Cypress, and then configured. Chrome extensions are implemented as kind of small javascript web applications, which are exposed inside chrome via a qualified url like `chrome-extension://ookjlbkiijinhpmnjffcofjonbfbgaoc/popup.html`. You can actually open an extension popup, then press the shortcut to open the browser inspector and inspect the elements and network traffic of an extension, which reveals the url the extension is being server from.
+
+![Inspecting the wallet extension](./images/test-chrome-popup.png)
+
+Our problem is that these urls are internal chrome urls and not valid http(s) urls, which **Cypress can not interact with**. Therefore, we somehow need to wrap the extension interaction, to trigger it from Cypress.
+
+Further complicating is the fact that Cypress runs a test in one browser window/tab at a time - and only one! It is part of the [main limitations](https://docs.cypress.io/guides/references/trade-offs#Permanent-trade-offs-1) of Cypress. You can not access another tab or window while running your test.
+
+
+Last but not least, configuring the wallet itself also has a few requirements: We only have the account address and the mnemonic to import the account into the wallet - we need a wallet that allows us to easily import the account with just these two pieces. Then, to make the wallet work with our test network, we need to configure it to use a custom rpc endpoint. We have choosen the [Spire wallet](https://github.com/airgap-it/spire) for our tests.
+
+<HighlightBox type="tip">
+
+If you need to write a test for a browser extension, and you are not familiar with the chrome extension architecture, we recommend you take a look at how they are built and work, by looking into the [Chrome extension developer documentation](https://developer.chrome.com/docs/extensions/mv3/), and begin testing with your own sample extension before implementing the tests for the real extension.
+
+</HighlightBox>
+
+### Install the extension
+
+In order to install the extension, we need to supply and load it as unpacked extension package, as we would do when debugging our own extension code (shown in the chrome extension [getting started](https://developer.chrome.com/docs/extensions/mv3/getstarted/#unpacked) guide). We also also don't want our extension to update, so we have included the unpacked extension in our source, you can find it at `/cypress/plugins/extensions/gpfndedineagiepkpinficbcbbgjoenn/`. You can unpack an extension by downloading it as zip package from the chrome web store, and then unpack it.
+
+Now the most complex part: Loading and accessing the browser extension. A note before outlining the details: There is a package that can help with this task, the [cypress-browser-extension-plugin](https://github.com/ejoubaud/cypress-browser-extension-plugin).The last update of this is four years old and we had some problems using it with Spire, resorting to a custom approach, however there is a lot of value in this repository to see how one can interact with extensions.
+
+Now we can not overcome the Cypress limitation of only being able to handle one browser window at a time, but we can try to do this on our own. We can use the [Puppeteer](https://github.com/puppeteer/puppeteer) library, which is a high level Api wrapper to control and automate Chrome, to manually interact with Chrome. Usually, we wouldn't want to use Puppeteer as we have Cypress, which allows us to interact with the browser on an even higher level. But, in this specific case, implementing the wallet wrapper for our Cypress tests with Puppeteer is the needed trick.
+
+We can then load this wrapper as a [Cypress plugin](https://docs.cypress.io/guides/tooling/plugins-guide#Use-Cases). Cypress plugins allow you to load your own code and tap into the Node process which is running outside of the browser - exactly what we need.
+
+Don't be confused with the naming now: We create a Cypress plugin, which will load it's own Chrome window with Puppeteer, and install and configure the Spire browser extension within. You can find the Cypress plugin code in `/cypress/plugins/index.js`. Two important steps are in this file:
+
+**Install the extension on browser launch**, by passing the path to the extension code as browser launch option:
+
+```javascript
+on('before:browser:launch', (browser, launchOptions) => {
+    launchOptions.extensions.push(__dirname + '/extensions/gpfndedineagiepkpinficbcbbgjoenn')
+    if (browser.name === 'chrome') {
+      launchOptions.args.push('--disable-background-timer-throttling');
+      launchOptions.args.push('--disable-backgrounding-occluded-windows');
+      launchOptions.args.push('--disable-renderer-backgrounding');
+
+      const hostArg = launchOptions.args.find(arg => arg.startsWith('--remote-debugging-address'));
+      const host = hostArg.split('=')[1];
+      const rdpArgument = launchOptions.args.find(arg => arg.startsWith('--remote-debugging-port'));
+      const port = parseInt(rdpArgument.split('=')[1]);
+      process.env.REMOTE_DEBUGGING_URL = `http://${host}:${port}`;
+    }
+
+    return launchOptions
+  })
+```
+
+Hooking into the `before:browser:launch` event, we add the extension by pushing it into the `launchOptions.extensions` list. Then, we use Chrome's debugging features to get an address and port to hook in later on, by reading `--remote-debugging-address` and `--remote-debugging-port` from the launch options.
+
+**Provide and interface for Cypress** by exposing tasks, which can then be called from our Cypress tests. This is part of the Cypress plugin architecture: You can expose tasks which can then be called from within the Cypress tests:
+
+```javascript
+on('task', {
+    getUserEmail() {
+      return emailAccount.email
+    },
+    getLastEmail() {
+      return emailAccount.getLastEmail();
+    },
+    setupSpire: async () => {
+      const config = {
+        accountMnemonic: process.env.TEST_ACCOUNT_MNEMONIC,
+        customRpcUrl: process.env.NEXT_PUBLIC_NODE_PROVIDER,
+      }
+      return await spireHelper.initialSetup(config);
+    }
+[...]
+```
+
+### Configure and interact with the extension
+
+We use two additional helpers for the extension interaction, located in `/cypress/helpers`:
+
+* `puppeteer.js`, which implements helper functions to switch between the main Cypress window and our extension window, as well as basic interaction functions to click on buttons, find elements and set input values in the extension window.
+* `spire.js` uses the puppeteer.js helper functions, wrapping them into higher functions like `_changeNetwork(customRpcUrl)`.
+
+In the spire helper, we use the following function to import our account:
+
+```javascript
+async _importAccount(mnemonic) {
+    // navigate to local secret page
+    await this.puppeteerHelper.waitAndClick('body > app-root > ion-app > ion-split-pane > ion-menu > ion-content > ion-list > ion-menu-toggle:nth-child(4) > ion-item > ion-label');
+    // type test account mnemonic
+    await this.puppeteerHelper.waitAndSetValue(mnemonic, '#main-content > beacon-local-mnemonic > ion-content > ion-list:nth-child(1) > ion-item > ion-textarea > div > textarea');
+    // save
+    await this.puppeteerHelper.waitAndClick('#main-content > beacon-local-mnemonic > ion-content > ion-list:nth-child(1) > ion-button:nth-child(3)');
+    // confirm
+    await this.puppeteerHelper.waitAndClick('div.alert-button-group.sc-ion-alert-md > button:nth-child(2)');
+    return true;
+}
+```
+
+As you can see, here we are following the normal steps a user would do to import the account with mnemonic, actually clicking on buttons. Similarly, to confirm a transaction, we use:
+
+```javascript
+async confirm() {
+    await this.puppeteerHelper.assignWindows();
+    await this.puppeteerHelper.switchToWalletWindow();
+    await this.puppeteerHelper.waitAndClick('beacon-request > ion-content > ion-fab > ion-button.ion-color.ion-color-primary.md.button.button-solid.ion-activatable.ion-focusable.hydrated'); // highlight-line
+    await this.puppeteerHelper.switchToCypressWindow();
+    return true;
+}
+```
+
+Where the main work was in finding the right DOM path to the button:
+
+```
+beacon-request > ion-content > ion-fab > ion-button.ion-color.ion-color-primary.md.button.button-solid.ion-activatable.ion-focusable.hydrated
+```
+
+To then pass it to the `waitAndClick` function, defined in our `puppeteer.js` helper file.
+
+
+### Use in Cypress tests
+
+We are ready to use this wallet extension wrapper plugin in our Cypress tests. Cypress loads plugins from `cypress/plugins/index.js` by default. Since we exported a task in our plugin, we can now call it from within our test with `cy.task('setupSpire')`. We use another file in `/cypress/support/commands.js`, to wrap the task launch into Cypress commands:
+
+```javascript
+Cypress.Commands.add('setupSpire', () => {
+    return cy.task('setupSpire');
+});
+```
+
+Then, Looking into the `00-wallet.spec.js` file, we can see that we can now directly call these commands:
+
+```javascript
+describe('Select account', () => {
+
+        before(() => {
+            cy.wait(2000);
+            cy.setupSpire(); // highlight-line
+        })
+
+[...]
+
+        it('Should select and confirm spire account', () => {
+            cy.visit('/profile');
+            cy.get('.fetch-address-button').click();
+            cy.confirmAddress(); // highlight-line
+        })
+
+    })
+```
+
+Et voilà! Similarily, in the `04-transaction.spec.js` file, you will find a well readable test using two further helper functions `openModalAndBuy` and `confirmTransaction`:
+
+```javascript
+it('should fund some tokens', () => {
+    cy.visit('/fund-withdraw');
+
+    cy.openModalAndBuy(10, true);
+
+    cy.wait(5000);
+    cy.confirmTransaction();
+
+    cy.get('.transaction-success', { timeout: 50000 }).should('be.visible');
+    cy.get('.transaction-item').invoke('attr', 'id').then(id => {
+        transactionIds.push(id);
+    })
+})
+```
+
+
+### Running the test stack
+
+Running our tests has become a little more complex now, since we need to run our main server app, then launch cypress to connect to it, also passing a few config flags. We use another package called [start-server-and-test](https://www.npmjs.com/package/start-server-and-test) to wait for the application server to be started before launching Cypress. You can see the configuration in the main `package.json` file. The two commands to start the tests are these:
+
+```json
+"test:e2e:run": "cypress run --config pageLoadTimeout=30000,baseUrl=http://127.0.0.1:3000,video=false --browser chrome --headed",
+"test:e2e": "npm run build && start-server-and-test serve http://127.0.0.1:3000 test:e2e:run"
+```
+
+If you take a look into the [file in the repository](https://github.com/b9lab/tezos-cso-project/blob/master/package.json#L18), you will see that we call these on the main `test` command, next to running the unit tests:
+
+```json
+"test": "npm run test:unit && npm run test:e2e"
+```
+
+Thus, we can now run `npm run test` to launch all tests.
+
+
+## Container orchestration
+
+Now that we have prepared all containers and looked into the individual details, let's go back to our container orchestration: We need to organize a few things:
+
+* We have to wait for some containers to be ready, before starting the processes in the next containers
+* We need to setup some shared files
+* We need to setup a virtual network, allowing containers to communicate with each other
+
+All of this is done in our docker-compose configuration file. This file (located at `/docker/sandbox.yml`, [view in repository](https://github.com/b9lab/tezos-cso-project/blob/master/docker/sandbox.yml)) contains a service definition for each container:
+
+* sandbox
+* db
+* api
+* sync
+* cypress
+
+including the images described in the [Test Stack section](/rolling-safe-tezos-full-end-to-end-test/#test-stack) above.
+
+### Wait for container launch
+
+All our containers, except for the flextesa sandbox, require the database to be started in order to work. Docker Compose has its own mechanism to have control the order of container start, using the keyword `depends_on`. On the `api` container, we use this to make sure, docker will first start the database container before staring the api container:
+
+```yaml
+services:
+  api:
+    container_name: tzkt-api
+    image: bakingbad/tzkt-api:latest
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    image: postgres:13
+
+(excerpt)
+```
+
+More information can be found in the [docker compose documentation](https://docs.docker.com/compose/compose-file/compose-file-v2/#depends_on).
+
+<HighlightBox type="warning">
+
+`depends_on` does not wait for the container to be ready! It just starts the container after the depending one has started.
+
+</HighlightBox>
+
+
+### Wait for container readiness
+
+For the database, it is fine to use `depends_on`, because it starts pretty fast and the other containers connecting to it can handle an initial connection timeout. If they can not connect to the database, they will retry over at least 60 seconds before failing, which is enough time for the database to accept connections. For the cypress test container though, we really need to make sure the initial preparations on the flextesa box have been completed (setting up the network, deploying the contract and preparing the accounts). Also, we need to pass the deployed contract address to our app **after** it has been deployed, so we need to wait for this to finish.
+
+For this, we can use the [Healthcheck feature](https://docs.docker.com/compose/compose-file/compose-file-v2/#healthcheck) in Docker Compose. At the end of the bootstrap process, the sandbox writes a file into `/opt/sandbox-ready` to signal it is ready. We can implement a healthcheck, looking for the existance of this file:
+
+```yaml
+services:
+
+  sandbox:
+    container_name: sandbox
+    image: tqtezos/flextesa:20210602
+    healthcheck:
+      test: ["CMD", "test", "-e", "/opt/sandbox-ready"]
+      interval: 15s
+      timeout: 30s
+      retries: 5
+
+  cypress:
+    container_name: app
+    image: cypress/browsers:node12.14.1-chrome85-ff81
+    volumes:
+      - $MOUNT_POINT:/opt/app
+      - shared:/opt/shared
+    depends_on:
+      sandbox:
+        condition: service_healthy
+```
+
+We define the healthcheck on the `sandbox` container to look for the existance of the file (using the unix [test command](https://de.wikipedia.org/wiki/Test_(Unix))), and will retry for 5 times with an interval of 15s. This healthcheck is then set as dependency on the `cypress` container, using the `condition: service_healthy` setting to tell Docker Compose it should not only wait for the container to start, but for the healthcheck to return a success.
+
+<HighlightBox type="warning">
+
+You must implement a healthcheck when using `condition: service_healthy`! There is no default healthcheck.
+
+</HighlightBox>
+
+### Virtual network
+
+The network configuration is simple. We don't need to define custom networks, the default one used by Docker Compose is sufficient. All we need to do is to tell Docker Compose which ports we want to expose on the individual containers. These ports are then exposed to the host too, and they allow the containers to connect to each other. Docker Compose runs a little helper, that will allow you to connect to the other containers using their container name, from inside each container. So, for example our database container exposes port `5432` by setting:
+
+```yaml
+db:
+    container_name: db
+    [...]
+    expose:
+      - 5432
+```
+
+in our compose file to other containers. We can also use
+
+```yaml
+    ports:
+      - 0.0.0.0:5432:5432
+```
+
+to export this on the host too.
+
+Then, from inside another container, you can access the database using the address
+
+```
+db:5432
+```
+
+which will be resolved to the correct container.
+
+
+### Adjust configuration on startup
+
+One last detail: The `tzkt-sync` container was giving us some problems on the initial configuration. As mentioned before, we need to adjust the `/app/appsettings.json` file inside the container in order to point it to our sandbox (instead of the public mainnet node). However, we need to adjust this file after the container starts, before the sync service reads the config. If you just need to replace a single string in a file, it can be quicker to run a small [unix sed command](https://de.wikipedia.org/wiki/Sed_(Unix)), which we use on the `tzkt-sync` container, defined in our compose file as [entrypoint](https://docs.docker.com/compose/compose-file/compose-file-v2/#entrypoint)
+
+
+```yaml
+services:
+
+  sync:
+    container_name: tzkt-sync
+    image: bakingbad/tzkt-sync:latest
+    depends_on:
+      - db
+    entrypoint: /bin/bash -c 'sed -i "s/https:\/\/mainnet-tezos.giganode.io/http:\/\/sandbox:20000/g" /app/appsettings.json && dotnet Tzkt.Sync.dll'
+
+[...]
+```
+
+Replacing `https://mainnet-tezos.giganode.io` with `http://sandbox:20000`.
+
+The command `dotnet Tzkt.Sync.dll` is the startup command.
+
+
+### Wrapping up
+
+The final wrapping is for our ci - to run a simple command to fulfill the whole testrun, we use the file `/docker/scripts/run-stack.sh`, which contains:
+
+```bash
+#!/bin/bash
+
+set -x
+
+docker-compose -f ./sandbox.yml down -v
+chmod +x scripts/db/create-multiple-db.sh
+docker-compose -f ./sandbox.yml up --abort-on-container-exit
+```
+
+We run `docker-compose -f ./sandbox.yml down -v` to stop all containers, in case one is still running from a previous run. This is mainly useful for local testing. We then start the whole stack with `docker-compose -f ./sandbox.yml up`, passing the `--abort-on-container-exit` flag. This does an important thing for our ci run: If everything runs fine, the `cypress` container will exit with a **zero return code**, signalling a success. If a test fails, it will exit with a non-zero exit code, while the other containers would still continue to run. Using the `--abort-on-container-exit` flag, we make sure the whole stack is shutdown once the Cypress tests are completed.
