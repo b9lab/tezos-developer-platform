@@ -16,8 +16,6 @@ B9lab's sample project is an implementation of a continiuous programmable equity
 
 <HighlightBox type="info">
 
-Before working on this section, make sure to go through the [introduction section](./what-is-a-rolling-safe) to understand the underlying mechanisms of this novel funding instrument.
-
 For a close look at the formulas used for calculation, we recommend consulting the [Continuous Organizations Whitepaper](https://github.com/C-ORG/whitepaper#annex) by Thibauld Favre. In this section, we present an implementation of the whitepaper's ideas, our **TZMINT project**.
 
 </HighlightBox>
@@ -253,7 +251,7 @@ At the end of a `buy_slope` call, the contract updates the sell slope. This is s
 
 ## The `pay()` function
 
-A user can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract issues new tokens and by default send them to the organization. Optionally, the user can pass an address to which the tokens are sent. A pre-determined part of the received tez is kept in the reserve and the rest is sent to the organization.
+A user can call the `pay()` entrypoint to send a payment to the organization via the smart contract. If `pay()` is called, the smart contract issues new tokens and by default sends them to the organization.
 
 We allow payments in the slopy phase:
 
