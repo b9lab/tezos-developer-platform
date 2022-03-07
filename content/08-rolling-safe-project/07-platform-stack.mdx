@@ -121,7 +121,7 @@ export default function Layout(props: LayoutProps) {
 
 The actual page content is passed as children via the `props` object. The type declaration of `LayoutProps` is just required for Typescript.
 
-Additionally, we need to create another file in our `pages` folder to load this layout: `pages/_app.js`. It instructs Next.js to use a [custom app](https://nextjs.org/docs/advanced-features/custom-app) for the rendering of all pages. This custom application then points to our layout file:
+Additionally, we need to create another file in our `pages` folder to load this layout: `pages/_app.js`. It instructs Next.js to use a [custom application](https://nextjs.org/docs/advanced-features/custom-app) for the rendering of all pages. This custom application then points to our layout file:
 
 ```javascript
 import Layout from '../src/components/layout'
@@ -380,11 +380,11 @@ Note that this endpoint is still pointing to the server, so the client is loadin
 
 Interacting with the user's wallet is done through the wallet wrapper, [`/src/wallet/wallet.js`](https://github.com/b9lab/tezos-app-project/blob/main/src/wallet/wallet.js), which wraps the Beacon SDK and passes the configuration to initialize it:
 
-<HighlightBoxtyep="info">
+<HighlightBox type="info">
 
 The code is very similar to what we have seen in the [Beacon section](./beacon) in the previous chapter:
 
-</HighlightBoxtyep="info">
+</HighlightBox>
 
 ```
 // ...

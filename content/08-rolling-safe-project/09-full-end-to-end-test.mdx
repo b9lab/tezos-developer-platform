@@ -551,7 +551,7 @@ services:
         condition: service_healthy
 ```
 
-We define the healthcheck on the `sandbox` container to look for the existence of the file using the Unix [test command](https://de.wikipedia.org/wiki/Test_(Unix). It will retry five times with an interval of 15 seconds. This healthcheck is set as a dependency on the `cypress` container using the `condition: service_healthy` setting to tell Docker Compose it should not only wait for the container to start but also for the healthcheck to return success.
+We define the healthcheck on the `sandbox` container to look for the existence of the file using the Unix [test command](https://de.wikipedia.org/wiki/Test_(Unix)). It will retry five times with an interval of 15 seconds. This healthcheck is set as a dependency on the `cypress` container using the `condition: service_healthy` setting to tell Docker Compose it should not only wait for the container to start but also for the healthcheck to return success.
 
 <HighlightBox type="warning">
 
